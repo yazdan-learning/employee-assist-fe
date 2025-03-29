@@ -1,25 +1,42 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import "./App.css";
+import { publicRoutes } from "./Routes/allRoutes";
+import { Route, Routes } from "react-router-dom";
+import VerticalLayout from "./Layouts/VerticalLayout";
+import "./assets/scss/theme.scss";
+// import NonAuthLayout from "./Layouts/NonLayout";
+// import AuthProtected from "./Routes/AuthProtected";
+
+// Default Layout (Removed Redux-based layout selection)
+const DefaultLayout = VerticalLayout;
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <React.Fragment>
+      <Routes>
+        {/* Public Routes (No authentication required) */}
+        {publicRoutes.map((route, idx) => (
+          <Route
+            path={route.path}
+            key={idx}
+            element={<DefaultLayout>{route.component}</DefaultLayout>}
+          />
+        ))}
+
+        {/* Authenticated Routes (Require login) */}
+        {/* {authProtectedRoutes.map((route, idx) => (
+          <Route
+            path={route.path}
+            key={idx}
+            element={
+              <AuthProtected>
+                <DefaultLayout>{route.component}</DefaultLayout>
+              </AuthProtected>
+            }
+          />
+        ))} */}
+      </Routes>
+    </React.Fragment>
   );
 }
 
