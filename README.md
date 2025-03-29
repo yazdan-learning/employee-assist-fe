@@ -1,46 +1,112 @@
-# Getting Started with Create React App
+# Employee Assist Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is the frontend application for Employee Assist, built with React and TypeScript.
+
+## Repository Access Methods
+
+### HTTPS Method
+
+1. Generate a Personal Access Token (PAT) on GitHub:
+   - Go to GitHub.com → Settings → Developer Settings → Personal Access Tokens → Tokens (classic)
+   - Click "Generate new token (classic)"
+   - Give it a name (e.g., "Employee Assist Frontend")
+   - Select scopes: at minimum, select "repo" for full repository access
+   - Click "Generate token"
+   - **IMPORTANT**: Copy the token immediately as you won't be able to see it again
+
+2. Set up the repository with HTTPS:
+   ```bash
+   git remote set-url origin https://username:<your-token>@github.com/yazdan-learning/emloyee-assist-fe.git
+   ```
+   Replace `username` with your GitHub username and `<your-token>` with the token you generated.
+
+### SSH Method
+
+1. Generate SSH Key (if you don't have one):
+   ```bash
+   ssh-keygen -t ed25519 -C "your_email@example.com"
+   ```
+   Press Enter to accept the default file location and enter a passphrase if desired.
+
+2. Add SSH Key to GitHub:
+   - Copy your public key:
+     ```bash
+     cat ~/.ssh/id_ed25519.pub
+     ```
+   - Go to GitHub.com → Settings → SSH and GPG keys → New SSH key
+   - Give it a title and paste your public key
+   - Click "Add SSH key"
+
+3. Set up the repository with SSH:
+   ```bash
+   git remote set-url origin git@github.com:yazdan-learning/emloyee-assist-fe.git
+   ```
+
+## Getting Started
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yazdan-learning/emloyee-assist-fe.git
+   # or
+   git clone git@github.com:yazdan-learning/emloyee-assist-fe.git
+   ```
+
+2. Install dependencies:
+   ```bash
+   cd emloyee-assist-fe
+   npm install
+   ```
+
+3. Start the development server:
+   ```bash
+   npm start
+   ```
+
+4. Build for production:
+   ```bash
+   npm run build
+   ```
 
 ## Available Scripts
 
-In the project directory, you can run:
+- `npm start` - Runs the app in development mode
+- `npm test` - Launches the test runner
+- `npm run build` - Builds the app for production
+- `npm run eject` - Ejects from Create React App
 
-### `npm start`
+## Project Structure
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+```
+src/
+  ├── assets/          # Static assets (images, styles, etc.)
+  ├── components/      # Reusable components
+  ├── pages/          # Page components
+  ├── services/       # API services
+  ├── slices/         # Redux slices
+  ├── utils/          # Utility functions
+  └── App.tsx         # Main application component
+```
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Contributing
 
-### `npm test`
+1. Create a new branch for your feature:
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+2. Make your changes and commit them:
+   ```bash
+   git add .
+   git commit -m "Description of your changes"
+   ```
 
-### `npm run build`
+3. Push your changes:
+   ```bash
+   git push origin feature/your-feature-name
+   ```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+4. Create a Pull Request on GitHub
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## License
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+This project is licensed under the MIT License - see the LICENSE file for details.
