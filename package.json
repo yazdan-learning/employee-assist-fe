@@ -69,7 +69,7 @@
     "react-responsive-carousel": "^3.2.23",
     "react-responsive-masonry": "^2.3.0",
     "react-router-dom": "^6.26.2",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
     "react-select": "^5.8.1",
     "react-simple-star-rating": "^5.1.7",
     "react-sparklines": "^1.7.0",
