@@ -4,16 +4,18 @@
 @import "./bootstrap.scss";
 @import "./app.scss";
 
-// RTL Mode
-// @import "./rtl/bootstrap-rtl";
-// @import "./rtl/components-rtl";
-// @import "./rtl/float-rtl";
-// @import "./rtl/general-rtl";
-// @import "./rtl/pages-rtl";
-// @import "./rtl/plugins-rtl";
-// @import "./rtl/spacing-rtl";
-// @import "./rtl/structure-rtl";
-// @import "./rtl/text-rtl";
+// RTL Mode - These will be dynamically enabled when RTL is active
+body.rtl {
+  @import "./rtl/bootstrap-rtl";
+  @import "./rtl/components-rtl";
+  @import "./rtl/float-rtl";
+  @import "./rtl/general-rtl";
+  @import "./rtl/pages-rtl";
+  @import "./rtl/plugins-rtl";
+  @import "./rtl/spacing-rtl";
+  @import "./rtl/structure-rtl";
+  @import "./rtl/text-rtl";
+}
 
 body {
   * {

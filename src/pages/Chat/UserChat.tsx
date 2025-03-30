@@ -5,6 +5,7 @@ import EmojiPicker from "emoji-picker-react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { ChatMessage } from "../../common/data/chat";
+import { useTranslation } from "react-i18next";
 
 // Redux Actions and Thunks
 import { addMessage as onAddMessage, getChats } from "../../slices/chats/thunk";
@@ -17,7 +18,13 @@ interface Props {
   loading: boolean;
 }
 
-const UserChat: React.FC<Props> = ({ chatTitle, sessionId, messages, loading }) => {
+const UserChat: React.FC<Props> = ({
+  chatTitle,
+  sessionId,
+  messages,
+  loading,
+}) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch<any>();
   const scrollRef = useRef<any>(null);
 
@@ -25,7 +32,9 @@ const UserChat: React.FC<Props> = ({ chatTitle, sessionId, messages, loading }) 
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [emoji, setEmoji] = useState<boolean>(false);
 
-  const assistantLoading = useSelector((state: any) => state.chats.assistantLoading);
+  const assistantLoading = useSelector(
+    (state: any) => state.chats.assistantLoading
+  );
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -52,7 +61,7 @@ const UserChat: React.FC<Props> = ({ chatTitle, sessionId, messages, loading }) 
     if (e) {
       e.preventDefault();
     }
-    
+
     if (curMessage.trim() !== "" || selectedImage !== null) {
       const newMessage: ChatMessage = {
         id: Date.now(),
@@ -69,7 +78,7 @@ const UserChat: React.FC<Props> = ({ chatTitle, sessionId, messages, loading }) 
       dispatch(onAddMessage({ sessionId, message: newMessage }));
 
       // After sending first message in a new chat, refresh the chat list to get the real session
-      if (sessionId && sessionId.startsWith('temp_')) {
+      if (sessionId && sessionId.startsWith("temp_")) {
         dispatch(getChats());
       }
 
@@ -80,7 +89,10 @@ const UserChat: React.FC<Props> = ({ chatTitle, sessionId, messages, loading }) 
   };
 
   return (
-    <div className="w-100 user-chat d-flex flex-column" style={{ height: "calc(100vh - 180px)" }}>
+    <div
+      className="w-100 user-chat d-flex flex-column"
+      style={{ height: "calc(100vh - 180px)" }}
+    >
       <Card className="mb-0 h-100 d-flex flex-column">
         {/* Fixed Header */}
         <div className="p-4 border-bottom">
@@ -89,9 +101,15 @@ const UserChat: React.FC<Props> = ({ chatTitle, sessionId, messages, loading }) 
               <h5 className="font-size-15 mb-1">{chatTitle}</h5>
               <p className="text-muted mb-0">
                 {assistantLoading ? (
-                  <><i className="mdi mdi-circle text-success align-middle me-1"></i> Assistant is typing...</>
+                  <>
+                    <i className="mdi mdi-circle text-success align-middle me-1"></i>{" "}
+                    {t("Typing...")}
+                  </>
                 ) : (
-                  <><i className="mdi mdi-circle text-success align-middle me-1"></i> Active</>
+                  <>
+                    <i className="mdi mdi-circle text-success align-middle me-1"></i>{" "}
+                    {t("Online")}
+                  </>
                 )}
               </p>
             </Col>
@@ -102,9 +120,9 @@ const UserChat: React.FC<Props> = ({ chatTitle, sessionId, messages, loading }) 
         <div className="d-flex flex-column flex-grow-1">
           <div className="chat-conversation p-3 flex-grow-1">
             <SimpleBar
-              style={{ 
+              style={{
                 height: "calc(100vh - 380px)",
-                minHeight: 0
+                minHeight: 0,
               }}
               ref={scrollRef}
               autoHide={false}
@@ -113,7 +131,7 @@ const UserChat: React.FC<Props> = ({ chatTitle, sessionId, messages, loading }) 
                 {loading ? (
                   <li className="text-center">
                     <div className="spinner-border text-primary" role="status">
-                      <span className="visually-hidden">Loading...</span>
+                      <span className="visually-hidden">{t("Loading...")}</span>
                     </div>
                   </li>
                 ) : (
@@ -126,7 +144,7 @@ const UserChat: React.FC<Props> = ({ chatTitle, sessionId, messages, loading }) 
                         <div className="conversation-list">
                           <div className="ctext-wrap">
                             <div className="conversation-name">
-                              {message.isUser ? "You" : "Assistant"}
+                              {message.isUser ? t("You") : t("Assistant")}
                             </div>
                             <p className="mb-0">{message.content}</p>
                             <p className="chat-time mb-0">
@@ -141,10 +159,15 @@ const UserChat: React.FC<Props> = ({ chatTitle, sessionId, messages, loading }) 
                       <li>
                         <div className="conversation-list">
                           <div className="ctext-wrap">
-                            <div className="conversation-name">Assistant</div>
+                            <div className="conversation-name">
+                              {t("Assistant")}
+                            </div>
                             <div className="dropdown-item-text">
-                              <span className="spinner-grow spinner-grow-sm me-1" role="status"></span>
-                              Typing...
+                              <span
+                                className="spinner-grow spinner-grow-sm me-1"
+                                role="status"
+                              ></span>
+                              {t("Typing...")}
                             </div>
                           </div>
                         </div>
@@ -165,7 +188,7 @@ const UserChat: React.FC<Props> = ({ chatTitle, sessionId, messages, loading }) 
                       value={curMessage}
                       onChange={(e) => setCurMessage(e.target.value)}
                       className="form-control chat-input rounded"
-                      placeholder="Enter Message..."
+                      placeholder={t("Enter Message...")}
                       disabled={assistantLoading}
                     />
                     <div className="chat-input-links">
@@ -181,7 +204,7 @@ const UserChat: React.FC<Props> = ({ chatTitle, sessionId, messages, loading }) 
                               placement="top"
                               target="Emojitooltip"
                             >
-                              Emojis
+                              {t("Emojis")}
                             </UncontrolledTooltip>
                           </Link>
                           {emoji && (
@@ -211,7 +234,7 @@ const UserChat: React.FC<Props> = ({ chatTitle, sessionId, messages, loading }) 
                               placement="top"
                               target="Imagetooltip"
                             >
-                              Images
+                              {t("Images")}
                             </UncontrolledTooltip>
                           </Link>
                         </li>
@@ -223,10 +246,14 @@ const UserChat: React.FC<Props> = ({ chatTitle, sessionId, messages, loading }) 
                   <Button
                     type="submit"
                     color="primary"
-                    disabled={assistantLoading || (!curMessage.trim() && !selectedImage)}
+                    disabled={
+                      assistantLoading || (!curMessage.trim() && !selectedImage)
+                    }
                     className="btn-rounded chat-send w-md waves-effect waves-light"
                   >
-                    <span className="d-none d-sm-inline-block me-2">Send</span>
+                    <span className="d-none d-sm-inline-block me-2">
+                      {t("Send")}
+                    </span>
                     <i className="mdi mdi-send float-end"></i>
                   </Button>
                 </Col>
