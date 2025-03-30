@@ -16,7 +16,7 @@ This is the frontend application for Employee Assist, built with React and TypeS
 
 2. Set up the repository with HTTPS:
    ```bash
-   git remote set-url origin https://username:<your-token>@github.com/yazdan-learning/emloyee-assist-fe.git
+   git remote set-url origin https://username:<your-token>@github.com/yazdan-learning/employee-assist-fe.git
    ```
    Replace `username` with your GitHub username and `<your-token>` with the token you generated.
 
@@ -39,16 +39,16 @@ This is the frontend application for Employee Assist, built with React and TypeS
 
 3. Set up the repository with SSH:
    ```bash
-   git remote set-url origin git@github.com:yazdan-learning/emloyee-assist-fe.git
+   git remote set-url origin git@github.com:yazdan-learning/employee-assist-fe.git
    ```
 
 ## Getting Started
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yazdan-learning/emloyee-assist-fe.git
+   git clone https://github.com/yazdan-learning/employee-assist-fe.git
    # or
-   git clone git@github.com:yazdan-learning/emloyee-assist-fe.git
+   git clone git@github.com:yazdan-learning/employee-assist-fe.git
    ```
 
 2. Install dependencies:
