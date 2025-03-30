@@ -1,7 +1,8 @@
 {
     "project": {
       "name": "Employee Assist",
-      "description": "A React + TypeScript application using the Skote admin template. The app includes modules like Chat, Accountant, and other internal tools for employees."
+      "description": "A React + TypeScript application using the Skote admin template. The app includes modules like Chat, Accountant, and other internal tools for employees.",
+      "template_url": "https://themesbrand.com/skote-symfony/docs/symfony/index.html"
     },
     "backend": {
       "current": "FastAPI",

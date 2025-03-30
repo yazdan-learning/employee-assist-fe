@@ -7,6 +7,7 @@ This is the frontend application for Employee Assist, built with React and TypeS
 ### HTTPS Method
 
 1. Generate a Personal Access Token (PAT) on GitHub:
+
    - Go to GitHub.com → Settings → Developer Settings → Personal Access Tokens → Tokens (classic)
    - Click "Generate new token (classic)"
    - Give it a name (e.g., "Employee Assist Frontend")
@@ -23,12 +24,15 @@ This is the frontend application for Employee Assist, built with React and TypeS
 ### SSH Method
 
 1. Generate SSH Key (if you don't have one):
+
    ```bash
    ssh-keygen -t ed25519 -C "your_email@example.com"
    ```
+
    Press Enter to accept the default file location and enter a passphrase if desired.
 
 2. Add SSH Key to GitHub:
+
    - Copy your public key:
      ```bash
      cat ~/.ssh/id_ed25519.pub
@@ -45,6 +49,7 @@ This is the frontend application for Employee Assist, built with React and TypeS
 ## Getting Started
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/yazdan-learning/employee-assist-fe.git
    # or
@@ -52,12 +57,14 @@ This is the frontend application for Employee Assist, built with React and TypeS
    ```
 
 2. Install dependencies:
+
    ```bash
    cd emloyee-assist-fe
    npm install
    ```
 
 3. Start the development server:
+
    ```bash
    npm start
    ```
@@ -90,17 +97,20 @@ src/
 ## Contributing
 
 1. Create a new branch for your feature:
+
    ```bash
    git checkout -b feature/your-feature-name
    ```
 
 2. Make your changes and commit them:
+
    ```bash
    git add .
    git commit -m "Description of your changes"
    ```
 
 3. Push your changes:
+
    ```bash
    git push origin feature/your-feature-name
    ```

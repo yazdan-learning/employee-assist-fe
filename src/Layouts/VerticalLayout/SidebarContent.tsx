@@ -97,7 +97,7 @@ const SidebarContent = (props: any) => {
   }, []);
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
     activeMenu();
   }, [activeMenu]);
 
@@ -116,7 +116,7 @@ const SidebarContent = (props: any) => {
         <div id="sidebar-menu">
           <ul className="metismenu list-unstyled" id="side-menu">
             <li className="menu-title">{props.t("Menu")}</li>
-            
+
             {/* Dashboard */}
             <li>
               <Link to="/dashboard">

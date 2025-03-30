@@ -17,50 +17,97 @@ import languages from "../../common/languages";
 import usflag from "../../assets/images/flags/us.jpg";
 
 const LanguageDropdown = () => {
-  // Declare a new state variable, which we'll call "menu"
-  const [selectedLang, setSelectedLang] = useState<string>("");
+  const [selectedLang, setSelectedLang] = useState<string>("en");
   const [menu, setMenu] = useState<boolean>(false);
 
   useEffect(() => {
     const currentLanguage: any = localStorage.getItem("I18N_LANGUAGE");
-    setSelectedLang(currentLanguage);
+    if (currentLanguage) {
+      setSelectedLang(currentLanguage);
+    } else {
+      setSelectedLang("en"); // Default to English
+      localStorage.setItem("I18N_LANGUAGE", "en");
+    }
   }, []);
 
   const changeLanguageAction = (lang: string) => {
-    //set language as i18n
-    i18n.changeLanguage(lang);
-    localStorage.setItem("I18N_LANGUAGE", lang);
-    setSelectedLang(lang);
+    try {
+      //set language as i18n
+      i18n.changeLanguage(lang);
+      localStorage.setItem("I18N_LANGUAGE", lang);
+      setSelectedLang(lang);
+
+      // Set RTL/LTR based on language
+      const dir = lang === "fa" ? "rtl" : "ltr";
+      document.documentElement.dir = dir;
+      document.body.dir = dir;
+
+      // Toggle RTL-specific class for Skote template
+      if (dir === "rtl") {
+        document.body.classList.add("rtl");
+      } else {
+        document.body.classList.remove("rtl");
+      }
+    } catch (error) {
+      console.error("Error changing language:", error);
+    }
   };
 
   const toggle = () => {
     setMenu(!menu);
   };
 
+  // Helper function to get flag image with fallback
+  const getFlagImage = (lang: string) => {
+    try {
+      const flagImg = get(languages, `${lang}.flag`);
+      return flagImg || null;
+    } catch (error) {
+      console.error("Error loading flag image:", error);
+      return null;
+    }
+  };
+
   return (
     <React.Fragment>
-      <Dropdown isOpen={menu} toggle={toggle} className="d-inline-block language-switch">
-        <DropdownToggle className="btn header-item " tag="button">
-          <img
-            src={get(languages, `${selectedLang}.flag`) || usflag}
-            alt="skote"
-            height="16"
-          />
+      <Dropdown
+        isOpen={menu}
+        toggle={toggle}
+        className="d-inline-block language-switch"
+        direction="down"
+      >
+        <DropdownToggle className="btn header-item" tag="button">
+          {getFlagImage(selectedLang) ? (
+            <img
+              src={getFlagImage(selectedLang)}
+              alt={`${selectedLang} flag`}
+              height="16"
+            />
+          ) : (
+            <span>{get(languages, `${selectedLang}.label`)}</span>
+          )}
         </DropdownToggle>
-        <DropdownMenu className="dropdown-menu-end">
-          {map(Object.keys(languages), key => (
+        <DropdownMenu
+          className="dropdown-menu-end"
+          style={{ minWidth: "150px" }}
+        >
+          {map(Object.keys(languages), (key) => (
             <DropdownItem
               key={key}
               onClick={() => changeLanguageAction(key)}
-              className={`notify-item ${selectedLang === key ? "active" : "none"
-                }`}
+              className={`notify-item ${
+                selectedLang === key ? "active" : "none"
+              }`}
+              style={{ padding: "8px 12px" }}
             >
-              <img
-                src={get(languages, `${key}.flag`)}
-                alt="skote"
-                className="me-1"
-                height="12"
-              />
+              {getFlagImage(key) ? (
+                <img
+                  src={getFlagImage(key)}
+                  alt={`${key} flag`}
+                  className="me-1"
+                  height="12"
+                />
+              ) : null}
               <span className="align-middle">
                 {get(languages, `${key}.label`)}
               </span>
