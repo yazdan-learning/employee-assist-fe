@@ -1,0 +1,23 @@
+{
+    "project": {
+      "name": "Employee Assist",
+      "description": "A React + TypeScript application using the Skote admin template. The app includes modules like Chat, Accountant, and other internal tools for employees."
+    },
+    "backend": {
+      "current": "FastAPI",
+      "planned": ["Additional backend services or APIs in the future"],
+      "communication": ["WebSockets for real-time communication", "HTTP APIs"]
+    },
+    "state_management": {
+      "preferred_library": "Redux",
+      "alternatives": ["Context API"]
+    },
+    "guidelines": [
+      "Organize the project using a modular architecture.",
+      "Create reusable components leveraging Skote UI.",
+      "Integrate backend services via WebSocket and HTTP.",
+      "Design backend communication to be backend-agnostic (supporting FastAPI now, extendable later).",
+      "Maintain clean, scalable, and maintainable code structure."
+    ]
+  }
+  
