@@ -6,7 +6,12 @@ import { Navigate } from "react-router-dom";
 import Dashboard from "../pages/Dashboard/index";
 
 //Chat
-import Chat from "../pages/Chat/Chat"
+import Chat from "../pages/Chat/Chat";
+
+import React from "react";
+import CustomerList from "../pages/Accountant/Customers/CustomerList";
+import CustomerForm from "../pages/Accountant/Customers/CustomerForm";
+import CustomerDetails from "../pages/Accountant/Customers/CustomerDetails";
 
 //Authentication pages
 // import Login1 from "../pages/AuthenticationInner/Login";
@@ -24,7 +29,6 @@ import Chat from "../pages/Chat/Chat"
 // import TwostepVerification from "../pages/AuthenticationInner/auth-two-step-verification";
 // import TwostepVerification2 from "../pages/AuthenticationInner/auth-two-step-verification-2";
 
-
 //Pages
 // import PagesStarter from "../pages/Utility/pages-starter";
 // import PagesMaintenance from "../pages/Utility/pages-maintenance";
@@ -35,12 +39,9 @@ import Chat from "../pages/Chat/Chat"
 // import Pages404 from "../pages/Utility/pages-404";
 // import Pages500 from "../pages/Utility/pages-500";
 
-
 const authProtectedRoutes = [
   // { path: "/dashboard", component: <Dashboard /> }
-
   // { path: "/profile", component: <UserProfile /> },
-
   // { path: "/", exact: true, component: <Navigate to="/dashboard" /> },
 ];
 
@@ -49,9 +50,18 @@ const publicRoutes = [
   { path: "/", exact: true, component: <Navigate to="/dashboard" /> },
   // eslint-disable-next-line react/react-in-jsx-scope
   { path: "/dashboard", component: <Dashboard /> },
-   //chat
+  //chat
+
   // eslint-disable-next-line react/react-in-jsx-scope
   { path: "/chat", component: <Chat /> },
+  // eslint-disable-next-line react/react-in-jsx-scope
+  { path: "/accountant/customers", component: <CustomerList /> },
+  // eslint-disable-next-line react/react-in-jsx-scope
+  { path: "/accountant/customers/add", component: <CustomerForm /> },
+  // eslint-disable-next-line react/react-in-jsx-scope
+  { path: "/accountant/customers/edit/:id", component: <CustomerForm /> },
+  // eslint-disable-next-line react/react-in-jsx-scope
+  { path: "/accountant/customers/:id", component: <CustomerDetails /> },
   // { path: "/login", component: <Login /> },
   // { path: "/logout", component: <Logout /> },
   // { path: "/forgot-password", component: <ForgotPassword /> },
@@ -78,6 +88,5 @@ const publicRoutes = [
   // { path: "/auth-email-verification-2", component: <EmailVerification2 /> },
   // { path: "/auth-two-step-verification", component: <TwostepVerification /> },
   // { path: "/auth-two-step-verification-2", component: <TwostepVerification2 /> },
-]
+];
 export { authProtectedRoutes, publicRoutes };
-              

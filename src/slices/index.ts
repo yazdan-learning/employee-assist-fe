@@ -8,6 +8,7 @@ import ProfileReducer from "./auth/profile/reducer";
 import ForgotPasswordReducer from "./auth/forgetpwd/reducer";
 import AccountReducer from "./auth/register/reducer";
 import ChatsReducer from "./chats/reducer";
+import CustomerReducer from "./customers/reducer";
 
 const rootReducer = combineReducers({
     Layout: LayoutReducer,
@@ -16,6 +17,7 @@ const rootReducer = combineReducers({
     ForgetPassword: ForgotPasswordReducer,
     Account: AccountReducer,
     chats: ChatsReducer,
+    customer: CustomerReducer,
 });
 
 export default rootReducer;

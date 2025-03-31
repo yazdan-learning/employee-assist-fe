@@ -10,9 +10,11 @@ import { Link } from "react-router-dom";
 //i18n
 import { withTranslation } from "react-i18next";
 import withRouter from "../../Components/Common/withRouter";
+import { useTranslation } from "react-i18next";
 
 const SidebarContent = (props: any) => {
   const ref = useRef<any>(null);
+  const { t } = useTranslation();
   const activateParentDropdown = useCallback((item: any) => {
     item.classList.add("active");
     const parent = item.parentElement;
@@ -138,6 +140,23 @@ const SidebarContent = (props: any) => {
                     <span>{props.t("Chat")}</span>
                   </Link>
                 </li>
+              </ul>
+            </li>
+
+            {/* Accountant Section */}
+            <li>
+              <Link to="/#" className="has-arrow waves-effect">
+                <i className="bx bx-calculator"></i>
+                <span>{t("Accountant")}</span>
+              </Link>
+              <ul className="sub-menu">
+                <li>
+                  <Link to="/accountant/customers">
+                    <i className="bx bx-group"></i>
+                    <span>{t("Customers")}</span>
+                  </Link>
+                </li>
+                {/* Add more accountant modules here */}
               </ul>
             </li>
           </ul>
