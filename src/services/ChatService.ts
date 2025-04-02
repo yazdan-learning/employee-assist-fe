@@ -5,31 +5,39 @@ import { APIClient } from "../helpers/api_helper";
 const API_BASE_URL = "http://localhost:8000/api";
 const chatApi = new APIClient();
 
-interface ChatRequest {
-  session_id: string;
-  query: string;
+export enum AssistantType {
+  GENERAL = "general",
+  LOG = "log"
 }
 
-interface ChatResponse {
+interface ChatRequest {
+  query: string;
+  session_id: string;
+  assistant_type: AssistantType;
+}
+
+export interface ChatResponse {
   id: string;
   isUser: boolean;
   content: string;
   timestamp: string;
   sessionId: string;
   sessionName: string;
+  assistant_type: AssistantType;
 }
 
 interface SessionInfo {
   session_id: string;
   session_name: string;
   assist_id: number;
+  assistant_type: AssistantType;
 }
 
 class ChatService {
   // Fetch all chat sessions
-  async getSessions(assistId?: number): Promise<SessionInfo[]> {
-    const params = assistId ? { assist_id: assistId } : null;
-    const response = await chatApi.get(`${API_BASE_URL}/sessions`, params);
+  async getSessions(assistantType: AssistantType = AssistantType.GENERAL): Promise<SessionInfo[]> {
+    const url = `${API_BASE_URL}/sessions/list?assistant_type=${assistantType.toLowerCase()}`;
+    const response = await chatApi.get(url, null);
     return (response as unknown) as SessionInfo[];
   }
 
@@ -60,10 +68,15 @@ class ChatService {
   }
 
   // Send a message and get AI response
-  async sendMessage(sessionId: string | null, message: string): Promise<ChatResponse> {
+  async sendMessage(
+    sessionId: string | null,
+    message: string,
+    assistantType: AssistantType = AssistantType.GENERAL
+  ): Promise<ChatResponse> {
     const request: ChatRequest = {
+      query: message,
       session_id: sessionId || '',
-      query: message
+      assistant_type: assistantType
     };
     
     const response = await chatApi.create(`${API_BASE_URL}/assist`, request);

@@ -4,11 +4,13 @@ import SimpleBar from "simplebar-react";
 import EmojiPicker from "emoji-picker-react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { ChatMessage } from "../../common/data/chat";
+import { ChatMessage, ChatSession } from "../../common/data/chat";
 import { useTranslation } from "react-i18next";
+import { AssistantType } from "../../services/ChatService";
+import { createSelector } from "reselect";
 
 // Redux Actions and Thunks
-import { addMessage as onAddMessage, getChats } from "../../slices/chats/thunk";
+import { getSessions, sendMessage as onAddMessage } from "../../slices/chats/thunk";
 import { addUserMessage } from "../../slices/chats/reducer";
 
 interface Props {
@@ -16,25 +18,47 @@ interface Props {
   sessionId: string | null;
   messages: ChatMessage[];
   loading: boolean;
+  assistantType: AssistantType;
 }
 
 const UserChat: React.FC<Props> = ({
-  chatTitle,
+  chatTitle: propChatTitle,
   sessionId,
   messages,
   loading,
+  assistantType,
 }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch<any>();
   const scrollRef = useRef<any>(null);
 
+  const selectProperties = createSelector(
+    (state: { chats: { chats: ChatSession[]; currentSessionId: string | null; assistantLoading: boolean } }) =>
+      state.chats,
+    (chats) => ({
+      currentSession: chats.chats.find(chat => 
+        chat.session_id === chats.currentSessionId || 
+        (chat.session_id === null && chats.currentSessionId === null)
+      ),
+      assistantLoading: chats.assistantLoading
+    })
+  );
+
+  const { currentSession, assistantLoading } = useSelector(selectProperties);
+  const [chatTitle, setChatTitle] = useState(propChatTitle);
+
+  // Update title when current session changes
+  useEffect(() => {
+    if (currentSession) {
+      setChatTitle(currentSession.session_name || t("New Chat"));
+    } else {
+      setChatTitle(propChatTitle);
+    }
+  }, [currentSession, propChatTitle, t]);
+
   const [curMessage, setCurMessage] = useState<string>("");
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [emoji, setEmoji] = useState<boolean>(false);
-
-  const assistantLoading = useSelector(
-    (state: any) => state.chats.assistantLoading
-  );
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -74,12 +98,15 @@ const UserChat: React.FC<Props> = ({
       dispatch(addUserMessage(newMessage));
 
       // Then start the AI response process
-      // The API will create a new session if the session_id starts with 'temp_'
-      dispatch(onAddMessage({ sessionId, message: newMessage }));
+      dispatch(onAddMessage({ 
+        sessionId, 
+        message: curMessage.trim(),
+        assistantType 
+      }));
 
       // After sending first message in a new chat, refresh the chat list to get the real session
       if (sessionId && sessionId.startsWith("temp_")) {
-        dispatch(getChats());
+        dispatch(getSessions(assistantType));
       }
 
       setCurMessage("");
@@ -99,19 +126,12 @@ const UserChat: React.FC<Props> = ({
           <Row>
             <Col md="4" xs="9">
               <h5 className="font-size-15 mb-1">{chatTitle}</h5>
-              <p className="text-muted mb-0">
-                {assistantLoading ? (
-                  <>
-                    <i className="mdi mdi-circle text-success align-middle me-1"></i>{" "}
-                    {t("Typing...")}
-                  </>
-                ) : (
-                  <>
-                    <i className="mdi mdi-circle text-success align-middle me-1"></i>{" "}
-                    {t("Online")}
-                  </>
-                )}
-              </p>
+              {assistantLoading && (
+                <p className="text-muted mb-0">
+                  <i className="mdi mdi-circle text-success align-middle me-1"></i>{" "}
+                  {t("Typing...")}
+                </p>
+              )}
             </Col>
           </Row>
         </div>
@@ -147,10 +167,6 @@ const UserChat: React.FC<Props> = ({
                               {message.isUser ? t("You") : t("Assistant")}
                             </div>
                             <p className="mb-0">{message.content}</p>
-                            <p className="chat-time mb-0">
-                              <i className="bx bx-time-five align-middle me-1"></i>
-                              {new Date(message.timestamp).toLocaleTimeString()}
-                            </p>
                           </div>
                         </div>
                       </li>

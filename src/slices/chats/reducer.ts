@@ -1,7 +1,8 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
-import { getChats, getMessages, addMessage, deleteSession, renameSession } from "./thunk";
+import { getSessions, getMessages, sendMessage, deleteSession, renameSession } from "./thunk";
 import { ChatMessage, ChatSession } from "../../common/data/chat";
+import { ChatResponse } from "../../services/ChatService";
 
 interface InitialState {
   chats: ChatSession[];
@@ -29,44 +30,25 @@ const ChatsSlice = createSlice({
   name: "ChatsSlice",
   initialState,
   reducers: {
-    // Add a new reducer for adding user message
     addUserMessage: (state, action: PayloadAction<ChatMessage>) => {
       state.messages.push(action.payload);
     },
     clearMessages: (state) => {
       state.messages = [];
-    },
-    addNewSession: (state) => {
-      const newSession: ChatSession = {
-        session_id: null,
-        session_name: "",
-        assist_id: 1,
-        messages: []
-      };
-      state.chats.unshift(newSession);
       state.currentSessionId = null;
-      state.messages = [];
-    },
-    updateSessionDetails: (state, action: PayloadAction<{ sessionId: string; sessionName: string }>) => {
-      const session = state.chats.find(chat => !chat.session_id || chat.session_id === action.payload.sessionId);
-      if (session) {
-        session.session_id = action.payload.sessionId;
-        session.session_name = action.payload.sessionName;
-      }
-      state.currentSessionId = action.payload.sessionId;
     }
   },
   extraReducers: (builder) => {
     builder
       // Get all chats
-      .addCase(getChats.pending, (state) => {
+      .addCase(getSessions.pending, (state) => {
         state.loading = true;
       })
-      .addCase(getChats.fulfilled, (state, action: PayloadAction<ChatSession[]>) => {
+      .addCase(getSessions.fulfilled, (state, action: PayloadAction<ChatSession[]>) => {
         state.chats = action.payload;
         state.loading = false;
       })
-      .addCase(getChats.rejected, (state, action: PayloadAction<ErrorPayload | any>) => {
+      .addCase(getSessions.rejected, (state, action: PayloadAction<ErrorPayload | any>) => {
         state.error = action.payload?.error || {};
         state.loading = false;
       })
@@ -88,34 +70,35 @@ const ChatsSlice = createSlice({
         state.loading = false;
       })
 
-      // Add messages
-      .addCase(addMessage.pending, (state) => {
+      // Send message
+      .addCase(sendMessage.pending, (state) => {
         state.assistantLoading = true;
       })
-      .addCase(
-        addMessage.fulfilled,
-        (state, action: PayloadAction<{ sessionId: string; message: ChatMessage; sessionName: string }>) => {
-          // Update the session details if this was a new chat
-          const session = state.chats.find(chat => !chat.session_id || chat.session_id === action.payload.sessionId);
-          if (session) {
-            session.session_id = action.payload.sessionId;
-            session.session_name = action.payload.sessionName;
-          }
-          
-          // Update current session ID if it was a new chat
-          if (!state.currentSessionId) {
-            state.currentSessionId = action.payload.sessionId;
-          }
-          
-          // Add the AI message
-          if (state.currentSessionId === action.payload.sessionId) {
-            state.messages.push(action.payload.message);
-          }
-          
-          state.assistantLoading = false;
+      .addCase(sendMessage.fulfilled, (state, action: PayloadAction<ChatResponse>) => {
+        // For new chats, create and add the session
+        if (!state.currentSessionId && action.payload.sessionId) {
+          const newSession: ChatSession = {
+            session_id: action.payload.sessionId,
+            session_name: action.payload.sessionName || "New Chat",
+            assist_id: action.payload.assistant_type === 'log' ? 2 : 1,
+            messages: []
+          };
+          // Add new session to the beginning of the list
+          state.chats.unshift(newSession);
+          state.currentSessionId = action.payload.sessionId;
         }
-      )
-      .addCase(addMessage.rejected, (state, action: PayloadAction<ErrorPayload | any>) => {
+        
+        // Add the message to current messages
+        state.messages.push({
+          id: parseInt(action.payload.id, 10),
+          content: action.payload.content,
+          isUser: action.payload.isUser,
+          timestamp: action.payload.timestamp
+        });
+        
+        state.assistantLoading = false;
+      })
+      .addCase(sendMessage.rejected, (state, action: PayloadAction<ErrorPayload | any>) => {
         state.error = action.payload?.error || {};
         state.assistantLoading = false;
       })
@@ -139,5 +122,5 @@ const ChatsSlice = createSlice({
   },
 });
 
-export const { addUserMessage, clearMessages, addNewSession, updateSessionDetails } = ChatsSlice.actions;
+export const { addUserMessage, clearMessages } = ChatsSlice.actions;
 export default ChatsSlice.reducer;

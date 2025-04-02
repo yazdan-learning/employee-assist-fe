@@ -52,6 +52,10 @@ const publicRoutes = [
    //chat
   // eslint-disable-next-line react/react-in-jsx-scope
   { path: "/chat", component: <Chat /> },
+  // eslint-disable-next-line react/react-in-jsx-scope
+  { path: "/chat/:assistantType", component: <Chat /> },
+  // eslint-disable-next-line react/react-in-jsx-scope
+  { path: "/log-assist", component: <Navigate to="/chat/log" /> },
   // { path: "/login", component: <Login /> },
   // { path: "/logout", component: <Logout /> },
   // { path: "/forgot-password", component: <ForgotPassword /> },

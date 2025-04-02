@@ -138,6 +138,12 @@ const SidebarContent = (props: any) => {
                     <span>{props.t("Chat")}</span>
                   </Link>
                 </li>
+                <li>
+                  <Link to="/log-assist">
+                    <i className="bx bx-analyse"></i>
+                    <span>{props.t("Log Assist")}</span>
+                  </Link>
+                </li>
               </ul>
             </li>
           </ul>

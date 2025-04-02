@@ -1,16 +1,18 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import ChatService from "../../services/ChatService";
-import { ChatMessage } from "../../common/data/chat";
+import ChatService, { AssistantType } from "../../services/ChatService";
 
 // Get chat session list
-export const getChats = createAsyncThunk("chats/getChats", async () => {
-  try {
-    const response = await ChatService.getSessions();
-    return response;
-  } catch (error) {
-    return Promise.reject(error);
+export const getSessions = createAsyncThunk(
+  "chats/getSessions",
+  async (assistantType: AssistantType = AssistantType.GENERAL) => {
+    try {
+      const response = await ChatService.getSessions(assistantType);
+      return response;
+    } catch (error) {
+      return Promise.reject(error);
+    }
   }
-});
+);
 
 // Get messages for a specific chat session
 export const getMessages = createAsyncThunk(
@@ -36,29 +38,24 @@ export const getMessages = createAsyncThunk(
 );
 
 // Add a new message to a chat session and get AI response
-export const addMessage = createAsyncThunk(
-  "chats/addMessage",
-  async ({ sessionId, message }: { sessionId: string | null; message: ChatMessage }, { dispatch }) => {
+export const sendMessage = createAsyncThunk(
+  "chats/sendMessage",
+  async ({ 
+    sessionId, 
+    message, 
+    assistantType = AssistantType.GENERAL 
+  }: { 
+    sessionId: string | null; 
+    message: string; 
+    assistantType?: AssistantType 
+  }, { dispatch }) => {
     try {
-      // Get the AI response - API will create new session if sessionId is null
-      const response = await ChatService.sendMessage(sessionId, message.content);
-      
-      // If this was a new chat (null sessionId), refresh the chat list
+      const response = await ChatService.sendMessage(sessionId, message, assistantType);
+      // If this was a new chat (no sessionId), refresh the sessions list
       if (!sessionId) {
-        dispatch(getChats());
+        await dispatch(getSessions(assistantType));
       }
-      
-      // Return the AI message along with session details
-      return {
-        sessionId: response.sessionId,
-        sessionName: response.sessionName,
-        message: {
-          id: Date.now(),
-          isUser: false,
-          content: response.content,
-          timestamp: response.timestamp
-        }
-      };
+      return response;
     } catch (error) {
       return Promise.reject(error);
     }

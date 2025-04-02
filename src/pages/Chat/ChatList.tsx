@@ -13,50 +13,54 @@ import Spinners from "../../Components/Common/Spinner";
 import { useDispatch, useSelector } from "react-redux";
 import { createSelector } from "reselect";
 import {
-  getChats as onGetChats,
+  getSessions as onGetChats,
   deleteSession,
   renameSession,
 } from "../../slices/chats/thunk";
 import { ChatSession } from "../../common/data/chat";
-import { addNewSession } from "../../slices/chats/reducer";
+import { clearMessages } from "../../slices/chats/reducer";
 import { useTranslation } from "react-i18next";
+import { AssistantType } from "../../services/ChatService";
 
 interface Props {
   userChatOpen: (chat: ChatSession) => void;
   currentSessionId: string | null;
+  assistantType: AssistantType;
 }
 
-const ChatList: React.FC<Props> = ({ userChatOpen, currentSessionId }) => {
+const ChatList: React.FC<Props> = ({ userChatOpen, assistantType }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch<any>();
   const [dropdownOpen, setDropdownOpen] = useState<string | null>(null);
   const [editingChatId, setEditingChatId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState("");
+  const [searchText, setSearchText] = useState("");
 
   const selectProperties = createSelector(
-    (state: { chats: { chats: ChatSession[]; loading: boolean } }) =>
+    (state: { chats: { chats: ChatSession[]; loading: boolean; currentSessionId: string | null } }) =>
       state.chats,
     (chats) => ({
       chats: chats.chats,
       loading: chats.loading,
+      currentSessionId: chats.currentSessionId
     })
   );
 
-  const { chats, loading } = useSelector(selectProperties);
+  const { chats, loading, currentSessionId: reduxCurrentSessionId } = useSelector(selectProperties);
   const [isLoading, setLoading] = useState(loading);
 
+  // Use Redux currentSessionId instead of prop
+  const activeSessionId = reduxCurrentSessionId;
+  console.log('[ChatList] Active Session:', { activeSessionId });
+
   useEffect(() => {
-    dispatch(onGetChats());
-  }, [dispatch]);
+    console.log('[ChatList] Loading chats for assistant type:', assistantType);
+    dispatch(onGetChats(assistantType));
+  }, [dispatch, assistantType]);
 
   const handleNewChat = () => {
-    dispatch(addNewSession());
-    userChatOpen({
-      session_id: null,
-      session_name: "",
-      assist_id: 1,
-      messages: [],
-    });
+    console.log('[ChatList] Starting new chat');
+    dispatch(clearMessages());
   };
 
   const toggleDropdown = (sessionId: string | null) => {
@@ -96,6 +100,11 @@ const ChatList: React.FC<Props> = ({ userChatOpen, currentSessionId }) => {
     }
   };
 
+  // Filter chats based on search text
+  const filteredChats = chats.filter(chat => 
+    chat.session_name?.toLowerCase().includes(searchText.toLowerCase())
+  );
+
   return (
     <div className="chat-leftsidebar me-lg-4">
       <div className="d-flex flex-column h-100">
@@ -116,7 +125,9 @@ const ChatList: React.FC<Props> = ({ userChatOpen, currentSessionId }) => {
                   <Input
                     type="text"
                     className="form-control bg-light border-0 rounded-pill"
-                    placeholder={t("Search Messages...")}
+                    placeholder={t("Search sessions")}
+                    value={searchText}
+                    onChange={(e) => setSearchText(e.target.value)}
                     style={{ paddingLeft: "40px", height: "38px" }}
                   />
                   <i
@@ -136,11 +147,12 @@ const ChatList: React.FC<Props> = ({ userChatOpen, currentSessionId }) => {
                 <Spinners setLoading={setLoading} />
               ) : (
                 <SimpleBar style={{ height: "calc(100vh - 180px)" }}>
-                  {chats.map((chat, index) => (
+                  {filteredChats.map((chat, index) => (
                     <li
                       key={chat.session_id || `new-chat-${index}`}
                       className={`mb-2 ${
-                        chat.session_id === currentSessionId ? "active" : ""
+                        (chat.session_id === activeSessionId) || 
+                        (chat.session_id === null && activeSessionId === null) ? "active" : ""
                       }`}
                     >
                       <div className="d-flex align-items-center">
@@ -199,12 +211,6 @@ const ChatList: React.FC<Props> = ({ userChatOpen, currentSessionId }) => {
                       </div>
                     </li>
                   ))}
-                  {chats.length === 0 && !isLoading && (
-                    <li className="text-center text-muted">
-                      <p>{t("No messages yet")}</p>
-                      <p>{t("Start a new conversation")}</p>
-                    </li>
-                  )}
                 </SimpleBar>
               )}
             </ul>
