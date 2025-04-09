@@ -2,23 +2,30 @@ import React from "react";
 import { Input } from "reactstrap";
 import { useTranslation } from "react-i18next";
 
-interface CustomerSearchProps {
+interface SearchInputProps {
   value: string;
   onChange: (value: string) => void;
+  placeholderKey: string;
+  className?: string;
 }
 
-const CustomerSearch: React.FC<CustomerSearchProps> = ({ value, onChange }) => {
+const SearchInput: React.FC<SearchInputProps> = ({
+  value,
+  onChange,
+  placeholderKey,
+  className = "",
+}) => {
   const { t } = useTranslation();
 
   return (
     <Input
       type="search"
-      className="form-control"
-      placeholder={t("Search customers...")}
+      className={`form-control ${className}`}
+      placeholder={t(placeholderKey)}
       value={value}
       onChange={(e) => onChange(e.target.value)}
     />
   );
 };
 
-export default CustomerSearch;
+export default SearchInput;

@@ -156,6 +156,12 @@ const SidebarContent = (props: any) => {
                     <span>{t("Customers")}</span>
                   </Link>
                 </li>
+                <li>
+                  <Link to="/accountant/products">
+                    <i className="bx bx-package"></i>
+                    <span>{t("Products")}</span>
+                  </Link>
+                </li>
                 {/* Add more accountant modules here */}
               </ul>
             </li>

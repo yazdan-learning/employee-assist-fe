@@ -13,7 +13,7 @@ import DeleteModal from "../../../Components/Common/DeleteModal";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import CustomerTable from "./CustomerTable";
-import CustomerSearch from "./CustomerSearch";
+import SearchInput from "../../../Components/Common/SearchInput";
 
 interface RootState {
   customer: {
@@ -100,9 +100,10 @@ const CustomerList: React.FC = () => {
               <CardBody>
                 <div className="d-flex justify-content-between align-items-center mb-4">
                   <div className="d-flex align-items-center w-50">
-                    <CustomerSearch
+                    <SearchInput
                       value={searchTerm}
                       onChange={setSearchTerm}
+                      placeholderKey="Search customers..."
                     />
                   </div>
                   <Button

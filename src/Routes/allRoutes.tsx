@@ -12,6 +12,9 @@ import React from "react";
 import CustomerList from "../pages/Accountant/Customers/CustomerList";
 import CustomerForm from "../pages/Accountant/Customers/CustomerForm";
 import CustomerDetails from "../pages/Accountant/Customers/CustomerDetails";
+import ProductList from "../pages/Accountant/Products/ProductList";
+import ProductForm from "../pages/Accountant/Products/ProductForm";
+import ProductDetails from "../pages/Accountant/Products/ProductDetails";
 
 //Authentication pages
 // import Login1 from "../pages/AuthenticationInner/Login";
@@ -62,6 +65,13 @@ const publicRoutes = [
   { path: "/accountant/customers/edit/:id", component: <CustomerForm /> },
   // eslint-disable-next-line react/react-in-jsx-scope
   { path: "/accountant/customers/:id", component: <CustomerDetails /> },
+
+  // Product routes
+  { path: "/accountant/products", component: <ProductList /> },
+  { path: "/accountant/products/add", component: <ProductForm /> },
+  { path: "/accountant/products/edit/:id", component: <ProductForm /> },
+  { path: "/accountant/products/:id", component: <ProductDetails /> },
+
   // { path: "/login", component: <Login /> },
   // { path: "/logout", component: <Logout /> },
   // { path: "/forgot-password", component: <ForgotPassword /> },
