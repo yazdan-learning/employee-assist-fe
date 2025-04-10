@@ -12,15 +12,15 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  flexRender
-} from '@tanstack/react-table';
+  flexRender,
+} from "@tanstack/react-table";
 
-import { rankItem } from '@tanstack/match-sorter-utils';
+import { rankItem } from "@tanstack/match-sorter-utils";
 import JobListGlobalFilter from "./GlobalSearchFilter";
 
 // Column Filter
 const Filter = ({
-  column
+  column,
 }: {
   column: Column<any, unknown>;
   table: ReactTable<any>;
@@ -31,11 +31,11 @@ const Filter = ({
     <>
       <DebouncedInput
         type="text"
-        value={(columnFilterValue ?? '') as string}
-        onChange={value => column.setFilterValue(value)}
+        value={(columnFilterValue ?? "") as string}
+        onChange={(value) => column.setFilterValue(value)}
         placeholder="Search..."
         className="w-36 border shadow rounded"
-        list={column.id + 'list'}
+        list={column.id + "list"}
       />
       <div className="h-1" />
     </>
@@ -52,7 +52,7 @@ const DebouncedInput = ({
   value: string | number;
   onChange: (value: string | number) => void;
   debounce?: number;
-} & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'>) => {
+} & Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange">) => {
   const [value, setValue] = useState(initialValue);
 
   useEffect(() => {
@@ -70,11 +70,16 @@ const DebouncedInput = ({
   return (
     <React.Fragment>
       <Col sm={4}>
-        <input {...props} value={value} onChange={e => setValue(e.target.value)} />
+        <input
+          {...props}
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+        />
       </Col>
     </React.Fragment>
   );
 };
+
 interface TableContainerProps {
   columns?: any;
   data?: any;
@@ -114,14 +119,13 @@ const TableContainer = ({
   handleUserClick,
   isJobListGlobalFilter,
 }: TableContainerProps) => {
-
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [globalFilter, setGlobalFilter] = useState('');
+  const [globalFilter, setGlobalFilter] = useState("");
 
   const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
     const itemRank = rankItem(row.getValue(columnId), value);
     addMeta({
-      itemRank
+      itemRank,
     });
     return itemRank.passed;
   };
@@ -155,27 +159,55 @@ const TableContainer = ({
     nextPage,
     previousPage,
     // setPageSize,
-    getState
+    getState,
   } = table;
 
   // useEffect(() => {
   //   Number(customPageSize) && setPageSize(Number(customPageSize));
   // }, [customPageSize, setPageSize]);
 
+  const getVisiblePages = (currentPage: number, totalPages: number) => {
+    const delta = 2; // Number of pages to show before and after current page
+    const range: number[] = [];
+    const rangeWithDots: (number | string)[] = [];
+    let l: number | undefined;
+
+    range.push(1);
+    for (let i = currentPage - delta; i <= currentPage + delta; i++) {
+      if (i > 1 && i < totalPages) {
+        range.push(i);
+      }
+    }
+    range.push(totalPages);
+
+    for (const i of range) {
+      if (l) {
+        if (i - l === 2) {
+          rangeWithDots.push(l + 1);
+        } else if (i - l !== 1) {
+          rangeWithDots.push("...");
+        }
+      }
+      rangeWithDots.push(i);
+      l = i;
+    }
+
+    return rangeWithDots;
+  };
+
   return (
     <Fragment>
-
       <Row className="mb-2">
         {isCustomPageSize && (
           <Col sm={2}>
             <select
               className="form-select pageSize mb-2"
               value={table.getState().pagination.pageSize}
-              onChange={e => {
-                table.setPageSize(Number(e.target.value))
+              onChange={(e) => {
+                table.setPageSize(Number(e.target.value));
               }}
             >
-              {[10, 20, 30, 40, 50].map(pageSize => (
+              {[10, 20, 30, 40, 50].map((pageSize) => (
                 <option key={pageSize} value={pageSize}>
                   Show {pageSize}
                 </option>
@@ -184,36 +216,55 @@ const TableContainer = ({
           </Col>
         )}
 
-        {isGlobalFilter && <DebouncedInput
-          value={globalFilter ?? ''}
-          onChange={value => setGlobalFilter(String(value))}
-          className="form-control search-box me-2 mb-2 d-inline-block"
-          placeholder={SearchPlaceholder}
-        />}
-        {isJobListGlobalFilter && <JobListGlobalFilter setGlobalFilter={setGlobalFilter} />}
-        {isAddButton && <Col sm={6}>
-          <div className="text-sm-end">
-            <Button type="button" className={buttonClass} onClick={handleUserClick}>
-              <i className="mdi mdi-plus me-1"></i> {buttonName}</Button>
-          </div>
-        </Col>}
+        {isGlobalFilter && (
+          <DebouncedInput
+            value={globalFilter ?? ""}
+            onChange={(value) => setGlobalFilter(String(value))}
+            className="form-control search-box me-2 mb-2 d-inline-block"
+            placeholder={SearchPlaceholder}
+          />
+        )}
+        {isJobListGlobalFilter && (
+          <JobListGlobalFilter setGlobalFilter={setGlobalFilter} />
+        )}
+        {isAddButton && (
+          <Col sm={6}>
+            <div className="text-sm-end">
+              <Button
+                type="button"
+                className={buttonClass}
+                onClick={handleUserClick}
+              >
+                <i className="mdi mdi-plus me-1"></i> {buttonName}
+              </Button>
+            </div>
+          </Col>
+        )}
       </Row>
 
       <div className={divClassName ? divClassName : "table-responsive"}>
         <Table hover className={tableClass} bordered={isBordered}>
           <thead className={theadClass}>
-            {getHeaderGroups().map(headerGroup => (
+            {getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
-                {headerGroup.headers.map(header => {
+                {headerGroup.headers.map((header) => {
                   return (
-                    <th key={header.id} colSpan={header.colSpan} className={`${header.column.columnDef.enableSorting ? "sorting sorting_desc" : ""}`}>
+                    <th
+                      key={header.id}
+                      colSpan={header.colSpan}
+                      className={`${
+                        header.column.columnDef.enableSorting
+                          ? "sorting sorting_desc"
+                          : ""
+                      }`}
+                    >
                       {header.isPlaceholder ? null : (
                         <React.Fragment>
                           <div
                             {...{
                               className: header.column.getCanSort()
-                                ? 'cursor-pointer select-none'
-                                : '',
+                                ? "cursor-pointer select-none"
+                                : "",
                               onClick: header.column.getToggleSortingHandler(),
                             }}
                           >
@@ -221,13 +272,13 @@ const TableContainer = ({
                               header.column.columnDef.header,
                               header.getContext()
                             )}
-                            {
-                              {
-                                asc: '',
-                                desc: '',
-                              }
+                            {{
+                              asc: "",
+                              desc: "",
+                            }[
                               // eslint-disable-next-line no-unexpected-multiline
-                              [header.column.getIsSorted() as string] ?? null}
+                              header.column.getIsSorted() as string
+                            ] ?? null}
                           </div>
                           {header.column.getCanFilter() ? (
                             <div>
@@ -244,10 +295,10 @@ const TableContainer = ({
           </thead>
 
           <tbody>
-            {getRowModel().rows.map(row => {
+            {getRowModel().rows.map((row) => {
               return (
                 <tr key={row.id}>
-                  {row.getVisibleCells().map(cell => {
+                  {row.getVisibleCells().map((cell) => {
                     return (
                       <td key={cell.id}>
                         {flexRender(
@@ -264,33 +315,74 @@ const TableContainer = ({
         </Table>
       </div>
 
-
-      {
-        isPagination && (
-          <Row>
-            <Col sm={12} md={5}>
-              <div className="dataTables_info">Showing {getState().pagination.pageSize} of {data.length} Results</div>
-            </Col>
-            <Col sm={12} md={7}>
-              <div className={paginationWrapper}>
-                <ul className={pagination}>
-                  <li className={`paginate_button page-item previous ${!getCanPreviousPage() ? "disabled" : ""}`}>
-                    <Link to="#" className="page-link" onClick={previousPage}><i className="mdi mdi-chevron-left"></i></Link>
-                  </li>
-                  {getPageOptions().map((item: any, key: number) => (
-                    <li key={key} className={`paginate_button page-item ${getState().pagination.pageIndex === item ? "active" : ""}`}>
-                      <Link to="#" className="page-link" onClick={() => setPageIndex(item)}>{item + 1}</Link>
+      {isPagination && (
+        <Row>
+          <Col sm={12} md={5}>
+            <div className="dataTables_info">
+              Showing {table.getState().pagination.pageSize} of {data.length}{" "}
+              Results
+            </div>
+          </Col>
+          <Col sm={12} md={7}>
+            <div className={paginationWrapper}>
+              <ul className={pagination}>
+                <li
+                  className={`paginate_button page-item previous ${
+                    !table.getCanPreviousPage() ? "disabled" : ""
+                  }`}
+                >
+                  <Link
+                    to="#"
+                    className="page-link"
+                    onClick={table.previousPage}
+                  >
+                    <i className="mdi mdi-chevron-left"></i>
+                  </Link>
+                </li>
+                {getVisiblePages(
+                  table.getState().pagination.pageIndex + 1,
+                  table.getPageCount()
+                ).map((page, idx) =>
+                  page === "..." ? (
+                    <li
+                      key={idx}
+                      className="paginate_button page-item disabled"
+                    >
+                      <span className="page-link">...</span>
                     </li>
-                  ))}
-                  <li className={`paginate_button page-item next ${!getCanNextPage() ? "disabled" : ""}`}>
-                    <Link to="#" className="page-link" onClick={nextPage}><i className="mdi mdi-chevron-right"></i></Link>
-                  </li>
-                </ul>
-              </div>
-            </Col>
-          </Row>
-        )
-      }
+                  ) : (
+                    <li
+                      key={idx}
+                      className={`paginate_button page-item ${
+                        table.getState().pagination.pageIndex + 1 === page
+                          ? "active"
+                          : ""
+                      }`}
+                    >
+                      <Link
+                        to="#"
+                        className="page-link"
+                        onClick={() => table.setPageIndex((page as number) - 1)}
+                      >
+                        {page}
+                      </Link>
+                    </li>
+                  )
+                )}
+                <li
+                  className={`paginate_button page-item next ${
+                    !table.getCanNextPage() ? "disabled" : ""
+                  }`}
+                >
+                  <Link to="#" className="page-link" onClick={table.nextPage}>
+                    <i className="mdi mdi-chevron-right"></i>
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </Col>
+        </Row>
+      )}
     </Fragment>
   );
 };

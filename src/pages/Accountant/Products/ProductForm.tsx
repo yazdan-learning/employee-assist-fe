@@ -16,7 +16,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { ProductFormData, ProductStatus } from "./types";
 import {
-  createProduct,
+  createNewProduct,
   fetchProductById,
   updateProductById,
 } from "../../../slices/products/thunk";
@@ -88,10 +88,10 @@ const ProductForm: React.FC = () => {
     e.preventDefault();
     try {
       if (id) {
-        await dispatch(updateProductById(id, formData));
+        await dispatch(updateProductById({ id, data: formData }));
         toast.success(t("Product updated successfully"));
       } else {
-        await dispatch(createProduct(formData));
+        await dispatch(createNewProduct(formData));
         toast.success(t("Product created successfully"));
       }
       navigate("/accountant/products");

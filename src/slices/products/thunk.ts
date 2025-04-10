@@ -1,86 +1,49 @@
-import { Dispatch } from "@reduxjs/toolkit";
+import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
-  setLoading,
-  setError,
-  setProducts,
-  setSelectedProduct,
-  addProduct,
+  getProducts,
+  getProductById,
+  createProduct,
   updateProduct,
   deleteProduct,
-} from "./reducer";
+} from "../../services/productService";
 import { Product, ProductFormData } from "../../pages/Accountant/Products/types";
-import { getProducts as fetchProductsApi, 
-         getProductById as fetchProductByIdApi,
-         createProduct as createProductApi,
-         updateProduct as updateProductApi,
-         deleteProduct as deleteProductApi } from "../../services/productService";
 
-export const fetchProducts = () => async (dispatch: Dispatch) => {
-  try {
-    dispatch(setLoading(true));
-    const response = await fetchProductsApi();
-    dispatch(setProducts(response));
-    dispatch(setError(null));
-  } catch (error: any) {
-    dispatch(setError(error.message));
-  } finally {
-    dispatch(setLoading(false));
-  }
-};
-
-export const fetchProductById = (id: string) => async (dispatch: Dispatch) => {
-  try {
-    dispatch(setLoading(true));
-    const response = await fetchProductByIdApi(id);
-    dispatch(setSelectedProduct(response));
-    dispatch(setError(null));
-  } catch (error: any) {
-    dispatch(setError(error.message));
-  } finally {
-    dispatch(setLoading(false));
-  }
-};
-
-export const createProduct = (data: ProductFormData) => async (dispatch: Dispatch) => {
-  try {
-    dispatch(setLoading(true));
-    const response = await createProductApi(data);
-    dispatch(addProduct(response));
-    dispatch(setError(null));
+export const fetchProducts = createAsyncThunk(
+  "products/fetchProducts",
+  async (params: { page: number; pageSize: number; searchTerm?: string }) => {
+    const response = await getProducts(params);
     return response;
-  } catch (error: any) {
-    dispatch(setError(error.message));
-    throw error;
-  } finally {
-    dispatch(setLoading(false));
   }
-};
+);
 
-export const updateProductById = (id: string, data: ProductFormData) => async (dispatch: Dispatch) => {
-  try {
-    dispatch(setLoading(true));
-    const response = await updateProductApi(id, data);
-    dispatch(updateProduct(response));
-    dispatch(setError(null));
+export const fetchProductById = createAsyncThunk(
+  "products/fetchProductById",
+  async (id: string) => {
+    const response = await getProductById(id);
     return response;
-  } catch (error: any) {
-    dispatch(setError(error.message));
-    throw error;
-  } finally {
-    dispatch(setLoading(false));
   }
-};
+);
 
-export const deleteProductById = (id: string) => async (dispatch: Dispatch) => {
-  try {
-    dispatch(setLoading(true));
-    await deleteProductApi(id);
-    dispatch(deleteProduct(id));
-    dispatch(setError(null));
-  } catch (error: any) {
-    dispatch(setError(error.message));
-    throw error;
-  } finally {
-    dispatch(setLoading(false));
+export const createNewProduct = createAsyncThunk(
+  "products/createProduct",
+  async (data: ProductFormData) => {
+    const response = await createProduct(data);
+    return response;
   }
-}; 
+);
+
+export const updateProductById = createAsyncThunk(
+  "products/updateProduct",
+  async ({ id, data }: { id: string; data: ProductFormData }) => {
+    const response = await updateProduct(id, data);
+    return response;
+  }
+);
+
+export const deleteProductById = createAsyncThunk(
+  "products/deleteProduct",
+  async (id: string) => {
+    await deleteProduct(id);
+    return id;
+  }
+); 

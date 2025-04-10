@@ -1,23 +1,31 @@
-export interface Product {
-  id: string;
-  name: string;
-  description: string;
-  category: string;
-  price: number;
-  cost: number;
-  stock: number;
-  sku: string;
-  barcode?: string;
-  image?: string;
-  status: ProductStatus;
-  createdAt?: string;
-  updatedAt?: string;
-}
-
 export enum ProductStatus {
   ACTIVE = "ACTIVE",
   INACTIVE = "INACTIVE",
   OUT_OF_STOCK = "OUT_OF_STOCK"
+}
+
+export interface ProductBasicInfo {
+  name: string;
+  sku: string;
+  price: number;
+  description?: string;
+}
+
+export interface ProductDetails {
+  category: string;
+  stock: number;
+  cost?: number;
+  barcode?: string;
+  image?: string;
+}
+
+export interface Product {
+  id: string;
+  basicInfo: ProductBasicInfo;
+  details: ProductDetails;
+  status: ProductStatus;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface ProductState {
@@ -27,15 +35,6 @@ export interface ProductState {
   error: string | null;
 }
 
-export interface ProductFormData {
-  name: string;
-  description: string;
-  category: string;
-  price: number;
-  cost: number;
-  stock: number;
-  sku: string;
-  barcode?: string;
-  image?: string;
+export interface ProductFormData extends ProductBasicInfo, ProductDetails {
   status: ProductStatus;
 } 

@@ -58,7 +58,9 @@ const ProductDetails: React.FC = () => {
             <Card>
               <CardBody>
                 <div className="d-flex justify-content-between align-items-center mb-4">
-                  <h4 className="card-title mb-0">{selectedProduct.name}</h4>
+                  <h4 className="card-title mb-0">
+                    {selectedProduct.basicInfo.name}
+                  </h4>
                   <Link
                     to={`/accountant/products/edit/${id}`}
                     className="btn btn-primary"
@@ -77,11 +79,11 @@ const ProductDetails: React.FC = () => {
                           <tbody>
                             <tr>
                               <th scope="row">{t("SKU")}</th>
-                              <td>{selectedProduct.sku}</td>
+                              <td>{selectedProduct.basicInfo.sku}</td>
                             </tr>
                             <tr>
                               <th scope="row">{t("Category")}</th>
-                              <td>{selectedProduct.category}</td>
+                              <td>{selectedProduct.details.category}</td>
                             </tr>
                             <tr>
                               <th scope="row">{t("Status")}</th>
@@ -101,15 +103,21 @@ const ProductDetails: React.FC = () => {
                             </tr>
                             <tr>
                               <th scope="row">{t("Price")}</th>
-                              <td>${selectedProduct.price.toFixed(2)}</td>
+                              <td>
+                                ${selectedProduct.basicInfo.price.toFixed(2)}
+                              </td>
                             </tr>
                             <tr>
                               <th scope="row">{t("Cost")}</th>
-                              <td>${selectedProduct.cost.toFixed(2)}</td>
+                              <td>
+                                $
+                                {selectedProduct.details.cost?.toFixed(2) ||
+                                  "0.00"}
+                              </td>
                             </tr>
                             <tr>
                               <th scope="row">{t("Stock")}</th>
-                              <td>{selectedProduct.stock}</td>
+                              <td>{selectedProduct.details.stock}</td>
                             </tr>
                           </tbody>
                         </table>
@@ -126,11 +134,13 @@ const ProductDetails: React.FC = () => {
                           <tbody>
                             <tr>
                               <th scope="row">{t("Description")}</th>
-                              <td>{selectedProduct.description}</td>
+                              <td>
+                                {selectedProduct.basicInfo.description || "-"}
+                              </td>
                             </tr>
                             <tr>
                               <th scope="row">{t("Barcode")}</th>
-                              <td>{selectedProduct.barcode || "-"}</td>
+                              <td>{selectedProduct.details.barcode || "-"}</td>
                             </tr>
                             <tr>
                               <th scope="row">{t("Created At")}</th>
