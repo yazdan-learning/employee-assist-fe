@@ -8,6 +8,7 @@ import { ChatMessage, ChatSession } from "../../common/data/chat";
 import { useTranslation } from "react-i18next";
 import { AssistantType } from "../../services/ChatService";
 import { createSelector } from "reselect";
+import ReactMarkdown from 'react-markdown';
 
 // Redux Actions and Thunks
 import { getSessions, sendMessage as onAddMessage } from "../../slices/chats/thunk";
@@ -20,6 +21,19 @@ interface Props {
   loading: boolean;
   assistantType: AssistantType;
 }
+
+// Message content renderer component
+const MessageContent: React.FC<{ content: string; isUser: boolean }> = ({ content, isUser }) => {
+  if (isUser) {
+    return <p className="mb-0">{content}</p>;
+  }
+
+  return (
+    <div className="markdown-content">
+      <ReactMarkdown>{content}</ReactMarkdown>
+    </div>
+  );
+};
 
 const UserChat: React.FC<Props> = ({
   chatTitle: propChatTitle,
@@ -166,7 +180,7 @@ const UserChat: React.FC<Props> = ({
                             <div className="conversation-name">
                               {message.isUser ? t("You") : t("Assistant")}
                             </div>
-                            <p className="mb-0">{message.content}</p>
+                            <MessageContent content={message.content} isUser={message.isUser} />
                           </div>
                         </div>
                       </li>
