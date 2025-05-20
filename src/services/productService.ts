@@ -1,4 +1,4 @@
-import { Product, ProductFormData } from "../pages/Accountant/Products/types";
+import { Product, ProductFormData, ProductInfo } from "../pages/Accountant/Products/types";
 import { ListRequest, ListResponse } from "../types/common";
 import { v4 as uuidv4 } from 'uuid';
 import { mockProducts as initialMockProducts } from "../common/data/mock-products";
@@ -10,28 +10,41 @@ let mockProducts = [...initialMockProducts];
 /* eslint-enable prefer-const */
 
 // Mock API functions
-export const getProducts = async (request: ListRequest): Promise<ListResponse<Product>> => {
+export const getProducts = async (request: ListRequest): Promise<ListResponse<ProductInfo>> => {
   console.log("request", request);
   return new Promise((resolve) => {
     setTimeout(() => {
-      let filteredProducts = [...mockProducts];
+      let filteredProducts = [...mockProducts].map(product => ({
+        id: product.id,
+        name: product.basicInfo.name,
+        sku: product.basicInfo.sku,
+        price: product.basicInfo.price,
+        description: product.basicInfo.description,
+        category: product.details.category,
+        stock: product.details.stock,
+        cost: product.details.cost,
+        barcode: product.details.barcode,
+        image: product.details.image,
+        status: product.status,
+        createdAt: product.createdAt,
+        updatedAt: product.updatedAt
+      }));
 
       // Apply search
       if (request.searchTerm) {
         const searchLower = request.searchTerm.toLowerCase();
         filteredProducts = filteredProducts.filter(product => 
-          product.basicInfo.name.toLowerCase().includes(searchLower) ||
-          product.basicInfo.sku.toLowerCase().includes(searchLower) ||
-          product.details.category.toLowerCase().includes(searchLower)
+          product.name.toLowerCase().includes(searchLower) ||
+          product.sku.toLowerCase().includes(searchLower) ||
+          product.category.toLowerCase().includes(searchLower)
         );
       }
 
       // Apply sorting
       if (request.sortField) {
-        const fields = request.sortField.split('.');
-        filteredProducts.sort((a: any, b: any) => {
-          const aValue = fields.reduce((obj, field) => obj[field], a);
-          const bValue = fields.reduce((obj, field) => obj[field], b);
+        filteredProducts.sort((a, b) => {
+          const aValue = a[request.sortField!];
+          const bValue = b[request.sortField!];
           
           if (typeof aValue === 'string') {
             return request.sortDirection === 'desc' 

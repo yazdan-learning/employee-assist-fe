@@ -6,11 +6,11 @@ import {
   updateProductById,
   deleteProductById,
 } from "./thunk";
-import { Product } from "../../pages/Accountant/Products/types";
+import { ProductInfo } from "../../pages/Accountant/Products/types";
 
 interface ProductState {
-  products: Product[];
-  selectedProduct: Product | null;
+  products: ProductInfo[];
+  selectedProduct: ProductInfo | null;
   loading: boolean;
   error: string | null;
   pagination?: {

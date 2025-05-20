@@ -6,8 +6,25 @@ import {
   updateProduct,
   deleteProduct,
 } from "../../services/productService";
-import { Product, ProductFormData } from "../../pages/Accountant/Products/types";
+import { Product, ProductFormData, ProductInfo } from "../../pages/Accountant/Products/types";
 import { ListRequest } from "../../types/common";
+
+// Helper function to convert Product to ProductInfo
+const toProductInfo = (product: Product): ProductInfo => ({
+  id: product.id,
+  name: product.basicInfo.name,
+  sku: product.basicInfo.sku,
+  price: product.basicInfo.price,
+  description: product.basicInfo.description,
+  category: product.details.category,
+  stock: product.details.stock,
+  cost: product.details.cost,
+  barcode: product.details.barcode,
+  image: product.details.image,
+  status: product.status,
+  createdAt: product.createdAt,
+  updatedAt: product.updatedAt
+});
 
 export const fetchProducts = createAsyncThunk(
   "product/fetchProducts",
@@ -18,31 +35,31 @@ export const fetchProducts = createAsyncThunk(
 );
 
 export const fetchProductById = createAsyncThunk(
-  "products/fetchProductById",
+  "product/fetchProductById",
   async (id: string) => {
-    const response = await getProductById(id);
-    return response;
+    const product = await getProductById(id);
+    return toProductInfo(product);
   }
 );
 
 export const createNewProduct = createAsyncThunk(
-  "products/createProduct",
+  "product/createProduct",
   async (data: ProductFormData) => {
-    const response = await createProduct(data);
-    return response;
+    const product = await createProduct(data);
+    return toProductInfo(product);
   }
 );
 
 export const updateProductById = createAsyncThunk(
-  "products/updateProduct",
+  "product/updateProduct",
   async ({ id, data }: { id: string; data: ProductFormData }) => {
-    const response = await updateProduct(id, data);
-    return response;
+    const product = await updateProduct(id, data);
+    return toProductInfo(product);
   }
 );
 
 export const deleteProductById = createAsyncThunk(
-  "products/deleteProduct",
+  "product/deleteProduct",
   async (id: string) => {
     await deleteProduct(id);
     return id;

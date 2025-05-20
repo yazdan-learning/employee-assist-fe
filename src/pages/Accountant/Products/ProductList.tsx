@@ -6,12 +6,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchProducts } from "../../../slices/products/thunk";
 import Breadcrumbs from "../../../Components/Common/Breadcrumb";
 import TableContainer from "../../../Components/Common/TableContainer";
-import { Product } from "./types";
+import { ProductInfo } from "./types";
 import { debounce } from "lodash";
 
 interface RootState {
   product: {
-    products: Product[];
+    products: ProductInfo[];
     loading: boolean;
     error: string | null;
     pagination: {
@@ -99,35 +99,35 @@ const ProductList = () => {
     () => [
       {
         header: t("Name"),
-        accessorKey: "basicInfo.name",
+        accessorKey: "name",
         enableColumnFilter: false,
         enableSorting: true,
         cell: (row: any) => row.getValue(),
       },
       {
         header: t("SKU"),
-        accessorKey: "basicInfo.sku",
+        accessorKey: "sku",
         enableColumnFilter: false,
         enableSorting: true,
         cell: (row: any) => row.getValue(),
       },
       {
         header: t("Category"),
-        accessorKey: "details.category",
+        accessorKey: "category",
         enableColumnFilter: false,
         enableSorting: true,
         cell: (row: any) => row.getValue(),
       },
       {
         header: t("Price"),
-        accessorKey: "basicInfo.price",
+        accessorKey: "price",
         enableColumnFilter: false,
         enableSorting: true,
         cell: (row: any) => `$${row.getValue()}`,
       },
       {
         header: t("Stock"),
-        accessorKey: "details.stock",
+        accessorKey: "stock",
         enableColumnFilter: false,
         enableSorting: true,
         cell: (row: any) => row.getValue(),
