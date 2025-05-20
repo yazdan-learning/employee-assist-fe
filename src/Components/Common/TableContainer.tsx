@@ -303,24 +303,68 @@ const TableContainer = ({
                       <i className="mdi mdi-chevron-left"></i>
                     </Link>
                   </li>
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                    (page) => (
+                  {(() => {
+                    const pages: (number | string)[] = [];
+                    const showEllipsis = totalPages > 7;
+
+                    // Always show first page
+                    pages.push(1);
+
+                    if (showEllipsis) {
+                      if (currentPage <= 4) {
+                        // Show first 5 pages + ellipsis + last page
+                        for (let i = 2; i <= 5; i++) {
+                          pages.push(i);
+                        }
+                        pages.push("...");
+                        pages.push(totalPages);
+                      } else if (currentPage >= totalPages - 3) {
+                        // Show first page + ellipsis + last 5 pages
+                        pages.push("...");
+                        for (let i = totalPages - 4; i <= totalPages; i++) {
+                          pages.push(i);
+                        }
+                      } else {
+                        // Show first page + ellipsis + current-1, current, current+1 + ellipsis + last page
+                        pages.push("...");
+                        pages.push(currentPage - 1);
+                        pages.push(currentPage);
+                        pages.push(currentPage + 1);
+                        pages.push("...");
+                        pages.push(totalPages);
+                      }
+                    } else {
+                      // Show all pages if total pages <= 7
+                      for (let i = 2; i <= totalPages; i++) {
+                        pages.push(i);
+                      }
+                    }
+
+                    return pages.map((page, index) => (
                       <li
-                        key={page}
+                        key={index}
                         className={`paginate_button page-item ${
-                          currentPage === page ? "active" : ""
+                          page === "..."
+                            ? ""
+                            : currentPage === page
+                            ? "active"
+                            : ""
                         }`}
                       >
-                        <Link
-                          to="#"
-                          className="page-link"
-                          onClick={() => onPageChange?.(page)}
-                        >
-                          {page}
-                        </Link>
+                        {page === "..." ? (
+                          <span className="page-link">...</span>
+                        ) : (
+                          <Link
+                            to="#"
+                            className="page-link"
+                            onClick={() => onPageChange?.(page as number)}
+                          >
+                            {page}
+                          </Link>
+                        )}
                       </li>
-                    )
-                  )}
+                    ));
+                  })()}
                   <li
                     className={`paginate_button page-item next ${
                       currentPage === totalPages ? "disabled" : ""
