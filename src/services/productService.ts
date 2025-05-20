@@ -11,6 +11,7 @@ let mockProducts = [...initialMockProducts];
 
 // Mock API functions
 export const getProducts = async (request: ListRequest): Promise<ListResponse<Product>> => {
+  console.log("request", request);
   return new Promise((resolve) => {
     setTimeout(() => {
       let filteredProducts = [...mockProducts];
@@ -27,25 +28,19 @@ export const getProducts = async (request: ListRequest): Promise<ListResponse<Pr
 
       // Apply sorting
       if (request.sortField) {
+        const fields = request.sortField.split('.');
         filteredProducts.sort((a: any, b: any) => {
-          let aValue, bValue;
-          
-          // Handle nested fields
-          if (request.sortField?.includes('.')) {
-            const [parent, child] = request.sortField.split('.');
-            aValue = a[parent][child];
-            bValue = b[parent][child];
-          } else {
-            aValue = a[request.sortField!];
-            bValue = b[request.sortField!];
-          }
-          
-          const modifier = request.sortDirection === 'desc' ? -1 : 1;
+          const aValue = fields.reduce((obj, field) => obj[field], a);
+          const bValue = fields.reduce((obj, field) => obj[field], b);
           
           if (typeof aValue === 'string') {
-            return aValue.localeCompare(bValue) * modifier;
+            return request.sortDirection === 'desc' 
+              ? bValue.localeCompare(aValue) 
+              : aValue.localeCompare(bValue);
           }
-          return (aValue - bValue) * modifier;
+          return request.sortDirection === 'desc' 
+            ? bValue - aValue 
+            : aValue - bValue;
         });
       }
 
@@ -54,10 +49,9 @@ export const getProducts = async (request: ListRequest): Promise<ListResponse<Pr
       const totalPages = Math.ceil(totalItems / request.pageSize);
       const start = (request.page - 1) * request.pageSize;
       const end = start + request.pageSize;
-      const paginatedProducts = filteredProducts.slice(start, end);
-
+      
       resolve({
-        data: paginatedProducts,
+        data: filteredProducts.slice(start, end),
         currentPage: request.page,
         pageSize: request.pageSize,
         totalItems,

@@ -7,11 +7,12 @@ import {
   deleteProduct,
 } from "../../services/productService";
 import { Product, ProductFormData } from "../../pages/Accountant/Products/types";
+import { ListRequest } from "../../types/common";
 
 export const fetchProducts = createAsyncThunk(
-  "products/fetchProducts",
-  async (params: { page: number; pageSize: number; searchTerm?: string }) => {
-    const response = await getProducts(params);
+  "product/fetchProducts",
+  async (request: ListRequest) => {
+    const response = await getProducts(request);
     return response;
   }
 );

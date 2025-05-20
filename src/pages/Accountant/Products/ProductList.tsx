@@ -13,7 +13,7 @@ interface RootState {
     products: Product[];
     loading: boolean;
     error: string | null;
-    pagination?: {
+    pagination: {
       currentPage: number;
       totalItems: number;
       pageSize: number;
@@ -26,14 +26,55 @@ const ProductList = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const dispatch = useDispatch<any>();
-  const { products, loading } = useSelector(
+  const { products, loading, pagination } = useSelector(
     (state: RootState) => state.product
   );
 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortField, setSortField] = useState("");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+
   useEffect(() => {
-    // Load all products at once since we're using client-side pagination
-    dispatch(fetchProducts({ page: 1, pageSize: 1000 }));
-  }, [dispatch]);
+    loadProducts();
+  }, [dispatch, searchTerm, sortField, sortDirection, currentPage, pageSize]);
+
+  const loadProducts = () => {
+    dispatch(
+      fetchProducts({
+        page: currentPage,
+        pageSize: pageSize,
+        searchTerm: searchTerm,
+        sortField: sortField,
+        sortDirection: sortDirection,
+      })
+    );
+  };
+
+  const handleSearch = (value: string) => {
+    console.log("search is called");
+    setSearchTerm(value);
+    // setCurrentPage(1); // Reset to first page when searching
+  };
+
+  const handleSort = (field: string, direction: "asc" | "desc") => {
+    console.log("sort is called");
+    setSortField(field);
+    setSortDirection(direction);
+    setCurrentPage(1); // Reset to first page when sorting
+  };
+
+  const handlePageChange = (page: number) => {
+    console.log("page", page);
+    setCurrentPage(page);
+  };
+
+  const handlePageSizeChange = (size: number) => {
+    console.log("page size is called");
+    setPageSize(size);
+    setCurrentPage(1); // Reset to first page when changing page size
+  };
 
   const columns = useMemo(
     () => [
@@ -140,6 +181,16 @@ const ProductList = () => {
           buttonName={t("Add Product")}
           buttonClass="btn btn-primary"
           handleUserClick={() => navigate("/accountant/products/add")}
+          // Server-side props
+          onSearch={handleSearch}
+          onSort={handleSort}
+          onPageChange={handlePageChange}
+          onPageSizeChange={handlePageSizeChange}
+          currentPage={currentPage}
+          pageSize={pageSize}
+          totalItems={pagination?.totalItems || 0}
+          totalPages={pagination?.totalPages || 0}
+          loading={loading}
         />
       </Container>
     </div>

@@ -22,7 +22,6 @@ export interface ListResponse<T> {
   pageSize: number;
   totalItems: number;
   totalPages: number;
-  message?: string;
 }
 
 // Column Definition

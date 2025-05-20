@@ -98,6 +98,16 @@ interface TableContainerProps {
   isAddButton?: boolean;
   isCustomPageSize?: boolean;
   isJobListGlobalFilter?: boolean;
+  // Server-side props
+  onSearch?: (value: string) => void;
+  onSort?: (field: string, direction: "asc" | "desc") => void;
+  onPageChange?: (page: number) => void;
+  onPageSizeChange?: (pageSize: number) => void;
+  currentPage?: number;
+  pageSize?: number;
+  totalItems?: number;
+  totalPages?: number;
+  loading?: boolean;
 }
 
 const TableContainer = ({
@@ -118,81 +128,59 @@ const TableContainer = ({
   isCustomPageSize,
   handleUserClick,
   isJobListGlobalFilter,
+  // Server-side props
+  onSearch,
+  onSort,
+  onPageChange,
+  onPageSizeChange,
+  currentPage = 1,
+  pageSize = 10,
+  totalItems = 0,
+  totalPages = 1,
+  loading = false,
 }: TableContainerProps) => {
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
 
-  const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
-    const itemRank = rankItem(row.getValue(columnId), value);
-    addMeta({
-      itemRank,
-    });
-    return itemRank.passed;
-  };
+  // Handle search with debounce
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      if (onSearch) {
+        onSearch(globalFilter);
+      }
+    }, 300);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [globalFilter, onSearch]);
 
   const table = useReactTable({
     columns,
     data,
-    filterFns: {
-      fuzzy: fuzzyFilter,
-    },
     state: {
-      columnFilters,
       globalFilter,
+      pagination: {
+        pageIndex: currentPage - 1,
+        pageSize: pageSize,
+      },
     },
-    onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
-    globalFilterFn: fuzzyFilter,
     getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
+    manualPagination: true,
+    manualSorting: true,
+    pageCount: totalPages,
   });
 
-  const {
-    getHeaderGroups,
-    getRowModel,
-    getCanPreviousPage,
-    getCanNextPage,
-    getPageOptions,
-    setPageIndex,
-    nextPage,
-    previousPage,
-    // setPageSize,
-    getState,
-  } = table;
-
-  // useEffect(() => {
-  //   Number(customPageSize) && setPageSize(Number(customPageSize));
-  // }, [customPageSize, setPageSize]);
-
-  const getVisiblePages = (currentPage: number, totalPages: number) => {
-    const delta = 2; // Number of pages to show before and after current page
-    const range: number[] = [];
-    const rangeWithDots: (number | string)[] = [];
-    let l: number | undefined;
-
-    range.push(1);
-    for (let i = currentPage - delta; i <= currentPage + delta; i++) {
-      if (i > 1 && i < totalPages) {
-        range.push(i);
-      }
+  const handleSort = (column: any) => {
+    if (onSort && column.getCanSort()) {
+      const currentSortDirection = column.getIsSorted();
+      const nextSortDirection = !currentSortDirection
+        ? "asc"
+        : currentSortDirection === "asc"
+        ? "desc"
+        : "asc";
+      onSort(column.id, nextSortDirection);
     }
-    range.push(totalPages);
-
-    for (const i of range) {
-      if (l) {
-        if (i - l === 2) {
-          rangeWithDots.push(l + 1);
-        } else if (i - l !== 1) {
-          rangeWithDots.push("...");
-        }
-      }
-      rangeWithDots.push(i);
-      l = i;
-    }
-
-    return rangeWithDots;
   };
 
   return (
@@ -202,14 +190,12 @@ const TableContainer = ({
           <Col sm={2}>
             <select
               className="form-select pageSize mb-2"
-              value={table.getState().pagination.pageSize}
-              onChange={(e) => {
-                table.setPageSize(Number(e.target.value));
-              }}
+              value={pageSize}
+              onChange={(e) => onPageSizeChange?.(Number(e.target.value))}
             >
-              {[10, 20, 30, 40, 50].map((pageSize) => (
-                <option key={pageSize} value={pageSize}>
-                  Show {pageSize}
+              {[10, 20, 30, 40, 50].map((size) => (
+                <option key={size} value={size}>
+                  Show {size}
                 </option>
               ))}
             </select>
@@ -224,9 +210,7 @@ const TableContainer = ({
             placeholder={SearchPlaceholder}
           />
         )}
-        {isJobListGlobalFilter && (
-          <JobListGlobalFilter setGlobalFilter={setGlobalFilter} />
-        )}
+
         {isAddButton && (
           <Col sm={6}>
             <div className="text-sm-end">
@@ -242,147 +226,120 @@ const TableContainer = ({
         )}
       </Row>
 
-      <div className={divClassName ? divClassName : "table-responsive"}>
-        <Table hover className={tableClass} bordered={isBordered}>
-          <thead className={theadClass}>
-            {getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
+      <div className={divClassName}>
+        {loading ? (
+          <div className="text-center my-3">
+            <div className="spinner-border text-primary" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        ) : (
+          <Table hover className={tableClass} bordered={isBordered}>
+            <thead className={theadClass}>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <tr key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => (
                     <th
                       key={header.id}
-                      colSpan={header.colSpan}
-                      className={`${
-                        header.column.columnDef.enableSorting
-                          ? "sorting sorting_desc"
-                          : ""
-                      }`}
+                      onClick={() => handleSort(header.column)}
+                      style={{
+                        cursor: header.column.getCanSort()
+                          ? "pointer"
+                          : "default",
+                      }}
                     >
-                      {header.isPlaceholder ? null : (
-                        <React.Fragment>
-                          <div
-                            {...{
-                              className: header.column.getCanSort()
-                                ? "cursor-pointer select-none"
-                                : "",
-                              onClick: header.column.getToggleSortingHandler(),
-                            }}
-                          >
-                            {flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
-                            {{
-                              asc: "",
-                              desc: "",
-                            }[
-                              // eslint-disable-next-line no-unexpected-multiline
-                              header.column.getIsSorted() as string
-                            ] ?? null}
-                          </div>
-                          {header.column.getCanFilter() ? (
-                            <div>
-                              <Filter column={header.column} table={table} />
-                            </div>
-                          ) : null}
-                        </React.Fragment>
+                      {flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
                       )}
+                      <span>
+                        {header.column.getIsSorted() === "asc" ? " 🔼" : ""}
+                        {header.column.getIsSorted() === "desc" ? " 🔽" : ""}
+                      </span>
                     </th>
-                  );
-                })}
-              </tr>
-            ))}
-          </thead>
-
-          <tbody>
-            {getRowModel().rows.map((row) => {
-              return (
-                <tr key={row.id}>
-                  {row.getVisibleCells().map((cell) => {
-                    return (
-                      <td key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </td>
-                    );
-                  })}
+                  ))}
                 </tr>
-              );
-            })}
-          </tbody>
-        </Table>
-      </div>
+              ))}
+            </thead>
+            <tbody>
+              {table.getRowModel().rows.map((row) => (
+                <tr key={row.id}>
+                  {row.getVisibleCells().map((cell) => (
+                    <td key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        )}
 
-      {isPagination && (
-        <Row>
-          <Col sm={12} md={5}>
-            <div className="dataTables_info">
-              Showing {table.getState().pagination.pageSize} of {data.length}{" "}
-              Results
-            </div>
-          </Col>
-          <Col sm={12} md={7}>
-            <div className={paginationWrapper}>
-              <ul className={pagination}>
-                <li
-                  className={`paginate_button page-item previous ${
-                    !table.getCanPreviousPage() ? "disabled" : ""
-                  }`}
-                >
-                  <Link
-                    to="#"
-                    className="page-link"
-                    onClick={table.previousPage}
+        {isPagination && (
+          <Row>
+            <Col sm={12} md={5}>
+              <div className="dataTables_info">
+                Showing {(currentPage - 1) * pageSize + 1} to{" "}
+                {Math.min(currentPage * pageSize, totalItems)} of {totalItems}{" "}
+                entries
+              </div>
+            </Col>
+            <Col sm={12} md={7}>
+              <div className={paginationWrapper}>
+                <ul className={pagination}>
+                  <li
+                    className={`paginate_button page-item previous ${
+                      currentPage === 1 ? "disabled" : ""
+                    }`}
                   >
-                    <i className="mdi mdi-chevron-left"></i>
-                  </Link>
-                </li>
-                {getVisiblePages(
-                  table.getState().pagination.pageIndex + 1,
-                  table.getPageCount()
-                ).map((page, idx) =>
-                  page === "..." ? (
-                    <li
-                      key={idx}
-                      className="paginate_button page-item disabled"
+                    <Link
+                      to="#"
+                      className="page-link"
+                      onClick={() => onPageChange?.(currentPage - 1)}
                     >
-                      <span className="page-link">...</span>
-                    </li>
-                  ) : (
-                    <li
-                      key={idx}
-                      className={`paginate_button page-item ${
-                        table.getState().pagination.pageIndex + 1 === page
-                          ? "active"
-                          : ""
-                      }`}
-                    >
-                      <Link
-                        to="#"
-                        className="page-link"
-                        onClick={() => table.setPageIndex((page as number) - 1)}
+                      <i className="mdi mdi-chevron-left"></i>
+                    </Link>
+                  </li>
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                    (page) => (
+                      <li
+                        key={page}
+                        className={`paginate_button page-item ${
+                          currentPage === page ? "active" : ""
+                        }`}
                       >
-                        {page}
-                      </Link>
-                    </li>
-                  )
-                )}
-                <li
-                  className={`paginate_button page-item next ${
-                    !table.getCanNextPage() ? "disabled" : ""
-                  }`}
-                >
-                  <Link to="#" className="page-link" onClick={table.nextPage}>
-                    <i className="mdi mdi-chevron-right"></i>
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </Col>
-        </Row>
-      )}
+                        <Link
+                          to="#"
+                          className="page-link"
+                          onClick={() => onPageChange?.(page)}
+                        >
+                          {page}
+                        </Link>
+                      </li>
+                    )
+                  )}
+                  <li
+                    className={`paginate_button page-item next ${
+                      currentPage === totalPages ? "disabled" : ""
+                    }`}
+                  >
+                    <Link
+                      to="#"
+                      className="page-link"
+                      onClick={() => onPageChange?.(currentPage + 1)}
+                    >
+                      <i className="mdi mdi-chevron-right"></i>
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+            </Col>
+          </Row>
+        )}
+      </div>
     </Fragment>
   );
 };
