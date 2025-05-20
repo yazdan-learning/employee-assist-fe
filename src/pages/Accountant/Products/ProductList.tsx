@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useCallback } from "react";
 import { Container } from "reactstrap";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -7,6 +7,7 @@ import { fetchProducts } from "../../../slices/products/thunk";
 import Breadcrumbs from "../../../Components/Common/Breadcrumb";
 import TableContainer from "../../../Components/Common/TableContainer";
 import { Product } from "./types";
+import { debounce } from "lodash";
 
 interface RootState {
   product: {
@@ -31,49 +32,67 @@ const ProductList = () => {
   );
 
   const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [sortField, setSortField] = useState("");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  useEffect(() => {
-    loadProducts();
-  }, [dispatch, searchTerm, sortField, sortDirection, currentPage, pageSize]);
+  // Debounced search function
+  const debouncedSearch = useCallback(
+    debounce((term: string) => {
+      setDebouncedSearchTerm(term);
+      setCurrentPage(1); // Reset to first page when searching
+    }, 300),
+    []
+  );
 
-  const loadProducts = () => {
+  // Effect for loading products
+  useEffect(() => {
     dispatch(
       fetchProducts({
         page: currentPage,
         pageSize: pageSize,
-        searchTerm: searchTerm,
+        searchTerm: debouncedSearchTerm,
         sortField: sortField,
         sortDirection: sortDirection,
       })
     );
-  };
+  }, [
+    dispatch,
+    debouncedSearchTerm,
+    sortField,
+    sortDirection,
+    currentPage,
+    pageSize,
+  ]);
+
+  // Effect for handling search term changes
+  useEffect(() => {
+    debouncedSearch(searchTerm);
+  }, [searchTerm, debouncedSearch]);
 
   const handleSearch = (value: string) => {
-    console.log("search is called");
     setSearchTerm(value);
-    // setCurrentPage(1); // Reset to first page when searching
   };
 
   const handleSort = (field: string, direction: "asc" | "desc") => {
-    console.log("sort is called");
     setSortField(field);
     setSortDirection(direction);
     setCurrentPage(1); // Reset to first page when sorting
   };
 
   const handlePageChange = (page: number) => {
-    console.log("page", page);
-    setCurrentPage(page);
+    if (page !== currentPage) {
+      setCurrentPage(page);
+    }
   };
 
   const handlePageSizeChange = (size: number) => {
-    console.log("page size is called");
-    setPageSize(size);
-    setCurrentPage(1); // Reset to first page when changing page size
+    if (size !== pageSize) {
+      setPageSize(size);
+      setCurrentPage(1); // Reset to first page when changing page size
+    }
   };
 
   const columns = useMemo(
