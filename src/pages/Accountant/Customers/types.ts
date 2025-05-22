@@ -17,7 +17,6 @@ export interface CustomerBasicInfo {
 
 export interface CustomerDetails {
   address: string;
-  // Add any other customer detail fields here
 }
 
 export interface Customer {
