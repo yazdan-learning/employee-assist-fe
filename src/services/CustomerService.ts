@@ -1,14 +1,74 @@
-import { Customer, CustomerBasicInfo, CustomerDetails } from '../pages/Accountant/Customers/types';
+import { Customer, CustomerBasicInfo, CustomerDetails, CustomerInfo } from '../pages/Accountant/Customers/types';
 import { mockCustomers } from '../common/data/mock-customers';
+import { ListRequest, ListResponse } from '../types/common';
 
 class CustomerService {
   private customers: Customer[] = [...mockCustomers];
 
-  getAllCustomers(): Promise<Customer[]> {
+  getAllCustomers(request: ListRequest): Promise<ListResponse<CustomerInfo>> {
     return new Promise((resolve) => {
       setTimeout(() => {
-        resolve([...this.customers]);
-      }, 500); // Simulate network delay
+        let filteredCustomers = [...this.customers].map(customer => ({
+          id: customer.id,
+          name: customer.basicInfo.isFirm 
+            ? customer.basicInfo.companyName || ''
+            : `${customer.basicInfo.firstName} ${customer.basicInfo.lastName}`,
+          isFirm: customer.basicInfo.isFirm,
+          companyName: customer.basicInfo.companyName,
+          firstName: customer.basicInfo.firstName,
+          lastName: customer.basicInfo.lastName,
+          nationalCode: customer.basicInfo.nationalCode,
+          taxId: customer.basicInfo.taxId,
+          customerType: customer.basicInfo.customerType,
+          address: customer.details.address,
+          createdAt: customer.createdAt,
+          updatedAt: customer.updatedAt
+        }));
+
+        // Apply search
+        if (request.searchTerm) {
+          const searchLower = request.searchTerm.toLowerCase();
+          filteredCustomers = filteredCustomers.filter(customer => 
+            customer.name.toLowerCase().includes(searchLower) ||
+            customer.nationalCode.toLowerCase().includes(searchLower) ||
+            customer.taxId.toLowerCase().includes(searchLower)
+          );
+        }
+
+        // Apply sorting
+        if (request.sortField && request.sortDirection) {
+          filteredCustomers.sort((a, b) => {
+            const aValue = a[request.sortField as keyof CustomerInfo];
+            const bValue = b[request.sortField as keyof CustomerInfo];
+            
+            if (typeof aValue === 'string' && typeof bValue === 'string') {
+              return request.sortDirection === 'desc' 
+                ? bValue.localeCompare(aValue) 
+                : aValue.localeCompare(bValue);
+            }
+            if (typeof aValue === 'number' && typeof bValue === 'number') {
+              return request.sortDirection === 'desc' 
+                ? bValue - aValue 
+                : aValue - bValue;
+            }
+            return 0;
+          });
+        }
+
+        // Calculate pagination
+        const totalItems = filteredCustomers.length;
+        const totalPages = Math.ceil(totalItems / request.pageSize);
+        const start = (request.page - 1) * request.pageSize;
+        const end = start + request.pageSize;
+        
+        resolve({
+          data: filteredCustomers.slice(start, end),
+          currentPage: request.page,
+          pageSize: request.pageSize,
+          totalItems,
+          totalPages
+        });
+      }, 500);
     });
   }
 

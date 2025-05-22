@@ -44,4 +44,19 @@ export interface CustomerState {
 export interface CustomerFormData {
   basicInfo: CustomerBasicInfo;
   details: CustomerDetails;
+}
+
+export interface CustomerInfo {
+  id: string;
+  name: string;
+  isFirm: boolean;
+  companyName?: string;
+  firstName: string;
+  lastName: string;
+  nationalCode: string;
+  taxId: string;
+  customerType: CustomerType;
+  address: string;
+  createdAt?: string;
+  updatedAt?: string;
 } 

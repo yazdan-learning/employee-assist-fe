@@ -1,107 +1,52 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import {
-  setLoading,
-  setError,
-  setCustomers,
-  setSelectedCustomer,
-  addCustomer,
-  updateCustomer,
-  deleteCustomer,
-} from './reducer';
 import { CustomerBasicInfo, CustomerDetails } from '../../pages/Accountant/Customers/types';
 import { customerService } from '../../services/CustomerService';
+import { ListRequest } from '../../types/common';
 
 export const fetchCustomers = createAsyncThunk(
   'customers/fetchAll',
-  async (_, { dispatch }) => {
-    try {
-      dispatch(setLoading(true));
-      const customers = await customerService.getAllCustomers();
-      dispatch(setCustomers(customers));
-      dispatch(setError(null));
-    } catch (error: any) {
-      dispatch(setError(error.message));
-    } finally {
-      dispatch(setLoading(false));
-    }
+  async (request: ListRequest) => {
+    const response = await customerService.getAllCustomers(request);
+    return response;
   }
 );
 
 export const fetchCustomerById = createAsyncThunk(
   'customers/fetchById',
-  async (id: string, { dispatch }) => {
-    try {
-      dispatch(setLoading(true));
-      const customer = await customerService.getCustomerById(id);
-      dispatch(setSelectedCustomer(customer));
-      dispatch(setError(null));
-    } catch (error: any) {
-      dispatch(setError(error.message));
-    } finally {
-      dispatch(setLoading(false));
-    }
+  async (id: string) => {
+    const customer = await customerService.getCustomerById(id);
+    return customer;
   }
 );
 
 export const createCustomer = createAsyncThunk(
   'customers/create',
-  async (
-    { basicInfo, details }: { basicInfo: CustomerBasicInfo; details: CustomerDetails },
-    { dispatch }
-  ) => {
-    try {
-      dispatch(setLoading(true));
-      const newCustomer = await customerService.createCustomer(basicInfo, details);
-      dispatch(addCustomer(newCustomer));
-      dispatch(setError(null));
-      return newCustomer;
-    } catch (error: any) {
-      dispatch(setError(error.message));
-      throw error;
-    } finally {
-      dispatch(setLoading(false));
-    }
+  async ({ basicInfo, details }: { basicInfo: CustomerBasicInfo; details: CustomerDetails }) => {
+    const newCustomer = await customerService.createCustomer(basicInfo, details);
+    return newCustomer;
   }
 );
 
 export const updateCustomerById = createAsyncThunk(
   'customers/update',
-  async (
-    {
-      id,
-      basicInfo,
-      details,
-    }: { id: string; basicInfo: Partial<CustomerBasicInfo>; details: Partial<CustomerDetails> },
-    { dispatch }
-  ) => {
-    try {
-      dispatch(setLoading(true));
-      const updatedCustomer = await customerService.updateCustomer(id, basicInfo, details);
-      dispatch(updateCustomer(updatedCustomer));
-      dispatch(setError(null));
-      return updatedCustomer;
-    } catch (error: any) {
-      dispatch(setError(error.message));
-      throw error;
-    } finally {
-      dispatch(setLoading(false));
-    }
+  async ({
+    id,
+    basicInfo,
+    details,
+  }: {
+    id: string;
+    basicInfo: Partial<CustomerBasicInfo>;
+    details: Partial<CustomerDetails>;
+  }) => {
+    const updatedCustomer = await customerService.updateCustomer(id, basicInfo, details);
+    return updatedCustomer;
   }
 );
 
 export const deleteCustomerById = createAsyncThunk(
   'customers/delete',
-  async (id: string, { dispatch }) => {
-    try {
-      dispatch(setLoading(true));
-      await customerService.deleteCustomer(id);
-      dispatch(deleteCustomer(id));
-      dispatch(setError(null));
-    } catch (error: any) {
-      dispatch(setError(error.message));
-      throw error;
-    } finally {
-      dispatch(setLoading(false));
-    }
+  async (id: string) => {
+    await customerService.deleteCustomer(id);
+    return id;
   }
 ); 

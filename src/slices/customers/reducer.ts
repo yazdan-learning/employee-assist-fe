@@ -1,83 +1,138 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Customer, CustomerState, CustomerBasicInfo, CustomerDetails, CustomerType } from '../../pages/Accountant/Customers/types';
+import { createSlice } from "@reduxjs/toolkit";
+import {
+  fetchCustomers,
+  fetchCustomerById,
+  createCustomer,
+  updateCustomerById,
+  deleteCustomerById,
+} from "./thunk";
+import { Customer, CustomerInfo } from "../../pages/Accountant/Customers/types";
+
+interface CustomerState {
+  customers: CustomerInfo[];
+  selectedCustomer: Customer | null;
+  loading: boolean;
+  error: string | null;
+}
 
 const initialState: CustomerState = {
   customers: [],
   selectedCustomer: null,
   loading: false,
   error: null,
-  currentStep: 1,
-  formData: {
-    basicInfo: {
-      isFirm: false,
-      customerType: CustomerType.NONE,
-    },
-    details: {},
-  },
 };
 
 const customerSlice = createSlice({
-  name: 'customer',
+  name: "customer",
   initialState,
-  reducers: {
-    setLoading: (state, action: PayloadAction<boolean>) => {
-      state.loading = action.payload;
-    },
-    setError: (state, action: PayloadAction<string | null>) => {
-      state.error = action.payload;
-    },
-    setCustomers: (state, action: PayloadAction<Customer[]>) => {
-      state.customers = action.payload;
-    },
-    setSelectedCustomer: (state, action: PayloadAction<Customer | null>) => {
-      state.selectedCustomer = action.payload;
-    },
-    setCurrentStep: (state, action: PayloadAction<number>) => {
-      state.currentStep = action.payload;
-    },
-    updateBasicInfo: (state, action: PayloadAction<Partial<CustomerBasicInfo>>) => {
-      state.formData.basicInfo = {
-        ...state.formData.basicInfo,
-        ...action.payload,
-      };
-    },
-    updateDetails: (state, action: PayloadAction<Partial<CustomerDetails>>) => {
-      state.formData.details = {
-        ...state.formData.details,
-        ...action.payload,
-      };
-    },
-    resetForm: (state) => {
-      state.formData = initialState.formData;
-      state.currentStep = 1;
-    },
-    addCustomer: (state, action: PayloadAction<Customer>) => {
-      state.customers.push(action.payload);
-    },
-    updateCustomer: (state, action: PayloadAction<Customer>) => {
-      const index = state.customers.findIndex(c => c.id === action.payload.id);
-      if (index !== -1) {
-        state.customers[index] = action.payload;
-      }
-    },
-    deleteCustomer: (state, action: PayloadAction<string>) => {
-      state.customers = state.customers.filter(c => c.id !== action.payload);
-    },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      // Fetch Customers
+      .addCase(fetchCustomers.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchCustomers.fulfilled, (state, action) => {
+        state.loading = false;
+        state.customers = action.payload.data;
+      })
+      .addCase(fetchCustomers.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Failed to fetch customers";
+      })
+      // Fetch Customer by ID
+      .addCase(fetchCustomerById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchCustomerById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.selectedCustomer = action.payload;
+      })
+      .addCase(fetchCustomerById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Failed to fetch customer";
+      })
+      // Create Customer
+      .addCase(createCustomer.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createCustomer.fulfilled, (state, action) => {
+        state.loading = false;
+        const customerInfo: CustomerInfo = {
+          id: action.payload.id,
+          name: action.payload.basicInfo.isFirm 
+            ? action.payload.basicInfo.companyName || ''
+            : `${action.payload.basicInfo.firstName} ${action.payload.basicInfo.lastName}`,
+          isFirm: action.payload.basicInfo.isFirm,
+          companyName: action.payload.basicInfo.companyName,
+          firstName: action.payload.basicInfo.firstName,
+          lastName: action.payload.basicInfo.lastName,
+          nationalCode: action.payload.basicInfo.nationalCode,
+          taxId: action.payload.basicInfo.taxId,
+          customerType: action.payload.basicInfo.customerType,
+          address: action.payload.details.address,
+          createdAt: action.payload.createdAt,
+          updatedAt: action.payload.updatedAt
+        };
+        state.customers.push(customerInfo);
+      })
+      .addCase(createCustomer.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Failed to create customer";
+      })
+      // Update Customer
+      .addCase(updateCustomerById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateCustomerById.fulfilled, (state, action) => {
+        state.loading = false;
+        const customerInfo: CustomerInfo = {
+          id: action.payload.id,
+          name: action.payload.basicInfo.isFirm 
+            ? action.payload.basicInfo.companyName || ''
+            : `${action.payload.basicInfo.firstName} ${action.payload.basicInfo.lastName}`,
+          isFirm: action.payload.basicInfo.isFirm,
+          companyName: action.payload.basicInfo.companyName,
+          firstName: action.payload.basicInfo.firstName,
+          lastName: action.payload.basicInfo.lastName,
+          nationalCode: action.payload.basicInfo.nationalCode,
+          taxId: action.payload.basicInfo.taxId,
+          customerType: action.payload.basicInfo.customerType,
+          address: action.payload.details.address,
+          createdAt: action.payload.createdAt,
+          updatedAt: action.payload.updatedAt
+        };
+        const index = state.customers.findIndex(
+          (customer) => customer.id === action.payload.id
+        );
+        if (index !== -1) {
+          state.customers[index] = customerInfo;
+        }
+      })
+      .addCase(updateCustomerById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Failed to update customer";
+      })
+      // Delete Customer
+      .addCase(deleteCustomerById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteCustomerById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.customers = state.customers.filter(
+          (customer) => customer.id !== action.payload
+        );
+      })
+      .addCase(deleteCustomerById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Failed to delete customer";
+      });
   },
 });
-
-export const {
-  setLoading,
-  setError,
-  setCustomers,
-  setSelectedCustomer,
-  setCurrentStep,
-  updateBasicInfo,
-  updateDetails,
-  resetForm,
-  addCustomer,
-  updateCustomer,
-  deleteCustomer,
-} = customerSlice.actions;
 
 export default customerSlice.reducer; 

@@ -19,7 +19,6 @@ import {
 } from "reactstrap";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
-import { createSelector } from "reselect";
 import classnames from "classnames";
 import { CustomerType, CustomerFormData, CustomerState } from "./types";
 import {
