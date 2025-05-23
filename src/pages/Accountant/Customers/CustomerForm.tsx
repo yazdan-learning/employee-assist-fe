@@ -93,7 +93,7 @@ const CustomerForm: React.FC = () => {
     }));
   };
 
-  const handleSubmit = async (goToNext = false) => {
+  const handleSubmit = async () => {
     try {
       if (id) {
         await dispatch(
@@ -113,15 +113,14 @@ const CustomerForm: React.FC = () => {
         );
         toast.success(t("Customer created successfully"));
       }
-
-      if (goToNext) {
-        setActiveTab(2);
-      } else {
-        navigate("/accountant/customers");
-      }
+      navigate("/accountant/customers");
     } catch (error) {
       toast.error(t("Error saving customer"));
     }
+  };
+
+  const handleNext = () => {
+    setActiveTab(2);
   };
 
   const toggleTab = (tab: number) => {
@@ -307,13 +306,13 @@ const CustomerForm: React.FC = () => {
                       <div className="d-flex justify-content-end gap-2">
                         <Button
                           color="primary"
-                          onClick={() => handleSubmit(true)}
+                          onClick={handleNext}
                         >
                           {t("Next")}
                         </Button>
                         <Button
                           color="success"
-                          onClick={() => handleSubmit(false)}
+                          onClick={handleSubmit}
                         >
                           {t("Register")}
                         </Button>
@@ -349,7 +348,7 @@ const CustomerForm: React.FC = () => {
                         </Button>
                         <Button
                           color="success"
-                          onClick={() => handleSubmit(false)}
+                          onClick={handleSubmit}
                         >
                           {t("Register")}
                         </Button>
