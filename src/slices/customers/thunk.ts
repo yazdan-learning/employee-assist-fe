@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { CustomerBasicInfo, CustomerDetails } from '../../pages/Accountant/Customers/types';
+import { CustomerBasicInfo, CustomerContactInfo, CustomerAdditionalDetails } from '../../pages/Accountant/Customers/types';
 import { customerService } from '../../services/CustomerService';
 import { ListRequest } from '../../types/common';
 
@@ -21,8 +21,16 @@ export const fetchCustomerById = createAsyncThunk(
 
 export const createCustomer = createAsyncThunk(
   'customers/create',
-  async ({ basicInfo, details }: { basicInfo: CustomerBasicInfo; details: CustomerDetails }) => {
-    const newCustomer = await customerService.createCustomer(basicInfo, details);
+  async ({ 
+    basicInfo, 
+    contactInfo, 
+    additionalDetails 
+  }: { 
+    basicInfo: CustomerBasicInfo; 
+    contactInfo: CustomerContactInfo; 
+    additionalDetails: CustomerAdditionalDetails;
+  }) => {
+    const newCustomer = await customerService.createCustomer(basicInfo, contactInfo, additionalDetails);
     return newCustomer;
   }
 );
@@ -32,13 +40,20 @@ export const updateCustomerById = createAsyncThunk(
   async ({
     id,
     basicInfo,
-    details,
+    contactInfo,
+    additionalDetails,
   }: {
     id: string;
-    basicInfo: Partial<CustomerBasicInfo>;
-    details: Partial<CustomerDetails>;
+    basicInfo?: Partial<CustomerBasicInfo>;
+    contactInfo?: Partial<CustomerContactInfo>;
+    additionalDetails?: Partial<CustomerAdditionalDetails>;
   }) => {
-    const updatedCustomer = await customerService.updateCustomer(id, basicInfo, details);
+    const updatedCustomer = await customerService.updateCustomer(
+      id, 
+      basicInfo, 
+      contactInfo, 
+      additionalDetails
+    );
     return updatedCustomer;
   }
 );

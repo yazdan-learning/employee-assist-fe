@@ -171,6 +171,14 @@
   "National Code": "کد ملی",
   "Tax ID": "کد مالیاتی",
   "Customer Type": "نوع مشتری",
+  "customerTypes": {
+    "NONE": "انتخاب نوع",
+    "REGULAR": "عادی",
+    "VIP": "ویژه",
+    "BUYER": "خریدار",
+    "SELLER": "فروشنده",
+    "BOTH": "هر دو"
+  },
   "Address": "آدرس",
   "Is Firm": "شرکت است",
   "Is Individual": "شخص حقیقی است",
@@ -203,5 +211,101 @@
   "Product deleted successfully": "محصول با موفقیت حذف شد",
   "Error saving product": "خطا در ذخیره محصول",
   "Error deleting product": "خطا در حذف محصول",
-  "Are you sure you want to delete this product?": "آیا از حذف این محصول اطمینان دارید؟"
+  "Are you sure you want to delete this product?": "آیا از حذف این محصول اطمینان دارید؟",
+  "customer": {
+    "form": {
+      "title": {
+        "new": "ثبت مشتری جدید",
+        "edit": "ویرایش مشتری"
+      },
+      "steps": {
+        "basic": "اطلاعات پایه",
+        "contact": "اطلاعات تماس",
+        "additional": "اطلاعات تکمیلی"
+      },
+      "buttons": {
+        "previous": "مرحله قبل",
+        "next": "مرحله بعد",
+        "save": "ثبت",
+        "update": "بروزرسانی",
+        "add": "افزودن",
+        "remove": "حذف"
+      }
+    },
+    "basicInfo": {
+      "isFirm": "مشتری حقوقی",
+      "companyName": "نام شرکت",
+      "firstName": "نام",
+      "lastName": "نام خانوادگی",
+      "nationalCode": "کد ملی / شناسه ملی",
+      "taxId": "شماره اقتصادی",
+      "customerType": "نوع مشتری",
+      "customerTypes": {
+        "NONE": "انتخاب نوع",
+        "REGULAR": "عادی",
+        "VIP": "ویژه",
+        "BUYER": "خریدار",
+        "SELLER": "فروشنده",
+        "BOTH": "هر دو"
+      },
+      "placeholders": {
+        "companyName": "نام شرکت را وارد کنید",
+        "firstName": "نام را وارد کنید",
+        "lastName": "نام خانوادگی را وارد کنید",
+        "nationalCode": "کد ملی را وارد کنید",
+        "companyId": "شناسه ملی شرکت را وارد کنید",
+        "taxId": "شماره اقتصادی را وارد کنید"
+      }
+    },
+    "contactInfo": {
+      "title": "اطلاعات تماس",
+      "addresses": {
+        "title": "آدرس‌ها",
+        "add": "افزودن آدرس",
+        "remove": "حذف آدرس",
+        "address": "آدرس",
+        "postalCode": "کد پستی",
+        "city": "شهر",
+        "placeholders": {
+          "address": "آدرس را وارد کنید",
+          "postalCode": "کد پستی را وارد کنید",
+          "city": "شهر را وارد کنید"
+        }
+      },
+      "phones": {
+        "title": "شماره‌های تماس",
+        "add": "افزودن شماره تماس",
+        "remove": "حذف شماره تماس",
+        "placeholder": "+98 9123456789"
+      },
+      "email": {
+        "label": "ایمیل",
+        "placeholder": "example@domain.com"
+      },
+      "website": {
+        "label": "وب‌سایت",
+        "placeholder": "www.example.com"
+      }
+    },
+    "additionalDetails": {
+      "title": "اطلاعات تکمیلی",
+      "notes": {
+        "label": "یادداشت‌ها",
+        "placeholder": "یادداشت‌های مربوط به مشتری را وارد کنید"
+      },
+      "preferredContactMethod": {
+        "label": "روش ارتباطی ترجیحی",
+        "options": {
+          "select": "انتخاب کنید",
+          "phone": "تلفن",
+          "email": "ایمیل",
+          "website": "وب‌سایت"
+        }
+      },
+      "tags": {
+        "label": "برچسب‌ها",
+        "placeholder": "برچسب‌ها را با کاما جدا کنید"
+      }
+    }
+  }
 } 

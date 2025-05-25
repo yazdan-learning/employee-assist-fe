@@ -1,4 +1,4 @@
-import { Customer, CustomerBasicInfo, CustomerDetails, CustomerInfo } from '../pages/Accountant/Customers/types';
+import { Customer, CustomerBasicInfo, CustomerContactInfo, CustomerAdditionalDetails, CustomerInfo } from '../pages/Accountant/Customers/types';
 import { mockCustomers } from '../common/data/mock-customers';
 import { ListRequest, ListResponse } from '../types/common';
 
@@ -20,9 +20,7 @@ class CustomerService {
           nationalCode: customer.basicInfo.nationalCode,
           taxId: customer.basicInfo.taxId,
           customerType: customer.basicInfo.customerType,
-          address: customer.details.address,
-          createdAt: customer.createdAt,
-          updatedAt: customer.updatedAt
+          address: customer.contactInfo.addresses[0]?.address || ''
         }));
 
         // Apply search
@@ -81,15 +79,18 @@ class CustomerService {
     });
   }
 
-  createCustomer(basicInfo: CustomerBasicInfo, details: CustomerDetails): Promise<Customer> {
+  createCustomer(
+    basicInfo: CustomerBasicInfo, 
+    contactInfo: CustomerContactInfo, 
+    additionalDetails: CustomerAdditionalDetails
+  ): Promise<Customer> {
     return new Promise((resolve) => {
       setTimeout(() => {
         const newCustomer: Customer = {
           id: Math.random().toString(36).substr(2, 9),
           basicInfo,
-          details,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
+          contactInfo,
+          additionalDetails
         };
         this.customers.push(newCustomer);
         resolve(newCustomer);
@@ -99,8 +100,9 @@ class CustomerService {
 
   updateCustomer(
     id: string,
-    basicInfo: Partial<CustomerBasicInfo>,
-    details: Partial<CustomerDetails>
+    basicInfo?: Partial<CustomerBasicInfo>,
+    contactInfo?: Partial<CustomerContactInfo>,
+    additionalDetails?: Partial<CustomerAdditionalDetails>
   ): Promise<Customer> {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
@@ -112,12 +114,18 @@ class CustomerService {
 
         const updatedCustomer: Customer = {
           ...this.customers[index],
-          ...basicInfo,
-          details: {
-            ...this.customers[index].details,
-            ...details,
+          basicInfo: {
+            ...this.customers[index].basicInfo,
+            ...basicInfo,
           },
-          updatedAt: new Date().toISOString(),
+          contactInfo: {
+            ...this.customers[index].contactInfo,
+            ...contactInfo,
+          },
+          additionalDetails: {
+            ...this.customers[index].additionalDetails,
+            ...additionalDetails,
+          }
         };
 
         this.customers[index] = updatedCustomer;

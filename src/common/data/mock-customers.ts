@@ -2,258 +2,126 @@ import { Customer, CustomerType } from '../../pages/Accountant/Customers/types';
 
 export const mockCustomers: Customer[] = [
   {
-    id: '1',
+    id: "1",
     basicInfo: {
       isFirm: true,
-      companyName: 'Tech Solutions Ltd',
-      firstName: '',
-      lastName: '',
-      nationalCode: '1012345678',
-      taxId: '1234567890',
-      customerType: CustomerType.BOTH,
+      companyName: "شرکت فناوری اطلاعات نوین",
+      nationalCode: "1012345678",
+      taxId: "1234567890",
+      customerType: CustomerType.BUYER
     },
-    details: {
-      address: '123 Business Park, Tehran',
+    contactInfo: {
+      addresses: [{
+        address: "تهران، خیابان ولیعصر، پلاک 123",
+        postalCode: "1234567890",
+        city: "تهران"
+      }],
+      phones: ["021-12345678"],
+      email: "info@novintech.ir",
+      website: "www.novintech.ir"
     },
-    createdAt: '2024-01-01T10:00:00Z',
-    updatedAt: '2024-01-01T10:00:00Z',
+    additionalDetails: {
+      notes: "شرکت نرم‌افزاری",
+      preferredContactMethod: "email",
+      tags: ["IT", "نرم‌افزار"]
+    }
   },
   {
-    id: '2',
+    id: "2",
     basicInfo: {
       isFirm: false,
-      companyName: '',
-      firstName: 'Ali',
-      lastName: 'Mohammadi',
-      nationalCode: '0123456789',
-      taxId: '9876543210',
-      customerType: CustomerType.BUYER,
+      firstName: "علی",
+      lastName: "محمدی",
+      nationalCode: "0123456789",
+      taxId: "9876543210",
+      customerType: CustomerType.SELLER
     },
-    details: {
-      address: '456 Residential St, Tehran',
+    contactInfo: {
+      addresses: [{
+        address: "تهران، خیابان شریعتی، پلاک 456",
+        postalCode: "9876543210",
+        city: "تهران"
+      }],
+      phones: ["09123456789"],
+      email: "ali.mohammadi@email.com"
     },
-    createdAt: '2024-01-02T11:00:00Z',
-    updatedAt: '2024-01-02T11:00:00Z',
+    additionalDetails: {
+      notes: "فروشنده لوازم الکترونیکی",
+      preferredContactMethod: "phone"
+    }
   },
   {
-    id: '3',
+    id: "3",
     basicInfo: {
       isFirm: true,
-      companyName: 'Global Trading Co',
-      firstName: '',
-      lastName: '',
-      nationalCode: '2012345678',
-      taxId: '2345678901',
-      customerType: CustomerType.SELLER,
+      companyName: "شرکت تجهیزات پزشکی سلامت",
+      nationalCode: "2012345678",
+      taxId: "2345678901",
+      customerType: CustomerType.BOTH
     },
-    details: {
-      address: '789 Trade Center, Tehran',
+    contactInfo: {
+      addresses: [{
+        address: "تهران، خیابان پاسداران، پلاک 789",
+        postalCode: "2345678901",
+        city: "تهران"
+      }],
+      phones: ["021-23456789", "09123456788"],
+      email: "info@healthmed.ir",
+      website: "www.healthmed.ir"
     },
-    createdAt: '2024-01-03T09:00:00Z',
-    updatedAt: '2024-01-03T09:00:00Z',
+    additionalDetails: {
+      notes: "توزیع‌کننده تجهیزات پزشکی",
+      preferredContactMethod: "email",
+      tags: ["پزشکی", "تجهیزات"]
+    }
   },
   {
-    id: '4',
+    id: "4",
     basicInfo: {
       isFirm: false,
-      companyName: '',
-      firstName: 'Sara',
-      lastName: 'Ahmadi',
-      nationalCode: '0234567890',
-      taxId: '8765432109',
-      customerType: CustomerType.BUYER,
+      firstName: "رضا",
+      lastName: "کریمی",
+      nationalCode: "0123456780",
+      taxId: "9876543211",
+      customerType: CustomerType.BUYER
     },
-    details: {
-      address: '321 Home Ave, Tehran',
+    contactInfo: {
+      addresses: [{
+        address: "تهران، خیابان ولیعصر، پلاک 321",
+        postalCode: "1234567891",
+        city: "تهران"
+      }],
+      phones: ["09123456787"],
+      email: "reza.karimi@email.com"
     },
-    createdAt: '2024-01-04T14:00:00Z',
-    updatedAt: '2024-01-04T14:00:00Z',
+    additionalDetails: {
+      notes: "خریدار لوازم خانگی",
+      preferredContactMethod: "phone"
+    }
   },
   {
-    id: '5',
+    id: "5",
     basicInfo: {
       isFirm: true,
-      companyName: 'Iranian Construction Group',
-      firstName: '',
-      lastName: '',
-      nationalCode: '3012345678',
-      taxId: '3456789012',
-      customerType: CustomerType.BOTH,
+      companyName: "شرکت صنایع غذایی سلامت",
+      nationalCode: "3012345678",
+      taxId: "3456789012",
+      customerType: CustomerType.BOTH
     },
-    details: {
-      address: '567 Industrial Zone, Tehran',
+    contactInfo: {
+      addresses: [{
+        address: "تهران، خیابان پاسداران، پلاک 567",
+        postalCode: "3456789012",
+        city: "تهران"
+      }],
+      phones: ["021-34567890", "09123456786"],
+      email: "info@healthfood.ir",
+      website: "www.healthfood.ir"
     },
-    createdAt: '2024-01-05T08:00:00Z',
-    updatedAt: '2024-01-05T08:00:00Z',
-  },
-  {
-    id: '6',
-    basicInfo: {
-      isFirm: false,
-      companyName: '',
-      firstName: 'Reza',
-      lastName: 'Kazemi',
-      nationalCode: '0345678901',
-      taxId: '7654321098',
-      customerType: CustomerType.BUYER,
-    },
-    details: {
-      address: '890 Personal St, Tehran',
-    },
-    createdAt: '2024-01-06T13:00:00Z',
-    updatedAt: '2024-01-06T13:00:00Z',
-  },
-  {
-    id: '7',
-    basicInfo: {
-      isFirm: true,
-      companyName: 'Digital Innovations LLC',
-      firstName: '',
-      lastName: '',
-      nationalCode: '4012345678',
-      taxId: '4567890123',
-      customerType: CustomerType.SELLER,
-    },
-    details: {
-      address: '432 Tech Hub, Tehran',
-    },
-    createdAt: '2024-01-07T10:00:00Z',
-    updatedAt: '2024-01-07T10:00:00Z',
-  },
-  {
-    id: '8',
-    basicInfo: {
-      isFirm: false,
-      companyName: '',
-      firstName: 'Maryam',
-      lastName: 'Hosseini',
-      nationalCode: '0456789012',
-      taxId: '6543210987',
-      customerType: CustomerType.BOTH,
-    },
-    details: {
-      address: '765 Private Rd, Tehran',
-    },
-    createdAt: '2024-01-08T15:00:00Z',
-    updatedAt: '2024-01-08T15:00:00Z',
-  },
-  {
-    id: '9',
-    basicInfo: {
-      isFirm: true,
-      companyName: 'Iranian Food Industries',
-      firstName: '',
-      lastName: '',
-      nationalCode: '5012345678',
-      taxId: '5678901234',
-      customerType: CustomerType.SELLER,
-    },
-    details: {
-      address: '987 Food Park, Tehran',
-    },
-    createdAt: '2024-01-09T09:00:00Z',
-    updatedAt: '2024-01-09T09:00:00Z',
-  },
-  {
-    id: '10',
-    basicInfo: {
-      isFirm: false,
-      companyName: '',
-      firstName: 'Amir',
-      lastName: 'Rahimi',
-      nationalCode: '0567890123',
-      taxId: '5432109876',
-      customerType: CustomerType.BUYER,
-    },
-    details: {
-      address: '123 Personal Ave, Tehran',
-    },
-    createdAt: '2024-01-10T11:00:00Z',
-    updatedAt: '2024-01-10T11:00:00Z',
-  },
-  {
-    id: '11',
-    basicInfo: {
-      isFirm: true,
-      companyName: 'Iranian Textile Group',
-      firstName: '',
-      lastName: '',
-      nationalCode: '6012345678',
-      taxId: '6789012345',
-      customerType: CustomerType.BOTH,
-    },
-    details: {
-      address: '234 Textile Zone, Tehran',
-    },
-    createdAt: '2024-01-11T08:00:00Z',
-    updatedAt: '2024-01-11T08:00:00Z',
-  },
-  {
-    id: '12',
-    basicInfo: {
-      isFirm: false,
-      companyName: '',
-      firstName: 'Fatemeh',
-      lastName: 'Mohammadi',
-      nationalCode: '0678901234',
-      taxId: '4321098765',
-      customerType: CustomerType.BUYER,
-    },
-    details: {
-      address: '456 Home St, Tehran',
-    },
-    createdAt: '2024-01-12T14:00:00Z',
-    updatedAt: '2024-01-12T14:00:00Z',
-  },
-  {
-    id: '13',
-    basicInfo: {
-      isFirm: true,
-      companyName: 'Iranian Steel Corporation',
-      firstName: '',
-      lastName: '',
-      nationalCode: '7012345678',
-      taxId: '7890123456',
-      customerType: CustomerType.BOTH,
-    },
-    details: {
-      address: '567 Steel Complex, Tehran',
-    },
-    createdAt: '2024-01-13T10:00:00Z',
-    updatedAt: '2024-01-13T10:00:00Z',
-  },
-  {
-    id: '14',
-    basicInfo: {
-      isFirm: false,
-      companyName: '',
-      firstName: 'Hassan',
-      lastName: 'Karimi',
-      nationalCode: '0789012345',
-      taxId: '3210987654',
-      customerType: CustomerType.BUYER,
-    },
-    details: {
-      address: '789 Personal Rd, Tehran',
-    },
-    createdAt: '2024-01-14T13:00:00Z',
-    updatedAt: '2024-01-14T13:00:00Z',
-  },
-  {
-    id: '15',
-    basicInfo: {
-      isFirm: true,
-      companyName: 'Iranian Petrochemical Co',
-      firstName: '',
-      lastName: '',
-      nationalCode: '8012345678',
-      taxId: '8901234567',
-      customerType: CustomerType.BOTH,
-    },
-    details: {
-      address: '890 Petrochemical Zone, Tehran',
-    },
-    createdAt: '2024-01-15T09:00:00Z',
-    updatedAt: '2024-01-15T09:00:00Z',
+    additionalDetails: {
+      notes: "تولیدکننده مواد غذایی",
+      preferredContactMethod: "email",
+      tags: ["غذایی", "تولید"]
+    }
   }
 ]; 

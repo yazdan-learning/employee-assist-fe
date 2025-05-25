@@ -6,7 +6,7 @@ import translationGr from "./locales/gr/translation.json";
 import translationIT from "./locales/it/translation.json";
 import translationRS from "./locales/rs/translation.json";
 import translationSP from "./locales/sp/translation.json";
-import translationENG from "./locales/eng/translation.json";
+import translationEN from "./locales/en/translation.json";
 import translationFA from "./locales/fa/translation.json";
 
 // the translations
@@ -27,8 +27,8 @@ const resources: any = {
     translation: translationSP,
     dir: 'ltr'
   },
-  eng: {
-    translation: translationENG,
+  en: {
+    translation: translationEN,
     dir: 'ltr'
   },
   fa: {
@@ -63,7 +63,7 @@ i18n
     resources,
     lng: localStorage.getItem("I18N_LANGUAGE") || "en",
     fallbackLng: "en",
-    keySeparator: false,
+    keySeparator: '.',
     interpolation: {
       escapeValue: false,
     },

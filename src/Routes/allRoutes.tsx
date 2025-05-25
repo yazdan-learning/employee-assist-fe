@@ -10,11 +10,10 @@ import Chat from "../pages/Chat/Chat";
 
 import React from "react";
 import CustomerList from "../pages/Accountant/Customers/CustomerList";
-import CustomerForm from "../pages/Accountant/Customers/CustomerForm";
-import CustomerDetails from "../pages/Accountant/Customers/CustomerDetails";
 import ProductList from "../pages/Accountant/Products/ProductList";
 import ProductForm from "../pages/Accountant/Products/ProductForm";
 import ProductDetails from "../pages/Accountant/Products/ProductDetails";
+import CustomerForm from "../pages/Accountant/Customers/components/CustomerForm";
 
 //Authentication pages
 // import Login1 from "../pages/AuthenticationInner/Login";
@@ -63,8 +62,6 @@ const publicRoutes = [
   { path: "/accountant/customers/add", component: <CustomerForm /> },
   // eslint-disable-next-line react/react-in-jsx-scope
   { path: "/accountant/customers/edit/:id", component: <CustomerForm /> },
-  // eslint-disable-next-line react/react-in-jsx-scope
-  { path: "/accountant/customers/:id", component: <CustomerDetails /> },
 
   // Product routes
   { path: "/accountant/products", component: <ProductList /> },

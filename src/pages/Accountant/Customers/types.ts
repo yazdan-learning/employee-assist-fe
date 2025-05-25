@@ -8,41 +8,37 @@ export enum CustomerType {
 export interface CustomerBasicInfo {
   isFirm: boolean;
   companyName?: string;
-  firstName: string;
-  lastName: string;
+  firstName?: string;
+  lastName?: string;
   nationalCode: string;
   taxId: string;
   customerType: CustomerType;
 }
 
-export interface CustomerDetails {
+export interface Address {
   address: string;
+  postalCode: string;
+  city: string;
+}
+
+export interface CustomerContactInfo {
+  addresses: Address[];
+  phones: string[];
+  email: string;
+  website?: string;
+}
+
+export interface CustomerAdditionalDetails {
+  notes?: string;
+  preferredContactMethod?: string;
+  tags?: string[];
 }
 
 export interface Customer {
   id: string;
   basicInfo: CustomerBasicInfo;
-  details: CustomerDetails;
-  createdAt?: string;
-  updatedAt?: string;
-}
-
-export interface CustomerState {
-  customers: Customer[];
-  selectedCustomer: Customer | null;
-  loading: boolean;
-  error: string | null;
-  currentStep: number;
-  formData: {
-    basicInfo: Partial<CustomerBasicInfo>;
-    details: Partial<CustomerDetails>;
-  };
-}
-
-// Form related types
-export interface CustomerFormData {
-  basicInfo: CustomerBasicInfo;
-  details: CustomerDetails;
+  contactInfo: CustomerContactInfo;
+  additionalDetails: CustomerAdditionalDetails;
 }
 
 export interface CustomerInfo {
@@ -50,12 +46,10 @@ export interface CustomerInfo {
   name: string;
   isFirm: boolean;
   companyName?: string;
-  firstName: string;
-  lastName: string;
+  firstName?: string;
+  lastName?: string;
   nationalCode: string;
   taxId: string;
   customerType: CustomerType;
   address: string;
-  createdAt?: string;
-  updatedAt?: string;
 } 

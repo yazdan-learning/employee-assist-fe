@@ -25,7 +25,11 @@ const initialState: CustomerState = {
 const customerSlice = createSlice({
   name: "customer",
   initialState,
-  reducers: {},
+  reducers: {
+    clearSelectedCustomer: (state) => {
+      state.selectedCustomer = null;
+    }
+  },
   extraReducers: (builder) => {
     builder
       // Fetch Customers
@@ -48,7 +52,33 @@ const customerSlice = createSlice({
       })
       .addCase(fetchCustomerById.fulfilled, (state, action) => {
         state.loading = false;
-        state.selectedCustomer = action.payload;
+        if (action.payload) {
+          state.selectedCustomer = {
+            id: action.payload.id,
+            basicInfo: {
+              isFirm: action.payload.basicInfo.isFirm,
+              companyName: action.payload.basicInfo.companyName,
+              firstName: action.payload.basicInfo.firstName,
+              lastName: action.payload.basicInfo.lastName,
+              nationalCode: action.payload.basicInfo.nationalCode,
+              taxId: action.payload.basicInfo.taxId,
+              customerType: action.payload.basicInfo.customerType
+            },
+            contactInfo: {
+              addresses: action.payload.contactInfo.addresses,
+              phones: action.payload.contactInfo.phones,
+              email: action.payload.contactInfo.email,
+              website: action.payload.contactInfo.website
+            },
+            additionalDetails: {
+              notes: action.payload.additionalDetails.notes,
+              preferredContactMethod: action.payload.additionalDetails.preferredContactMethod,
+              tags: action.payload.additionalDetails.tags
+            }
+          };
+        } else {
+          state.selectedCustomer = null;
+        }
       })
       .addCase(fetchCustomerById.rejected, (state, action) => {
         state.loading = false;
@@ -73,9 +103,7 @@ const customerSlice = createSlice({
           nationalCode: action.payload.basicInfo.nationalCode,
           taxId: action.payload.basicInfo.taxId,
           customerType: action.payload.basicInfo.customerType,
-          address: action.payload.details.address,
-          createdAt: action.payload.createdAt,
-          updatedAt: action.payload.updatedAt
+          address: action.payload.contactInfo.addresses[0]?.address || ''
         };
         state.customers.push(customerInfo);
       })
@@ -102,15 +130,39 @@ const customerSlice = createSlice({
           nationalCode: action.payload.basicInfo.nationalCode,
           taxId: action.payload.basicInfo.taxId,
           customerType: action.payload.basicInfo.customerType,
-          address: action.payload.details.address,
-          createdAt: action.payload.createdAt,
-          updatedAt: action.payload.updatedAt
+          address: action.payload.contactInfo.addresses[0]?.address || ''
         };
         const index = state.customers.findIndex(
           (customer) => customer.id === action.payload.id
         );
         if (index !== -1) {
           state.customers[index] = customerInfo;
+        }
+        // Update selectedCustomer if it's the one being updated
+        if (state.selectedCustomer?.id === action.payload.id) {
+          state.selectedCustomer = {
+            id: action.payload.id,
+            basicInfo: {
+              isFirm: action.payload.basicInfo.isFirm,
+              companyName: action.payload.basicInfo.companyName,
+              firstName: action.payload.basicInfo.firstName,
+              lastName: action.payload.basicInfo.lastName,
+              nationalCode: action.payload.basicInfo.nationalCode,
+              taxId: action.payload.basicInfo.taxId,
+              customerType: action.payload.basicInfo.customerType
+            },
+            contactInfo: {
+              addresses: action.payload.contactInfo.addresses,
+              phones: action.payload.contactInfo.phones,
+              email: action.payload.contactInfo.email,
+              website: action.payload.contactInfo.website
+            },
+            additionalDetails: {
+              notes: action.payload.additionalDetails.notes,
+              preferredContactMethod: action.payload.additionalDetails.preferredContactMethod,
+              tags: action.payload.additionalDetails.tags
+            }
+          };
         }
       })
       .addCase(updateCustomerById.rejected, (state, action) => {
@@ -127,6 +179,10 @@ const customerSlice = createSlice({
         state.customers = state.customers.filter(
           (customer) => customer.id !== action.payload
         );
+        // Clear selectedCustomer if it's the one being deleted
+        if (state.selectedCustomer?.id === action.payload) {
+          state.selectedCustomer = null;
+        }
       })
       .addCase(deleteCustomerById.rejected, (state, action) => {
         state.loading = false;
@@ -135,4 +191,5 @@ const customerSlice = createSlice({
   },
 });
 
+export const { clearSelectedCustomer } = customerSlice.actions;
 export default customerSlice.reducer; 
