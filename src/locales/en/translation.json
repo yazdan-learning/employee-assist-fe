@@ -182,13 +182,12 @@
         "companyName": "Company Name",
         "firstName": "First Name",
         "lastName": "Last Name",
-        "nationalCode": "National Code / Company ID",
+        "nationalCode": "National Code",
+        "companyId": "Company ID",
         "taxId": "Tax ID",
         "customerType": "Customer Type",
         "customerTypes": {
           "NONE": "Select Type",
-          "REGULAR": "Regular",
-          "VIP": "VIP",
           "BUYER": "Buyer",
           "SELLER": "Seller",
           "BOTH": "Both"

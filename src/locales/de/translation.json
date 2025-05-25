@@ -1,0 +1,97 @@
+{
+  "customer": {
+    "form": {
+      "title": {
+        "new": "Neuer Kunde",
+        "edit": "Kunde bearbeiten"
+      },
+      "steps": {
+        "basic": "Grundinformationen",
+        "contact": "Kontaktinformationen",
+        "additional": "Zusätzliche Details"
+      },
+      "buttons": {
+        "previous": "Zurück",
+        "next": "Weiter",
+        "save": "Speichern",
+        "update": "Aktualisieren",
+        "add": "Hinzufügen",
+        "remove": "Entfernen"
+      },
+      "basicInfo": {
+        "isFirm": "Juristische Person",
+        "companyName": "Firmenname",
+        "firstName": "Vorname",
+        "lastName": "Nachname",
+        "nationalCode": "Personalausweisnummer",
+        "companyId": "Firmen-ID",
+        "taxId": "Steuernummer",
+        "customerType": "Kundentyp",
+        "customerTypes": {
+          "NONE": "Typ auswählen",
+          "BUYER": "Käufer",
+          "SELLER": "Verkäufer",
+          "BOTH": "Beide"
+        },
+        "placeholders": {
+          "companyName": "Firmenname eingeben",
+          "firstName": "Vorname eingeben",
+          "lastName": "Nachname eingeben",
+          "nationalCode": "Personalausweisnummer eingeben",
+          "companyId": "Firmen-ID eingeben",
+          "taxId": "Steuernummer eingeben"
+        }
+      },
+      "contactInfo": {
+        "title": "Kontaktinformationen",
+        "addresses": {
+          "title": "Adressen",
+          "add": "Adresse hinzufügen",
+          "remove": "Adresse entfernen",
+          "address": "Adresse",
+          "postalCode": "Postleitzahl",
+          "city": "Stadt",
+          "placeholders": {
+            "address": "Adresse eingeben",
+            "postalCode": "Postleitzahl eingeben",
+            "city": "Stadt eingeben"
+          }
+        },
+        "phones": {
+          "title": "Telefonnummern",
+          "add": "Telefonnummer hinzufügen",
+          "remove": "Telefonnummer entfernen",
+          "placeholder": "+49 123456789"
+        },
+        "email": {
+          "label": "E-Mail",
+          "placeholder": "beispiel@domain.de"
+        },
+        "website": {
+          "label": "Webseite",
+          "placeholder": "www.beispiel.de"
+        }
+      },
+      "additionalDetails": {
+        "title": "Zusätzliche Details",
+        "notes": {
+          "label": "Notizen",
+          "placeholder": "Kundennotizen eingeben"
+        },
+        "preferredContactMethod": {
+          "label": "Bevorzugte Kontaktmethode",
+          "options": {
+            "select": "Auswählen",
+            "phone": "Telefon",
+            "email": "E-Mail",
+            "website": "Webseite"
+          }
+        },
+        "tags": {
+          "label": "Tags",
+          "placeholder": "Tags durch Kommas getrennt eingeben"
+        }
+      }
+    }
+  }
+} 

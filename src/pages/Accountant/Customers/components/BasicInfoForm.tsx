@@ -106,14 +106,20 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({ basicInfo, onChange }) =>
         <Row>
           <Col md={6}>
             <FormGroup>
-              <Label for="nationalCode">{t('customer.form.basicInfo.nationalCode')}</Label>
+              <Label for="nationalCode">
+                {basicInfo.isFirm 
+                  ? t('customer.form.basicInfo.companyId')
+                  : t('customer.form.basicInfo.nationalCode')}
+              </Label>
               <Input
                 type="text"
                 id="nationalCode"
                 name="nationalCode"
                 value={basicInfo.nationalCode}
                 onChange={handleChange}
-                placeholder={t('customer.form.basicInfo.placeholders.nationalCode')}
+                placeholder={basicInfo.isFirm 
+                  ? t('customer.form.basicInfo.placeholders.companyId')
+                  : t('customer.form.basicInfo.placeholders.nationalCode')}
               />
             </FormGroup>
           </Col>
