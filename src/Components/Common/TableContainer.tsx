@@ -1,6 +1,8 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { Row, Table, Button, Col } from "reactstrap";
 import { Link } from "react-router-dom";
+import RaDropdown, { DropdownOption } from "./RaDropdown";
+import { useTranslation } from "react-i18next";
 
 import {
   Column,
@@ -139,6 +141,7 @@ const TableContainer = ({
   totalPages = 1,
   loading = false,
 }: TableContainerProps) => {
+  const { t } = useTranslation();
   const [globalFilter, setGlobalFilter] = useState("");
 
   // Handle search with debounce
@@ -183,22 +186,26 @@ const TableContainer = ({
     }
   };
 
+  const pageSizeOptions: DropdownOption[] = [
+    { value: "10", label: t("Show 10") },
+    { value: "20", label: t("Show 20") },
+    { value: "30", label: t("Show 30") },
+    { value: "40", label: t("Show 40") },
+    { value: "50", label: t("Show 50") }
+  ];
+
   return (
     <Fragment>
       <Row className="mb-2">
         {isCustomPageSize && (
           <Col sm={2}>
-            <select
-              className="form-select pageSize mb-2"
-              value={pageSize}
-              onChange={(e) => onPageSizeChange?.(Number(e.target.value))}
-            >
-              {[10, 20, 30, 40, 50].map((size) => (
-                <option key={size} value={size}>
-                  Show {size}
-                </option>
-              ))}
-            </select>
+            <RaDropdown
+              options={pageSizeOptions}
+              value={pageSize.toString()}
+              onChange={(value) => onPageSizeChange?.(Number(value))}
+              showClear={false}
+              className="mb-2"
+            />
           </Col>
         )}
 
