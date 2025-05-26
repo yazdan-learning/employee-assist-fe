@@ -175,7 +175,9 @@
         "save": "Save",
         "update": "Update",
         "add": "Add",
-        "remove": "Remove"
+        "remove": "Remove",
+        "edit": "Edit",
+        "actions": "Actions"
       },
       "basicInfo": {
         "isFirm": "Legal Entity",
@@ -206,21 +208,17 @@
         "addresses": {
           "title": "Addresses",
           "add": "Add Address",
+          "edit": "Edit Address",
           "remove": "Remove Address",
           "address": "Address",
           "postalCode": "Postal Code",
-          "city": "City",
-          "placeholders": {
-            "address": "Enter address",
-            "postalCode": "Enter postal code",
-            "city": "Enter city"
-          }
+          "city": "City"
         },
         "phones": {
           "title": "Phone Numbers",
           "add": "Add Phone Number",
           "remove": "Remove Phone Number",
-          "placeholder": "+98 9123456789"
+          "placeholder": "+1 234 567 8900"
         },
         "email": {
           "label": "Email",
@@ -229,7 +227,23 @@
         "website": {
           "label": "Website",
           "placeholder": "www.example.com"
-        }
+        },
+        "buttons": {
+          "addAddress": "Add Address",
+          "addPhone": "Add Phone Number",
+          "remove": "Remove"
+        },
+        "placeholders": {
+          "phone": "+1 234 567 8900",
+          "email": "example@domain.com",
+          "website": "www.example.com",
+          "address": "Enter address",
+          "postalCode": "Enter postal code",
+          "city": "Enter city"
+        },
+        "address": "Address",
+        "postalCode": "Postal Code",
+        "city": "City"
       },
       "additionalDetails": {
         "title": "Additional Details",

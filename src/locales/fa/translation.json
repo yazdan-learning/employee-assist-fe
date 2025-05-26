@@ -229,7 +229,9 @@
         "save": "ثبت",
         "update": "بروزرسانی",
         "add": "افزودن",
-        "remove": "حذف"
+        "remove": "حذف",
+        "edit": "ویرایش",
+        "actions": "عملیات"
       },
       "basicInfo": {
         "isFirm": "مشتری حقوقی",
@@ -260,15 +262,11 @@
         "addresses": {
           "title": "آدرس‌ها",
           "add": "افزودن آدرس",
+          "edit": "ویرایش آدرس",
           "remove": "حذف آدرس",
           "address": "آدرس",
           "postalCode": "کد پستی",
-          "city": "شهر",
-          "placeholders": {
-            "address": "آدرس را وارد کنید",
-            "postalCode": "کد پستی را وارد کنید",
-            "city": "شهر را وارد کنید"
-          }
+          "city": "شهر"
         },
         "phones": {
           "title": "شماره‌های تماس",
@@ -283,7 +281,23 @@
         "website": {
           "label": "وب‌سایت",
           "placeholder": "www.example.com"
-        }
+        },
+        "buttons": {
+          "addAddress": "افزودن آدرس",
+          "addPhone": "افزودن شماره تماس",
+          "remove": "حذف"
+        },
+        "placeholders": {
+          "phone": "+98 9123456789",
+          "email": "example@domain.com",
+          "website": "www.example.com",
+          "address": "آدرس را وارد کنید",
+          "postalCode": "کد پستی را وارد کنید",
+          "city": "شهر را وارد کنید"
+        },
+        "address": "آدرس",
+        "postalCode": "کد پستی",
+        "city": "شهر"
       },
       "additionalDetails": {
         "title": "اطلاعات تکمیلی",

@@ -29,9 +29,10 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ customer, isEdit = false })
       customerType: CustomerType.NONE
     },
     contactInfo: {
-      addresses: [{ address: '', postalCode: '', city: '' }],
-      phones: [''],
-      email: ''
+      addresses: [],
+      phones: [],
+      email: '',
+      website: ''
     },
     additionalDetails: {}
   });
