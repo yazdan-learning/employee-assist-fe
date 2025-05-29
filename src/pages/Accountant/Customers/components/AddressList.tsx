@@ -65,9 +65,10 @@ const AddressList: React.FC<{ addresses: Address[]; onChange: (addresses: Addres
     {
       header: t('customer.form.contactInfo.address'),
       accessorKey: 'address',
-      enableColumnFilter: false,
+      enableColumnFilter: true,
       enableSorting: false,
       cell: (row: any) => row.getValue(),
+      size: 40,
     },
     {
       header: t('customer.form.contactInfo.postalCode'),
@@ -75,6 +76,7 @@ const AddressList: React.FC<{ addresses: Address[]; onChange: (addresses: Addres
       enableColumnFilter: false,
       enableSorting: false,
       cell: (row: any) => row.getValue(),
+      size: 15,
     },
     {
       header: t('customer.form.contactInfo.city'),
@@ -82,12 +84,14 @@ const AddressList: React.FC<{ addresses: Address[]; onChange: (addresses: Addres
       enableColumnFilter: false,
       enableSorting: false,
       cell: (row: any) => row.getValue(),
+      size: 20,
     },
     {
       header: t('customer.form.buttons.actions'),
       accessorKey: 'actions',
       enableColumnFilter: false,
       enableSorting: false,
+      size: 10,
       cell: (row: any) => {
         const index = row.row.index;
         return (

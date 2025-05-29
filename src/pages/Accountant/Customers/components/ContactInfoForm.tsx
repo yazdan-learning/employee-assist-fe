@@ -103,12 +103,14 @@ const ContactInfoForm: React.FC<ContactInfoFormProps> = ({ contactInfo, onChange
       enableColumnFilter: false,
       enableSorting: false,
       cell: (row: any) => row.getValue(),
+      size: 30,
     },
     {
       header: t('customer.form.buttons.actions'),
       accessorKey: 'actions',
       enableColumnFilter: false,
       enableSorting: false,
+      size: 10,
       cell: (row: any) => {
         const index = row.row.index;
         return (

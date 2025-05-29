@@ -5,44 +5,15 @@ import RaDropdown, { DropdownOption } from "./RaDropdown";
 import { useTranslation } from "react-i18next";
 
 import {
-  Column,
-  Table as ReactTable,
-  ColumnFiltersState,
-  FilterFn,
   useReactTable,
   getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
   flexRender,
 } from "@tanstack/react-table";
 
-import { rankItem } from "@tanstack/match-sorter-utils";
-import JobListGlobalFilter from "./GlobalSearchFilter";
+
 
 // Column Filter
-const Filter = ({
-  column,
-}: {
-  column: Column<any, unknown>;
-  table: ReactTable<any>;
-}) => {
-  const columnFilterValue = column.getFilterValue();
 
-  return (
-    <>
-      <DebouncedInput
-        type="text"
-        value={(columnFilterValue ?? "") as string}
-        onChange={(value) => column.setFilterValue(value)}
-        placeholder="Search..."
-        className="w-36 border shadow rounded"
-        list={column.id + "list"}
-      />
-      <div className="h-1" />
-    </>
-  );
-};
 
 // Global Filter
 const DebouncedInput = ({
@@ -129,7 +100,6 @@ const TableContainer = ({
   isAddButton,
   isCustomPageSize,
   handleUserClick,
-  isJobListGlobalFilter,
   // Server-side props
   onSearch,
   onSort,
