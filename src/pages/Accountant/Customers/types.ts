@@ -7,12 +7,15 @@ export enum CustomerType {
 
 export enum Gender {
   MALE = 1,
-  FEMALE = 2,
+  FEMALE = 2
+  
 }
 
 export enum MaritalStatus {
   SINGLE = 1,
   MARRIED = 2,
+  DIVORCED = 3,
+  WIDOWED = 4,
 }
 
 export interface Address {
@@ -58,7 +61,7 @@ export interface Customer {
 
 // For list view and basic info display
 export interface CustomerInfo {
-  id: string;
+  id: number;
   name: string;
   isFirm: boolean;
   companyName?: string;

@@ -30,43 +30,55 @@ interface BasicInfoFormProps {
 const BasicInfoForm: React.FC<BasicInfoFormProps> = ({ data, onChange }) => {
   const { t } = useTranslation();
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value, type } = e.target;
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, checked } = e.target;
     onChange({
       ...data,
-      [name]: type === "number" ? Number(value) : value,
+      [name]:
+        type === "checkbox"
+          ? checked
+          : type === "number"
+          ? Number(value)
+          : value,
     });
   };
 
   const handleDropdownChange = (field: string) => (value: any) => {
     onChange({
       ...data,
-      [field]: value,
+      [field]: value === "" ? null : Number(value),
     });
   };
 
-  const customerTypeOptions: DropdownOption[] = Object.values(CustomerType).map(
+  const getEnumKeys = (enumObj: any) => {
+    return Object.keys(enumObj).filter((key) => isNaN(Number(key)));
+  };
+
+  const customerTypeOptions: DropdownOption[] = getEnumKeys(CustomerType).map(
     (type) => ({
-      value: type.toString(),
+      value: CustomerType[type].toString(),
       label: t(`customer.form.basicInfo.customerTypes.${type}`),
     })
   );
 
-  const genderOptions: DropdownOption[] = Object.values(Gender).map(
-    (gender) => ({
-      value: gender.toString(),
+  const genderOptions: DropdownOption[] = [
+    { value: "", label: t("customer.form.basicInfo.gender.placeholder") },
+    ...getEnumKeys(Gender).map((gender) => ({
+      value: Gender[gender].toString(),
       label: t(`customer.form.basicInfo.gender.${gender}`),
-    })
-  );
+    })),
+  ];
 
-  const maritalStatusOptions: DropdownOption[] = Object.values(
-    MaritalStatus
-  ).map((status) => ({
-    value: status.toString(),
-    label: t(`customer.form.basicInfo.maritalStatus.${status}`),
-  }));
+  const maritalStatusOptions: DropdownOption[] = [
+    {
+      value: "",
+      label: t("customer.form.basicInfo.maritalStatus.placeholder"),
+    },
+    ...getEnumKeys(MaritalStatus).map((status) => ({
+      value: MaritalStatus[status].toString(),
+      label: t(`customer.form.basicInfo.maritalStatus.${status}`),
+    })),
+  ];
 
   return (
     <Card>
@@ -75,17 +87,20 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({ data, onChange }) => {
 
         <Row className="mb-3">
           <Col md={12}>
-            <FormGroup check>
-              <Input
-                type="checkbox"
-                id="isCompany"
-                name="isCompany"
-                checked={data.isCompany}
-                onChange={handleChange}
-              />
-              <Label check for="isCompany">
-                {t("customer.form.basicInfo.isCompany")}
-              </Label>
+            <FormGroup>
+              <div className="form-check">
+                <Input
+                  type="checkbox"
+                  className="form-check-input"
+                  id="isCompany"
+                  name="isCompany"
+                  checked={data.isCompany}
+                  onChange={handleChange}
+                />
+                <Label className="form-check-label" htmlFor="isCompany">
+                  {t("customer.form.basicInfo.isCompany")}
+                </Label>
+              </div>
             </FormGroup>
           </Col>
         </Row>
@@ -93,14 +108,22 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({ data, onChange }) => {
         <Row className="mb-3">
           <Col md={12}>
             <FormGroup>
-              <Label for="title">{t("customer.form.basicInfo.title")}</Label>
+              <Label for="title">
+                {data.isCompany
+                  ? t("customer.form.basicInfo.companyName")
+                  : t("customer.form.basicInfo.title")}
+              </Label>
               <Input
                 type="text"
                 id="title"
                 name="title"
                 value={data.title}
                 onChange={handleChange}
-                placeholder={t("customer.form.basicInfo.placeholders.title")}
+                placeholder={
+                  data.isCompany
+                    ? t("customer.form.basicInfo.placeholders.companyName")
+                    : t("customer.form.basicInfo.placeholders.title")
+                }
               />
             </FormGroup>
           </Col>
@@ -140,6 +163,25 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({ data, onChange }) => {
                     onChange={handleChange}
                     placeholder={t(
                       "customer.form.basicInfo.placeholders.registrationNumber"
+                    )}
+                  />
+                </FormGroup>
+              </Col>
+            </Row>
+            <Row className="mb-3">
+              <Col md={6}>
+                <FormGroup>
+                  <Label for="taxId">
+                    {t("customer.form.basicInfo.taxId")}
+                  </Label>
+                  <Input
+                    type="text"
+                    id="taxId"
+                    name="taxId"
+                    value={data.taxId}
+                    onChange={handleChange}
+                    placeholder={t(
+                      "customer.form.basicInfo.placeholders.taxId"
                     )}
                   />
                 </FormGroup>
@@ -194,10 +236,8 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({ data, onChange }) => {
                   </Label>
                   <RaDropdown
                     options={genderOptions}
-                    value={data.gender.toString()}
-                    onChange={(value) =>
-                      handleDropdownChange("gender")(Number(value))
-                    }
+                    value={data.gender?.toString() || ""}
+                    onChange={(value) => handleDropdownChange("gender")(value)}
                     placeholder={t(
                       "customer.form.basicInfo.gender.placeholder"
                     )}
@@ -211,12 +251,49 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({ data, onChange }) => {
                   </Label>
                   <RaDropdown
                     options={maritalStatusOptions}
-                    value={data.maritalStatus.toString()}
+                    value={data.maritalStatus?.toString() || ""}
                     onChange={(value) =>
-                      handleDropdownChange("maritalStatus")(Number(value))
+                      handleDropdownChange("maritalStatus")(value)
                     }
                     placeholder={t(
                       "customer.form.basicInfo.maritalStatus.placeholder"
+                    )}
+                  />
+                </FormGroup>
+              </Col>
+            </Row>
+
+            <Row className="mb-3">
+              <Col md={6}>
+                <FormGroup>
+                  <Label for="nationalId">
+                    {t("customer.form.basicInfo.nationalCode")}
+                  </Label>
+                  <Input
+                    type="text"
+                    id="nationalId"
+                    name="nationalId"
+                    value={data.nationalId}
+                    onChange={handleChange}
+                    placeholder={t(
+                      "customer.form.basicInfo.placeholders.nationalCode"
+                    )}
+                  />
+                </FormGroup>
+              </Col>
+              <Col md={6}>
+                <FormGroup>
+                  <Label for="taxId">
+                    {t("customer.form.basicInfo.taxId")}
+                  </Label>
+                  <Input
+                    type="text"
+                    id="taxId"
+                    name="taxId"
+                    value={data.taxId}
+                    onChange={handleChange}
+                    placeholder={t(
+                      "customer.form.basicInfo.placeholders.taxId"
                     )}
                   />
                 </FormGroup>
@@ -244,43 +321,6 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({ data, onChange }) => {
             </Row>
           </>
         )}
-
-        <Row className="mb-3">
-          <Col md={6}>
-            <FormGroup>
-              <Label for="nationalId">
-                {data.isCompany
-                  ? t("customer.form.basicInfo.companyId")
-                  : t("customer.form.basicInfo.nationalId")}
-              </Label>
-              <Input
-                type="text"
-                id="nationalId"
-                name="nationalId"
-                value={data.nationalId}
-                onChange={handleChange}
-                placeholder={
-                  data.isCompany
-                    ? t("customer.form.basicInfo.placeholders.companyId")
-                    : t("customer.form.basicInfo.placeholders.nationalId")
-                }
-              />
-            </FormGroup>
-          </Col>
-          <Col md={6}>
-            <FormGroup>
-              <Label for="taxId">{t("customer.form.basicInfo.taxId")}</Label>
-              <Input
-                type="text"
-                id="taxId"
-                name="taxId"
-                value={data.taxId}
-                onChange={handleChange}
-                placeholder={t("customer.form.basicInfo.placeholders.taxId")}
-              />
-            </FormGroup>
-          </Col>
-        </Row>
 
         <Row className="mb-3">
           <Col md={6}>

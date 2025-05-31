@@ -104,7 +104,6 @@ const CustomerList: React.FC = () => {
     }
   };
 
-
   const columns = useMemo(
     () => [
       {
@@ -171,7 +170,7 @@ const CustomerList: React.FC = () => {
     [t, navigate]
   );
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: number) => {
     if (window.confirm(t("Are you sure you want to delete this customer?"))) {
       try {
         await dispatch(deleteCustomerById(id));
@@ -185,7 +184,10 @@ const CustomerList: React.FC = () => {
   return (
     <div className="page-content">
       <Container fluid>
-        <Breadcrumbs title={t("Customers")} breadcrumbItem={t("Customer List")} />
+        <Breadcrumbs
+          title={t("Customers")}
+          breadcrumbItem={t("Customer List")}
+        />
         <TableContainer
           columns={columns}
           data={customers || []}

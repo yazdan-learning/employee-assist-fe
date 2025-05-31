@@ -180,14 +180,32 @@
         "actions": "Actions"
       },
       "basicInfo": {
-        "isFirm": "Legal Entity",
+        "isCompany": "Legal Entity",
         "companyName": "Company Name",
+        "title": "Title",
         "firstName": "First Name",
         "lastName": "Last Name",
         "nationalCode": "National Code",
-        "companyId": "Company ID",
         "taxId": "Tax ID",
+        "tradeChamberNumber": "Trade Chamber Number",
+        "registrationNumber": "Registration Number",
         "customerType": "Customer Type",
+        "customerRiskLimit": "Risk Limit",
+        "nickname": "Nickname",
+        "gender": {
+          "label": "Gender",
+          "placeholder": "Select gender",
+          "MALE": "Male",
+          "FEMALE": "Female"
+        },
+        "maritalStatus": {
+          "label": "Marital Status",
+          "placeholder": "Select marital status",
+          "SINGLE": "Single",
+          "MARRIED": "Married",
+          "DIVORCED": "Divorced",
+          "WIDOWED": "Widowed"
+        },
         "customerTypes": {
           "NONE": "Select Type",
           "BUYER": "Buyer",
@@ -195,12 +213,16 @@
           "BOTH": "Both"
         },
         "placeholders": {
+          "title": "Enter title",
           "companyName": "Enter company name",
           "firstName": "Enter first name",
           "lastName": "Enter last name",
           "nationalCode": "Enter national code",
-          "companyId": "Enter company ID",
-          "taxId": "Enter tax ID"
+          "taxId": "Enter tax ID",
+          "tradeChamberNumber": "Enter trade chamber number",
+          "registrationNumber": "Enter registration number",
+          "customerRiskLimit": "Enter risk limit",
+          "nickname": "Enter nickname"
         }
       },
       "contactInfo": {

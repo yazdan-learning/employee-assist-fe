@@ -169,6 +169,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
         await dispatch(
           updateCustomerById({
             ...customerData,
+            id: customer.id, // Use number ID directly
           })
         );
       } else {

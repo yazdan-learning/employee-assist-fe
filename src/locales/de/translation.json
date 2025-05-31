@@ -21,14 +21,32 @@
         "actions": "Aktionen"
       },
       "basicInfo": {
-        "isFirm": "Juristische Person",
+        "isCompany": "Juristische Person",
         "companyName": "Firmenname",
+        "title": "Titel",
         "firstName": "Vorname",
         "lastName": "Nachname",
         "nationalCode": "Personalausweisnummer",
-        "companyId": "Firmen-ID",
         "taxId": "Steuernummer",
+        "tradeChamberNumber": "Handelskammernummer",
+        "registrationNumber": "Registrierungsnummer",
         "customerType": "Kundentyp",
+        "customerRiskLimit": "Risikolimit",
+        "nickname": "Spitzname",
+        "gender": {
+          "label": "Geschlecht",
+          "placeholder": "Geschlecht auswählen",
+          "MALE": "Männlich",
+          "FEMALE": "Weiblich"
+        },
+        "maritalStatus": {
+          "label": "Familienstand",
+          "placeholder": "Familienstand auswählen",
+          "SINGLE": "Ledig",
+          "MARRIED": "Verheiratet",
+          "DIVORCED": "Geschieden",
+          "WIDOWED": "Verwitwet"
+        },
         "customerTypes": {
           "NONE": "Typ auswählen",
           "BUYER": "Käufer",
@@ -36,12 +54,16 @@
           "BOTH": "Beide"
         },
         "placeholders": {
+          "title": "Titel eingeben",
           "companyName": "Firmenname eingeben",
           "firstName": "Vorname eingeben",
           "lastName": "Nachname eingeben",
           "nationalCode": "Personalausweisnummer eingeben",
-          "companyId": "Firmen-ID eingeben",
-          "taxId": "Steuernummer eingeben"
+          "taxId": "Steuernummer eingeben",
+          "tradeChamberNumber": "Handelskammernummer eingeben",
+          "registrationNumber": "Registrierungsnummer eingeben",
+          "customerRiskLimit": "Risikolimit eingeben",
+          "nickname": "Spitzname eingeben"
         }
       },
       "contactInfo": {

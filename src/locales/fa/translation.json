@@ -215,11 +215,11 @@
   "customer": {
     "form": {
       "title": {
-        "new": "ثبت مشتری جدید",
+        "new": "مشتری جدید",
         "edit": "ویرایش مشتری"
       },
       "steps": {
-        "basic": "اطلاعات پایه",
+        "basic": "اطلاعات اولیه",
         "contact": "اطلاعات تماس",
         "additional": "اطلاعات تکمیلی"
       },
@@ -234,14 +234,32 @@
         "actions": "عملیات"
       },
       "basicInfo": {
-        "isFirm": "مشتری حقوقی",
+        "isCompany": "شخص حقوقی",
         "companyName": "نام شرکت",
+        "title": "عنوان",
         "firstName": "نام",
         "lastName": "نام خانوادگی",
         "nationalCode": "کد ملی",
-        "companyId": "شناسه ملی",
-        "taxId": "شماره اقتصادی",
+        "taxId": "کد مالیاتی",
+        "tradeChamberNumber": "شماره اتاق بازرگانی",
+        "registrationNumber": "شماره ثبت",
         "customerType": "نوع مشتری",
+        "customerRiskLimit": "حد ریسک",
+        "nickname": "نام مستعار",
+        "gender": {
+          "label": "جنسیت",
+          "placeholder": "جنسیت را انتخاب کنید",
+          "MALE": "مرد",
+          "FEMALE": "زن"
+        },
+        "maritalStatus": {
+          "label": "وضعیت تأهل",
+          "placeholder": "وضعیت تأهل را انتخاب کنید",
+          "SINGLE": "مجرد",
+          "MARRIED": "متأهل",
+          "DIVORCED": "مطلقه",
+          "WIDOWED": "بیوه"
+        },
         "customerTypes": {
           "NONE": "انتخاب نوع",
           "BUYER": "خریدار",
@@ -249,12 +267,16 @@
           "BOTH": "هر دو"
         },
         "placeholders": {
+          "title": "عنوان را وارد کنید",
           "companyName": "نام شرکت را وارد کنید",
           "firstName": "نام را وارد کنید",
           "lastName": "نام خانوادگی را وارد کنید",
           "nationalCode": "کد ملی را وارد کنید",
-          "companyId": "شناسه ملی را وارد کنید",
-          "taxId": "شماره اقتصادی را وارد کنید"
+          "taxId": "کد مالیاتی را وارد کنید",
+          "tradeChamberNumber": "شماره اتاق بازرگانی را وارد کنید",
+          "registrationNumber": "شماره ثبت را وارد کنید",
+          "customerRiskLimit": "حد ریسک را وارد کنید",
+          "nickname": "نام مستعار را وارد کنید"
         }
       },
       "contactInfo": {

@@ -22,6 +22,19 @@ const initialState: CustomerState = {
   error: null,
 };
 
+// Helper function to transform Customer to CustomerInfo
+const transformToCustomerInfo = (customer: Customer): CustomerInfo => ({
+  id: customer.id || 0,  // Keep as number, default to 0 if undefined
+  name: customer.isCompany ? customer.title : `${customer.firstName} ${customer.lastName}`,
+  isFirm: customer.isCompany,
+  companyName: customer.isCompany ? customer.title : undefined,
+  firstName: !customer.isCompany ? customer.firstName : undefined,
+  lastName: !customer.isCompany ? customer.lastName : undefined,
+  nationalCode: customer.nationalId,
+  taxId: customer.taxId,
+  customerType: customer.customerType
+});
+
 const customerSlice = createSlice({
   name: "customer",
   initialState,
@@ -39,7 +52,7 @@ const customerSlice = createSlice({
       })
       .addCase(fetchCustomers.fulfilled, (state, action) => {
         state.loading = false;
-        state.customers = action.payload.data;
+        state.customers = action.payload.data.map(transformToCustomerInfo);
       })
       .addCase(fetchCustomers.rejected, (state, action) => {
         state.loading = false;
@@ -52,33 +65,7 @@ const customerSlice = createSlice({
       })
       .addCase(fetchCustomerById.fulfilled, (state, action) => {
         state.loading = false;
-        if (action.payload) {
-          state.selectedCustomer = {
-            id: action.payload.id,
-            basicInfo: {
-              isFirm: action.payload.basicInfo.isFirm,
-              companyName: action.payload.basicInfo.companyName,
-              firstName: action.payload.basicInfo.firstName,
-              lastName: action.payload.basicInfo.lastName,
-              nationalCode: action.payload.basicInfo.nationalCode,
-              taxId: action.payload.basicInfo.taxId,
-              customerType: action.payload.basicInfo.customerType
-            },
-            contactInfo: {
-              addresses: action.payload.contactInfo.addresses,
-              phones: action.payload.contactInfo.phones,
-              email: action.payload.contactInfo.email,
-              website: action.payload.contactInfo.website
-            },
-            additionalDetails: {
-              notes: action.payload.additionalDetails.notes,
-              preferredContactMethod: action.payload.additionalDetails.preferredContactMethod,
-              tags: action.payload.additionalDetails.tags
-            }
-          };
-        } else {
-          state.selectedCustomer = null;
-        }
+        state.selectedCustomer = action.payload;
       })
       .addCase(fetchCustomerById.rejected, (state, action) => {
         state.loading = false;
@@ -91,21 +78,7 @@ const customerSlice = createSlice({
       })
       .addCase(createCustomer.fulfilled, (state, action) => {
         state.loading = false;
-        const customerInfo: CustomerInfo = {
-          id: action.payload.id,
-          name: action.payload.basicInfo.isFirm 
-            ? action.payload.basicInfo.companyName || ''
-            : `${action.payload.basicInfo.firstName} ${action.payload.basicInfo.lastName}`,
-          isFirm: action.payload.basicInfo.isFirm,
-          companyName: action.payload.basicInfo.companyName,
-          firstName: action.payload.basicInfo.firstName,
-          lastName: action.payload.basicInfo.lastName,
-          nationalCode: action.payload.basicInfo.nationalCode,
-          taxId: action.payload.basicInfo.taxId,
-          customerType: action.payload.basicInfo.customerType,
-          address: action.payload.contactInfo.addresses[0]?.address || ''
-        };
-        state.customers.push(customerInfo);
+        state.customers.push(transformToCustomerInfo(action.payload));
       })
       .addCase(createCustomer.rejected, (state, action) => {
         state.loading = false;
@@ -118,20 +91,7 @@ const customerSlice = createSlice({
       })
       .addCase(updateCustomerById.fulfilled, (state, action) => {
         state.loading = false;
-        const customerInfo: CustomerInfo = {
-          id: action.payload.id,
-          name: action.payload.basicInfo.isFirm 
-            ? action.payload.basicInfo.companyName || ''
-            : `${action.payload.basicInfo.firstName} ${action.payload.basicInfo.lastName}`,
-          isFirm: action.payload.basicInfo.isFirm,
-          companyName: action.payload.basicInfo.companyName,
-          firstName: action.payload.basicInfo.firstName,
-          lastName: action.payload.basicInfo.lastName,
-          nationalCode: action.payload.basicInfo.nationalCode,
-          taxId: action.payload.basicInfo.taxId,
-          customerType: action.payload.basicInfo.customerType,
-          address: action.payload.contactInfo.addresses[0]?.address || ''
-        };
+        const customerInfo = transformToCustomerInfo(action.payload);
         const index = state.customers.findIndex(
           (customer) => customer.id === action.payload.id
         );
@@ -140,29 +100,7 @@ const customerSlice = createSlice({
         }
         // Update selectedCustomer if it's the one being updated
         if (state.selectedCustomer?.id === action.payload.id) {
-          state.selectedCustomer = {
-            id: action.payload.id,
-            basicInfo: {
-              isFirm: action.payload.basicInfo.isFirm,
-              companyName: action.payload.basicInfo.companyName,
-              firstName: action.payload.basicInfo.firstName,
-              lastName: action.payload.basicInfo.lastName,
-              nationalCode: action.payload.basicInfo.nationalCode,
-              taxId: action.payload.basicInfo.taxId,
-              customerType: action.payload.basicInfo.customerType
-            },
-            contactInfo: {
-              addresses: action.payload.contactInfo.addresses,
-              phones: action.payload.contactInfo.phones,
-              email: action.payload.contactInfo.email,
-              website: action.payload.contactInfo.website
-            },
-            additionalDetails: {
-              notes: action.payload.additionalDetails.notes,
-              preferredContactMethod: action.payload.additionalDetails.preferredContactMethod,
-              tags: action.payload.additionalDetails.tags
-            }
-          };
+          state.selectedCustomer = action.payload;
         }
       })
       .addCase(updateCustomerById.rejected, (state, action) => {
