@@ -1,247 +1,122 @@
-import React, { useState, useMemo } from 'react';
-import { Row, Col, Card, CardBody, Form, FormGroup, Label, Input, Button, Container } from 'reactstrap';
-import { useTranslation } from 'react-i18next';
-import { CustomerContactInfo } from '../types';
-import AddressList from './AddressList';
-import TableContainer from '../../../../Components/Common/TableContainer';
+import React from "react";
+import { Row, Col, FormGroup, Label, Input } from "reactstrap";
+import { useTranslation } from "react-i18next";
+import { Address } from "../types";
+import AddressList from "./AddressList";
 
-interface ContactInfoFormProps {
-  contactInfo: CustomerContactInfo;
-  onChange: (contactInfo: CustomerContactInfo) => void;
+export interface ContactInfoFormData {
+  phone: string[];
+  fax?: string;
+  email: string;
+  website?: string;
+  licensePlate?: string;
+  addresses: Address[];
 }
 
-const ContactInfoForm: React.FC<ContactInfoFormProps> = ({ contactInfo, onChange }) => {
+export interface ContactInfoFormProps {
+  data: ContactInfoFormData;
+  onChange: (data: ContactInfoFormData) => void;
+}
+
+const ContactInfoForm: React.FC<ContactInfoFormProps> = ({
+  data,
+  onChange,
+}) => {
   const { t } = useTranslation();
-  const [showPhoneForm, setShowPhoneForm] = useState(false);
-  const [editingPhoneIndex, setEditingPhoneIndex] = useState<number | null>(null);
-  const [formPhone, setFormPhone] = useState('');
 
-  const handleAddressesChange = (addresses: { address: string; postalCode: string; city: string }[]) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
     onChange({
-      ...contactInfo,
-      addresses
+      ...data,
+      [name]: value,
     });
   };
 
-  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormPhone(e.target.value);
-  };
-
-  const handleAddPhone = () => {
-    if (formPhone) {
-      if (editingPhoneIndex !== null) {
-        // Update existing phone
-        const newPhones = [...contactInfo.phones];
-        newPhones[editingPhoneIndex] = formPhone;
-        onChange({
-          ...contactInfo,
-          phones: newPhones
-        });
-        setEditingPhoneIndex(null);
-      } else {
-        // Add new phone
-        onChange({
-          ...contactInfo,
-          phones: [...contactInfo.phones, formPhone]
-        });
-      }
-      // Clear form and hide it
-      setFormPhone('');
-      setShowPhoneForm(false);
-    }
-  };
-
-  const handleEditPhone = (index: number) => {
-    setFormPhone(contactInfo.phones[index]);
-    setEditingPhoneIndex(index);
-    setShowPhoneForm(true);
-  };
-
-  const handleRemovePhone = (index: number) => {
-    const newPhones = contactInfo.phones.filter((_, i) => i !== index);
+  const handleAddressesChange = (addresses: Address[]) => {
     onChange({
-      ...contactInfo,
-      phones: newPhones
-    });
-    if (editingPhoneIndex === index) {
-      setEditingPhoneIndex(null);
-      setFormPhone('');
-      setShowPhoneForm(false);
-    }
-  };
-
-  const handleCancelPhone = () => {
-    setEditingPhoneIndex(null);
-    setFormPhone('');
-    setShowPhoneForm(false);
-  };
-
-  const handleAddNewPhone = () => {
-    setEditingPhoneIndex(null);
-    setFormPhone('');
-    setShowPhoneForm(true);
-  };
-
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange({
-      ...contactInfo,
-      email: e.target.value
+      ...data,
+      addresses,
     });
   };
 
-  const handleWebsiteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhoneChange = (phone: string[]) => {
     onChange({
-      ...contactInfo,
-      website: e.target.value
+      ...data,
+      phone,
     });
   };
-
-  const phoneColumns = useMemo(() => [
-    {
-      header: t('customer.form.contactInfo.phones.title'),
-      accessorKey: 'phone',
-      enableColumnFilter: false,
-      enableSorting: false,
-      cell: (row: any) => row.getValue(),
-      size: 30,
-    },
-    {
-      header: t('customer.form.buttons.actions'),
-      accessorKey: 'actions',
-      enableColumnFilter: false,
-      enableSorting: false,
-      size: 10,
-      cell: (row: any) => {
-        const index = row.row.index;
-        return (
-          <div className="d-flex gap-3">
-            <button
-              className="btn btn-sm btn-soft-primary"
-              onClick={() => handleEditPhone(index)}
-              disabled={showPhoneForm}
-            >
-              <i className="fas fa-edit font-size-14"></i>
-            </button>
-            <button
-              className="btn btn-sm btn-soft-danger"
-              onClick={() => handleRemovePhone(index)}
-              disabled={showPhoneForm}
-            >
-              <i className="fas fa-trash-alt font-size-14"></i>
-            </button>
-          </div>
-        );
-      },
-    },
-  ], [t, showPhoneForm, contactInfo.phones]);
 
   return (
-    <Card>
-      <CardBody>
-        <h4 className="card-title mb-4">{t('customer.form.steps.contact')}</h4>
-        
+    <div>
+      <h5>{t("customer.form.contactInfo.title")}</h5>
+      <Row>
+        <Col md={6}>
+          <FormGroup>
+            <Label>{t("customer.form.contactInfo.email")}</Label>
+            <Input
+              type="email"
+              name="email"
+              value={data.email}
+              onChange={handleChange}
+              placeholder={t("customer.form.contactInfo.placeholders.email")}
+            />
+          </FormGroup>
+        </Col>
+        <Col md={6}>
+          <FormGroup>
+            <Label>{t("customer.form.contactInfo.website")}</Label>
+            <Input
+              type="text"
+              name="website"
+              value={data.website || ""}
+              onChange={handleChange}
+              placeholder={t("customer.form.contactInfo.placeholders.website")}
+            />
+          </FormGroup>
+        </Col>
+        <Col md={6}>
+          <FormGroup>
+            <Label>{t("customer.form.contactInfo.fax")}</Label>
+            <Input
+              type="text"
+              name="fax"
+              value={data.fax || ""}
+              onChange={handleChange}
+              placeholder={t("customer.form.contactInfo.placeholders.fax")}
+            />
+          </FormGroup>
+        </Col>
+        <Col md={6}>
+          <FormGroup>
+            <Label>{t("customer.form.contactInfo.licensePlate")}</Label>
+            <Input
+              type="text"
+              name="licensePlate"
+              value={data.licensePlate || ""}
+              onChange={handleChange}
+              placeholder={t(
+                "customer.form.contactInfo.placeholders.licensePlate"
+              )}
+            />
+          </FormGroup>
+        </Col>
+      </Row>
+
+      {/* Phone Numbers */}
+      <div className="mt-4">
+        <h6>{t("customer.form.contactInfo.phones.title")}</h6>
+        {/* Add phone number list component here */}
+      </div>
+
+      {/* Addresses */}
+      <div className="mt-4">
         <AddressList
-          addresses={contactInfo.addresses}
+          addresses={data.addresses}
           onChange={handleAddressesChange}
         />
-
-        <div className="mb-4">
-          <div className="mb-3">
-            <h5>{t('customer.form.contactInfo.phones.title')}</h5>
-            {!showPhoneForm && (
-              <Button color="primary" size="sm" onClick={handleAddNewPhone} className="mt-2">
-                <i className="fas fa-plus me-1"></i>
-                {t('customer.form.contactInfo.buttons.addPhone')}
-              </Button>
-            )}
-          </div>
-
-          {/* Phone Form */}
-          {showPhoneForm && (
-            <Card className="mb-4">
-              <CardBody>
-                <h6 className="mb-3">
-                  {editingPhoneIndex !== null 
-                    ? t('customer.form.contactInfo.phones.edit')
-                    : t('customer.form.contactInfo.phones.add')}
-                </h6>
-                <Row>
-                  <Col md={12}>
-                    <Input
-                      type="tel"
-                      value={formPhone}
-                      onChange={handlePhoneChange}
-                      placeholder={t('customer.form.contactInfo.placeholders.phone')}
-                    />
-                  </Col>
-                </Row>
-                <div className="text-end mt-3">
-                  <Button 
-                    color="primary" 
-                    size="sm" 
-                    onClick={handleAddPhone}
-                    disabled={!formPhone}
-                  >
-                    <i className="fas fa-save me-1"></i>
-                    {editingPhoneIndex !== null 
-                      ? t('customer.form.buttons.update')
-                      : t('customer.form.contactInfo.buttons.addPhone')}
-                  </Button>
-                  <Button 
-                    color="secondary" 
-                    size="sm" 
-                    className="ms-2"
-                    onClick={handleCancelPhone}
-                  >
-                    <i className="fas fa-times me-1"></i>
-                    {t('customer.form.buttons.cancel')}
-                  </Button>
-                </div>
-              </CardBody>
-            </Card>
-          )}
-
-          {/* Phone List */}
-          {contactInfo.phones.length > 0 && (
-            <Container fluid>
-              <TableContainer
-                columns={phoneColumns}
-                data={contactInfo.phones.map(phone => ({ phone }))}
-                isGlobalFilter={false}
-                isPagination={false}
-                pageSize={10}
-              />
-            </Container>
-          )}
-        </div>
-
-        <Row>
-          <Col md={6}>
-            <FormGroup>
-              <Label>{t('customer.form.contactInfo.email.label')}</Label>
-              <Input
-                type="email"
-                value={contactInfo.email}
-                onChange={handleEmailChange}
-                placeholder={t('customer.form.contactInfo.placeholders.email')}
-              />
-            </FormGroup>
-          </Col>
-          <Col md={6}>
-            <FormGroup>
-              <Label>{t('customer.form.contactInfo.website.label')}</Label>
-              <Input
-                type="url"
-                value={contactInfo.website || ''}
-                onChange={handleWebsiteChange}
-                placeholder={t('customer.form.contactInfo.placeholders.website')}
-              />
-            </FormGroup>
-          </Col>
-        </Row>
-      </CardBody>
-    </Card>
+      </div>
+    </div>
   );
 };
 
-export default ContactInfoForm; 
+export default ContactInfoForm;

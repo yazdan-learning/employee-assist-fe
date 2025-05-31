@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { CustomerBasicInfo, CustomerContactInfo, CustomerAdditionalDetails } from '../../pages/Accountant/Customers/types';
+import { Customer } from '../../pages/Accountant/Customers/types';
 import { customerService } from '../../services/CustomerService';
 import { ListRequest } from '../../types/common';
 
@@ -13,7 +13,7 @@ export const fetchCustomers = createAsyncThunk(
 
 export const fetchCustomerById = createAsyncThunk(
   'customers/fetchById',
-  async (id: string) => {
+  async (id: number) => {
     const customer = await customerService.getCustomerById(id);
     return customer;
   }
@@ -21,38 +21,20 @@ export const fetchCustomerById = createAsyncThunk(
 
 export const createCustomer = createAsyncThunk(
   'customers/create',
-  async ({ 
-    basicInfo, 
-    contactInfo, 
-    additionalDetails 
-  }: { 
-    basicInfo: CustomerBasicInfo; 
-    contactInfo: CustomerContactInfo; 
-    additionalDetails: CustomerAdditionalDetails;
-  }) => {
-    const newCustomer = await customerService.createCustomer(basicInfo, contactInfo, additionalDetails);
+  async (customer: Customer) => {
+    const newCustomer = await customerService.createCustomer(customer);
     return newCustomer;
   }
 );
 
 export const updateCustomerById = createAsyncThunk(
   'customers/update',
-  async ({
-    id,
-    basicInfo,
-    contactInfo,
-    additionalDetails,
-  }: {
-    id: string;
-    basicInfo?: Partial<CustomerBasicInfo>;
-    contactInfo?: Partial<CustomerContactInfo>;
-    additionalDetails?: Partial<CustomerAdditionalDetails>;
-  }) => {
+  async (customerData: Partial<Customer>) => {
+    if (!customerData.id) {
+      throw new Error('Customer ID is required for update');
+    }
     const updatedCustomer = await customerService.updateCustomer(
-      id, 
-      basicInfo, 
-      contactInfo, 
-      additionalDetails
+      customerData
     );
     return updatedCustomer;
   }
@@ -60,7 +42,7 @@ export const updateCustomerById = createAsyncThunk(
 
 export const deleteCustomerById = createAsyncThunk(
   'customers/delete',
-  async (id: string) => {
+  async (id: number) => {
     await customerService.deleteCustomer(id);
     return id;
   }

@@ -1,90 +1,182 @@
-import React, { useState } from 'react';
-import { Row, Col, Card, CardBody, Button } from 'reactstrap';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { useTranslation } from 'react-i18next';
-import { Customer, CustomerBasicInfo, CustomerContactInfo, CustomerAdditionalDetails, CustomerType } from '../types';
-import { createCustomer, updateCustomerById } from '../../../../slices/customers/thunk';
-import BasicInfoForm from './BasicInfoForm';
-import ContactInfoForm from './ContactInfoForm';
-import AdditionalDetailsForm from './AdditionalDetailsForm';
-import { AppDispatch } from '../../../../store';
+import React, { useState } from "react";
+import { Row, Col, Card, CardBody, Button } from "reactstrap";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { useTranslation } from "react-i18next";
+import {
+  Customer,
+  Gender,
+  MaritalStatus,
+  CustomerType,
+  CustomerInfo,
+} from "../types";
+import {
+  createCustomer,
+  updateCustomerById,
+} from "../../../../slices/customers/thunk";
+import BasicInfoForm from "./BasicInfoForm";
+import ContactInfoForm from "./ContactInfoForm";
+import BankAccountForm from "./BankAccountForm";
+import { AppDispatch } from "../../../../store";
 
 interface CustomerFormProps {
-  customer?: Customer;
+  customer?: CustomerInfo & Partial<Customer>;
   isEdit?: boolean;
 }
 
-const CustomerForm: React.FC<CustomerFormProps> = ({ customer, isEdit = false }) => {
+const CustomerForm: React.FC<CustomerFormProps> = ({
+  customer,
+  isEdit = false,
+}) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState<Customer>(customer || {
-    id: '',
-    basicInfo: {
-      isFirm: false,
-      nationalCode: '',
-      taxId: '',
-      customerType: CustomerType.NONE
-    },
-    contactInfo: {
+  const [formData, setFormData] = useState<Customer>(() => {
+    const defaultData: Customer = {
+      isCompany: false,
+      title: "",
+      firstName: "",
+      lastName: "",
+      nationalId: "",
+      taxId: "",
+      gender: Gender.MALE,
+      nickname: "",
+      maritalStatus: MaritalStatus.SINGLE,
+      customerType: CustomerType.NONE,
+      customerRiskLimit: 0,
+      phone: [],
+      email: "",
       addresses: [],
-      phones: [],
-      email: '',
-      website: ''
-    },
-    additionalDetails: {}
+      bankAccounts: [],
+      fax: "",
+      website: "",
+      licensePlate: "",
+    };
+
+    if (!customer) return defaultData;
+
+    return {
+      ...defaultData,
+      ...customer,
+      // Ensure required fields have default values if undefined
+      isCompany: customer.isCompany ?? defaultData.isCompany,
+      gender: customer.gender ?? defaultData.gender,
+      maritalStatus: customer.maritalStatus ?? defaultData.maritalStatus,
+      customerType: customer.customerType ?? defaultData.customerType,
+      customerRiskLimit:
+        customer.customerRiskLimit ?? defaultData.customerRiskLimit,
+      phone: customer.phone ?? defaultData.phone,
+      addresses: customer.addresses ?? defaultData.addresses,
+      bankAccounts: customer.bankAccounts ?? defaultData.bankAccounts,
+    };
   });
 
-  const handleBasicInfoChange = (basicInfo: CustomerBasicInfo) => {
-    setFormData(prev => ({
+  const handleBasicInfoChange = (basicInfo: {
+    isCompany: boolean;
+    title: string;
+    firstName: string;
+    lastName: string;
+    nationalId: string;
+    taxId: string;
+    gender: Gender;
+    nickname?: string;
+    maritalStatus: MaritalStatus;
+    customerType: CustomerType;
+    customerRiskLimit: number;
+  }) => {
+    setFormData((prev) => ({
       ...prev,
-      basicInfo
+      ...basicInfo,
     }));
   };
 
-  const handleContactInfoChange = (contactInfo: CustomerContactInfo) => {
-    setFormData(prev => ({
+  const handleContactInfoChange = (contactInfo: {
+    phone: string[];
+    fax?: string;
+    email: string;
+    website?: string;
+    licensePlate?: string;
+    addresses: {
+      title: string;
+      value: string;
+      postalCode: string;
+      isPrimary: boolean;
+    }[];
+  }) => {
+    setFormData((prev) => ({
       ...prev,
-      contactInfo
+      ...contactInfo,
     }));
   };
 
-  const handleAdditionalDetailsChange = (additionalDetails: CustomerAdditionalDetails) => {
-    setFormData(prev => ({
+  const handleBankAccountChange = (bankInfo: {
+    bankAccounts: {
+      accountNumber: string;
+      iban: string;
+      cardNumber: string;
+      title: string;
+      branchName: string;
+      branchCode: string;
+      bankId: number;
+    }[];
+  }) => {
+    setFormData((prev) => ({
       ...prev,
-      additionalDetails
+      ...bankInfo,
     }));
   };
 
   const handleNext = () => {
-    setCurrentStep(prev => prev + 1);
+    setCurrentStep((prev) => prev + 1);
   };
 
   const handlePrevious = () => {
-    setCurrentStep(prev => prev - 1);
+    setCurrentStep((prev) => prev - 1);
+  };
+
+  const transformFormDataForAPI = (): Customer => {
+    // Return a properly typed Customer object
+    return {
+      isCompany: formData.isCompany,
+      title: formData.title,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      nationalId: formData.nationalId,
+      taxId: formData.taxId,
+      gender: formData.gender,
+      nickname: formData.nickname,
+      maritalStatus: formData.maritalStatus,
+      tradeChamberNumber: formData.tradeChamberNumber,
+      registrationNumber: formData.registrationNumber,
+      customerType: formData.customerType,
+      customerRiskLimit: formData.customerRiskLimit,
+      phone: formData.phone,
+      fax: formData.fax,
+      email: formData.email,
+      website: formData.website,
+      licensePlate: formData.licensePlate,
+      addresses: formData.addresses,
+      bankAccounts: formData.bankAccounts,
+    };
   };
 
   const handleSubmit = async () => {
     try {
-      if (isEdit && customer) {
-        await dispatch(updateCustomerById({
-          id: customer.id,
-          basicInfo: formData.basicInfo,
-          contactInfo: formData.contactInfo,
-          additionalDetails: formData.additionalDetails
-        }));
+      const customerData = transformFormDataForAPI();
+
+      if (isEdit && customer?.id) {
+        await dispatch(
+          updateCustomerById({
+            ...customerData,
+          })
+        );
       } else {
-        await dispatch(createCustomer({
-          basicInfo: formData.basicInfo,
-          contactInfo: formData.contactInfo,
-          additionalDetails: formData.additionalDetails
-        }));
+        await dispatch(createCustomer(customerData));
       }
-      navigate('/accountant/customers');
+      navigate("/accountant/customers");
     } catch (error) {
-      console.error('Error saving customer:', error);
+      console.error("Error saving customer:", error);
     }
   };
 
@@ -96,27 +188,50 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ customer, isEdit = false })
             <Card>
               <CardBody>
                 <h4 className="card-title mb-4">
-                  {isEdit ? t('customer.form.title.edit') : t('customer.form.title.new')}
+                  {isEdit
+                    ? t("customer.form.title.edit")
+                    : t("customer.form.title.new")}
                 </h4>
 
                 {currentStep === 1 && (
                   <BasicInfoForm
-                    basicInfo={formData.basicInfo}
+                    data={{
+                      isCompany: formData.isCompany,
+                      title: formData.title,
+                      firstName: formData.firstName,
+                      lastName: formData.lastName,
+                      nationalId: formData.nationalId,
+                      taxId: formData.taxId,
+                      gender: formData.gender,
+                      nickname: formData.nickname,
+                      maritalStatus: formData.maritalStatus,
+                      customerType: formData.customerType,
+                      customerRiskLimit: formData.customerRiskLimit,
+                    }}
                     onChange={handleBasicInfoChange}
                   />
                 )}
 
                 {currentStep === 2 && (
                   <ContactInfoForm
-                    contactInfo={formData.contactInfo}
+                    data={{
+                      phone: formData.phone,
+                      email: formData.email,
+                      fax: formData.fax,
+                      website: formData.website,
+                      licensePlate: formData.licensePlate,
+                      addresses: formData.addresses,
+                    }}
                     onChange={handleContactInfoChange}
                   />
                 )}
 
                 {currentStep === 3 && (
-                  <AdditionalDetailsForm
-                    additionalDetails={formData.additionalDetails}
-                    onChange={handleAdditionalDetailsChange}
+                  <BankAccountForm
+                    data={{
+                      bankAccounts: formData.bankAccounts,
+                    }}
+                    onChange={handleBankAccountChange}
                   />
                 )}
 
@@ -124,17 +239,20 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ customer, isEdit = false })
                   <div className="d-flex gap-2">
                     {currentStep > 1 && (
                       <Button color="secondary" onClick={handlePrevious}>
-                        {t('customer.form.buttons.previous')}
+                        {t("customer.form.buttons.previous")}
                       </Button>
                     )}
                     {currentStep < 3 ? (
                       <Button color="primary" onClick={handleNext}>
-                        {t('customer.form.buttons.next')}
+                        {t("customer.form.buttons.next")}
                       </Button>
-                    ) : null}
-                    <Button color="success" onClick={handleSubmit}>
-                      {isEdit ? t('customer.form.buttons.update') : t('customer.form.buttons.save')}
-                    </Button>
+                    ) : (
+                      <Button color="success" onClick={handleSubmit}>
+                        {isEdit
+                          ? t("customer.form.buttons.update")
+                          : t("customer.form.buttons.save")}
+                      </Button>
+                    )}
                   </div>
                 </div>
               </CardBody>
@@ -146,4 +264,4 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ customer, isEdit = false })
   );
 };
 
-export default CustomerForm; 
+export default CustomerForm;
