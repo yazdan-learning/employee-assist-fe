@@ -3,6 +3,8 @@ import { Row, Col, FormGroup, Label, Input } from "reactstrap";
 import { useTranslation } from "react-i18next";
 import { Address } from "../types";
 import AddressList from "./AddressList";
+import { FormikErrors, FormikTouched } from "formik";
+import { Customer } from "../types";
 
 export interface ContactInfoFormData {
   phone: string[];
@@ -16,8 +18,8 @@ export interface ContactInfoFormData {
 export interface ContactInfoFormProps {
   data: ContactInfoFormData;
   onChange: (data: ContactInfoFormData) => void;
-  errors?: Record<string, string>;
-  touched?: Record<string, boolean>;
+  errors?: FormikErrors<Customer>;
+  touched?: FormikTouched<Customer>;
 }
 
 const ContactInfoForm: React.FC<ContactInfoFormProps> = ({

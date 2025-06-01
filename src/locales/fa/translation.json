@@ -172,12 +172,13 @@
   "Tax ID": "کد مالیاتی",
   "Customer Type": "نوع مشتری",
   "customerTypes": {
-    "NONE": "انتخاب نوع",
+    "NONE": "هیچ کدام",
     "REGULAR": "عادی",
     "VIP": "ویژه",
     "BUYER": "خریدار",
     "SELLER": "فروشنده",
-    "BOTH": "هر دو"
+    "BOTH": "هر دو",
+    "placeholder": "نوع مشتری را انتخاب کنید"
   },
   "Address": "آدرس",
   "Is Firm": "شرکت است",

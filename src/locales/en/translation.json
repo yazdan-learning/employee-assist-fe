@@ -207,10 +207,11 @@
           "WIDOWED": "Widowed"
         },
         "customerTypes": {
-          "NONE": "Select Type",
+          "NONE": "None",
           "BUYER": "Buyer",
           "SELLER": "Seller",
-          "BOTH": "Both"
+          "BOTH": "Both",
+          "placeholder": "Select customer type"
         },
         "placeholders": {
           "title": "Enter title",

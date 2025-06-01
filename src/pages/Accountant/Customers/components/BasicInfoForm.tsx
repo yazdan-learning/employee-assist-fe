@@ -5,6 +5,8 @@ import { CustomerType, Gender, MaritalStatus } from "../types";
 import RaDropdown, {
   DropdownOption,
 } from "../../../../Components/Common/RaDropdown";
+import { FormikErrors, FormikTouched } from "formik";
+import { Customer } from "../types";
 
 interface BasicInfoFormData {
   isCompany: boolean;
@@ -25,8 +27,8 @@ interface BasicInfoFormData {
 interface BasicInfoFormProps {
   data: BasicInfoFormData;
   onChange: (data: BasicInfoFormData) => void;
-  errors?: Record<string, string>;
-  touched?: Record<string, boolean>;
+  errors?: FormikErrors<Customer>;
+  touched?: FormikTouched<Customer>;
 }
 
 const BasicInfoForm: React.FC<BasicInfoFormProps> = ({
@@ -36,6 +38,8 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({
   touched = {},
 }) => {
   const { t } = useTranslation();
+
+  console.log(errors);
 
   const getEnumKeys = (enumObj: any) => {
     return Object.keys(enumObj).filter((key) => isNaN(Number(key)));
@@ -283,7 +287,7 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({
             <Col md={6}>
               <FormGroup>
                 <Label for="nationalId">
-                  {t("customer.form.basicInfo.nationalId")}
+                  {t("customer.form.basicInfo.nationalCode")}
                 </Label>
                 <Input
                   type="text"
@@ -292,16 +296,10 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({
                   onChange={(e) =>
                     handleInputChange("nationalId", e.target.value || null)
                   }
-                  invalid={touched.nationalId && Boolean(errors.nationalId)}
                   placeholder={t(
-                    "customer.form.basicInfo.placeholders.nationalId"
+                    "customer.form.basicInfo.placeholders.nationalCode"
                   )}
                 />
-                {touched.nationalId && errors.nationalId && (
-                  <div className="invalid-feedback d-block">
-                    {errors.nationalId}
-                  </div>
-                )}
               </FormGroup>
             </Col>
             <Col md={6}>
@@ -314,12 +312,8 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({
                   onChange={(e) =>
                     handleInputChange("taxId", e.target.value || null)
                   }
-                  invalid={touched.taxId && Boolean(errors.taxId)}
                   placeholder={t("customer.form.basicInfo.placeholders.taxId")}
                 />
-                {touched.taxId && errors.taxId && (
-                  <div className="invalid-feedback d-block">{errors.taxId}</div>
-                )}
               </FormGroup>
             </Col>
           </Row>
@@ -360,19 +354,10 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({
                       e.target.value ? Number(e.target.value) : null
                     )
                   }
-                  invalid={
-                    touched.customerRiskLimit &&
-                    Boolean(errors.customerRiskLimit)
-                  }
                   placeholder={t(
                     "customer.form.basicInfo.placeholders.customerRiskLimit"
                   )}
                 />
-                {touched.customerRiskLimit && errors.customerRiskLimit && (
-                  <div className="invalid-feedback d-block">
-                    {errors.customerRiskLimit}
-                  </div>
-                )}
               </FormGroup>
             </Col>
           </Row>

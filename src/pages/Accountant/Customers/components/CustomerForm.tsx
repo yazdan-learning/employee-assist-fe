@@ -252,6 +252,8 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
                           formik.setFieldValue(key, values[key]);
                         });
                       }}
+                      errors={formik.errors}
+                      touched={formik.touched}
                     />
                   )}
 

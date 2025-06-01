@@ -48,10 +48,11 @@
           "WIDOWED": "Verwitwet"
         },
         "customerTypes": {
-          "NONE": "Typ auswählen",
+          "NONE": "Keine",
           "BUYER": "Käufer",
           "SELLER": "Verkäufer",
-          "BOTH": "Beide"
+          "BOTH": "Beide",
+          "placeholder": "Kundentyp auswählen"
         },
         "placeholders": {
           "title": "Titel eingeben",
