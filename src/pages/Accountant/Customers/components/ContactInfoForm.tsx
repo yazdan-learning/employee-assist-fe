@@ -6,44 +6,37 @@ import AddressList from "./AddressList";
 
 export interface ContactInfoFormData {
   phone: string[];
-  fax?: string;
-  email: string;
-  website?: string;
-  licensePlate?: string;
+  fax?: string | null;
+  email: string | null;
+  website?: string | null;
+  licensePlate?: string | null;
   addresses: Address[];
 }
 
 export interface ContactInfoFormProps {
   data: ContactInfoFormData;
   onChange: (data: ContactInfoFormData) => void;
+  errors?: Record<string, string>;
+  touched?: Record<string, boolean>;
 }
 
 const ContactInfoForm: React.FC<ContactInfoFormProps> = ({
   data,
   onChange,
+  errors = {},
+  touched = {},
 }) => {
   const { t } = useTranslation();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+  const handleInputChange = (field: keyof ContactInfoFormData, value: any) => {
     onChange({
       ...data,
-      [name]: value,
+      [field]: value,
     });
   };
 
   const handleAddressesChange = (addresses: Address[]) => {
-    onChange({
-      ...data,
-      addresses,
-    });
-  };
-
-  const handlePhoneChange = (phone: string[]) => {
-    onChange({
-      ...data,
-      phone,
-    });
+    handleInputChange("addresses", addresses);
   };
 
   return (
@@ -55,11 +48,17 @@ const ContactInfoForm: React.FC<ContactInfoFormProps> = ({
             <Label>{t("customer.form.contactInfo.email")}</Label>
             <Input
               type="email"
-              name="email"
-              value={data.email}
-              onChange={handleChange}
+              id="email"
+              value={data.email || ""}
+              onChange={(e) =>
+                handleInputChange("email", e.target.value || null)
+              }
+              invalid={touched.email && Boolean(errors.email)}
               placeholder={t("customer.form.contactInfo.placeholders.email")}
             />
+            {touched.email && errors.email && (
+              <div className="invalid-feedback d-block">{errors.email}</div>
+            )}
           </FormGroup>
         </Col>
         <Col md={6}>
@@ -67,11 +66,17 @@ const ContactInfoForm: React.FC<ContactInfoFormProps> = ({
             <Label>{t("customer.form.contactInfo.website")}</Label>
             <Input
               type="text"
-              name="website"
+              id="website"
               value={data.website || ""}
-              onChange={handleChange}
+              onChange={(e) =>
+                handleInputChange("website", e.target.value || null)
+              }
+              invalid={touched.website && Boolean(errors.website)}
               placeholder={t("customer.form.contactInfo.placeholders.website")}
             />
+            {touched.website && errors.website && (
+              <div className="invalid-feedback d-block">{errors.website}</div>
+            )}
           </FormGroup>
         </Col>
         <Col md={6}>
@@ -79,11 +84,15 @@ const ContactInfoForm: React.FC<ContactInfoFormProps> = ({
             <Label>{t("customer.form.contactInfo.fax")}</Label>
             <Input
               type="text"
-              name="fax"
+              id="fax"
               value={data.fax || ""}
-              onChange={handleChange}
+              onChange={(e) => handleInputChange("fax", e.target.value || null)}
+              invalid={touched.fax && Boolean(errors.fax)}
               placeholder={t("customer.form.contactInfo.placeholders.fax")}
             />
+            {touched.fax && errors.fax && (
+              <div className="invalid-feedback d-block">{errors.fax}</div>
+            )}
           </FormGroup>
         </Col>
         <Col md={6}>
@@ -91,13 +100,21 @@ const ContactInfoForm: React.FC<ContactInfoFormProps> = ({
             <Label>{t("customer.form.contactInfo.licensePlate")}</Label>
             <Input
               type="text"
-              name="licensePlate"
+              id="licensePlate"
               value={data.licensePlate || ""}
-              onChange={handleChange}
+              onChange={(e) =>
+                handleInputChange("licensePlate", e.target.value || null)
+              }
+              invalid={touched.licensePlate && Boolean(errors.licensePlate)}
               placeholder={t(
                 "customer.form.contactInfo.placeholders.licensePlate"
               )}
             />
+            {touched.licensePlate && errors.licensePlate && (
+              <div className="invalid-feedback d-block">
+                {errors.licensePlate}
+              </div>
+            )}
           </FormGroup>
         </Col>
       </Row>

@@ -3,6 +3,8 @@ import { Row, Col, Card, CardBody, Button } from "reactstrap";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import {
   Customer,
   Gender,
@@ -32,152 +34,187 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState<Customer>(() => {
-    const defaultData: Customer = {
-      isCompany: false,
-      title: "",
-      firstName: "",
-      lastName: "",
-      nationalId: "",
-      taxId: "",
-      gender: Gender.MALE,
-      nickname: "",
-      maritalStatus: MaritalStatus.SINGLE,
-      customerType: CustomerType.NONE,
-      customerRiskLimit: 0,
-      phone: [],
-      email: "",
-      addresses: [],
-      bankAccounts: [],
-      fax: "",
-      website: "",
-      licensePlate: "",
-    };
 
-    if (!customer) return defaultData;
+  const initialValues: Customer = {
+    isCompany: customer?.isCompany ?? false,
+    title: customer?.title ?? "",
+    firstName: customer?.firstName ?? "",
+    lastName: customer?.lastName ?? "",
+    nationalId: customer?.nationalId ?? "",
+    taxId: customer?.taxId ?? "",
+    gender: customer?.gender ?? Gender.MALE,
+    nickname: customer?.nickname ?? "",
+    maritalStatus: customer?.maritalStatus ?? MaritalStatus.SINGLE,
+    customerType: customer?.customerType ?? CustomerType.NONE,
+    customerRiskLimit: customer?.customerRiskLimit ?? 0,
+    phone: customer?.phone ?? [],
+    email: customer?.email ?? "",
+    addresses: customer?.addresses ?? [],
+    bankAccounts: customer?.bankAccounts ?? [],
+    fax: customer?.fax ?? "",
+    website: customer?.website ?? "",
+    licensePlate: customer?.licensePlate ?? "",
+    tradeChamberNumber: customer?.tradeChamberNumber ?? "",
+    registrationNumber: customer?.registrationNumber ?? "",
+  };
 
-    return {
-      ...defaultData,
-      ...customer,
-      // Ensure required fields have default values if undefined
-      isCompany: customer.isCompany ?? defaultData.isCompany,
-      gender: customer.gender ?? defaultData.gender,
-      maritalStatus: customer.maritalStatus ?? defaultData.maritalStatus,
-      customerType: customer.customerType ?? defaultData.customerType,
-      customerRiskLimit:
-        customer.customerRiskLimit ?? defaultData.customerRiskLimit,
-      phone: customer.phone ?? defaultData.phone,
-      addresses: customer.addresses ?? defaultData.addresses,
-      bankAccounts: customer.bankAccounts ?? defaultData.bankAccounts,
-    };
+  const validationSchema = Yup.object().shape({
+    // Basic Info Validation
+    isCompany: Yup.boolean(),
+    title: Yup.string().when("isCompany", {
+      is: true,
+      then: () =>
+        Yup.string().required(
+          t("customer.form.validation.companyNameRequired")
+        ),
+      otherwise: () => Yup.string(),
+    }),
+    firstName: Yup.string().when("isCompany", {
+      is: false,
+      then: () =>
+        Yup.string().test({
+          name: "atLeastOneNameRequired",
+          test: function (value) {
+            const { lastName } = this.parent;
+            if (!value && !lastName) {
+              return false;
+            }
+            return true;
+          },
+          message: t("customer.form.validation.atLeastOneNameRequired"),
+        }),
+    }),
+    lastName: Yup.string().when("isCompany", {
+      is: false,
+      then: () =>
+        Yup.string().test({
+          name: "atLeastOneNameRequired",
+          test: function (value) {
+            const { firstName } = this.parent;
+            if (!value && !firstName) {
+              return false;
+            }
+            return true;
+          },
+          message: t("customer.form.validation.atLeastOneNameRequired"),
+        }),
+    }),
+    nationalId: Yup.string(),
+    taxId: Yup.string(),
+    gender: Yup.mixed(),
+    nickname: Yup.string(),
+    maritalStatus: Yup.mixed(),
+    customerType: Yup.number(),
+    customerRiskLimit: Yup.number(),
+
+    // Contact Info Validation - making fields optional
+    email: Yup.string().email(t("customer.form.validation.invalidEmail")),
+    phone: Yup.array().of(Yup.string()),
+    addresses: Yup.array().of(
+      Yup.object().shape({
+        title: Yup.string(),
+        value: Yup.string(),
+        postalCode: Yup.string(),
+        isPrimary: Yup.boolean(),
+      })
+    ),
+
+    // Bank Account Validation - making fields optional
+    bankAccounts: Yup.array().of(
+      Yup.object().shape({
+        accountNumber: Yup.string(),
+        iban: Yup.string(),
+        title: Yup.string(),
+        branchName: Yup.string(),
+        branchCode: Yup.string(),
+        bankId: Yup.number(),
+      })
+    ),
   });
 
-  const handleBasicInfoChange = (basicInfo: {
-    isCompany: boolean;
-    title: string;
-    firstName: string;
-    lastName: string;
-    nationalId: string;
-    taxId: string;
-    gender: Gender;
-    nickname?: string;
-    maritalStatus: MaritalStatus;
-    customerType: CustomerType;
-    customerRiskLimit: number;
-  }) => {
-    setFormData((prev) => ({
-      ...prev,
-      ...basicInfo,
-    }));
-  };
+  const formik = useFormik({
+    initialValues,
+    validationSchema,
+    validateOnMount: true,
+    validateOnChange: true,
+    onSubmit: async (values) => {
+      try {
+        if (isEdit && customer?.id) {
+          await dispatch(
+            updateCustomerById({
+              ...values,
+              id: customer.id,
+            })
+          );
+        } else {
+          await dispatch(createCustomer(values));
+        }
+        navigate("/accountant/customers");
+      } catch (error) {
+        console.error("Error saving customer:", error);
+      }
+    },
+  });
 
-  const handleContactInfoChange = (contactInfo: {
-    phone: string[];
-    fax?: string;
-    email: string;
-    website?: string;
-    licensePlate?: string;
-    addresses: {
-      title: string;
-      value: string;
-      postalCode: string;
-      isPrimary: boolean;
-    }[];
-  }) => {
-    setFormData((prev) => ({
-      ...prev,
-      ...contactInfo,
-    }));
-  };
+  const handleNext = async () => {
+    const fields = getFieldsForCurrentStep();
+    try {
+      // Touch all fields in current step to show validation errors
+      fields.forEach((field) => {
+        formik.setFieldTouched(field, true);
+      });
 
-  const handleBankAccountChange = (bankInfo: {
-    bankAccounts: {
-      accountNumber: string;
-      iban: string;
-      cardNumber: string;
-      title: string;
-      branchName: string;
-      branchCode: string;
-      bankId: number;
-    }[];
-  }) => {
-    setFormData((prev) => ({
-      ...prev,
-      ...bankInfo,
-    }));
-  };
+      // Validate only the current step's fields
+      const stepErrors = await formik.validateForm();
+      const hasErrors = fields.some((field) => stepErrors[field]);
 
-  const handleNext = () => {
-    setCurrentStep((prev) => prev + 1);
+      if (!hasErrors) {
+        setCurrentStep((prev) => prev + 1);
+      }
+    } catch (error) {
+      console.error("Validation error:", error);
+    }
   };
 
   const handlePrevious = () => {
     setCurrentStep((prev) => prev - 1);
   };
 
-  const transformFormDataForAPI = (): Customer => {
-    // Return a properly typed Customer object
-    return {
-      isCompany: formData.isCompany,
-      title: formData.title,
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      nationalId: formData.nationalId,
-      taxId: formData.taxId,
-      gender: formData.gender,
-      nickname: formData.nickname,
-      maritalStatus: formData.maritalStatus,
-      tradeChamberNumber: formData.tradeChamberNumber,
-      registrationNumber: formData.registrationNumber,
-      customerType: formData.customerType,
-      customerRiskLimit: formData.customerRiskLimit,
-      phone: formData.phone,
-      fax: formData.fax,
-      email: formData.email,
-      website: formData.website,
-      licensePlate: formData.licensePlate,
-      addresses: formData.addresses,
-      bankAccounts: formData.bankAccounts,
-    };
+  const handleSave = async () => {
+    try {
+      // Touch all fields to show all validation errors
+      Object.keys(formik.values).forEach((field) => {
+        formik.setFieldTouched(field, true);
+      });
+
+      // Submit the form
+      await formik.submitForm();
+    } catch (error) {
+      console.error("Save error:", error);
+    }
   };
 
-  const handleSubmit = async () => {
-    try {
-      const customerData = transformFormDataForAPI();
-
-      if (isEdit && customer?.id) {
-        await dispatch(
-          updateCustomerById({
-            ...customerData,
-            id: customer.id, // Use number ID directly
-          })
-        );
-      } else {
-        await dispatch(createCustomer(customerData));
-      }
-      navigate("/accountant/customers");
-    } catch (error) {
-      console.error("Error saving customer:", error);
+  const getFieldsForCurrentStep = () => {
+    switch (currentStep) {
+      case 1:
+        return [
+          "isCompany",
+          "title",
+          "firstName",
+          "lastName",
+          "nationalId",
+          "taxId",
+          "gender",
+          "maritalStatus",
+          "customerType",
+          "customerRiskLimit",
+        ];
+      case 2:
+        return ["email", "phone", "addresses"];
+      case 3:
+        return ["bankAccounts"];
+      default:
+        return [];
     }
   };
 
@@ -194,68 +231,82 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
                     : t("customer.form.title.new")}
                 </h4>
 
-                {currentStep === 1 && (
-                  <BasicInfoForm
-                    data={{
-                      isCompany: formData.isCompany,
-                      title: formData.title,
-                      firstName: formData.firstName,
-                      lastName: formData.lastName,
-                      nationalId: formData.nationalId,
-                      taxId: formData.taxId,
-                      gender: formData.gender,
-                      nickname: formData.nickname,
-                      maritalStatus: formData.maritalStatus,
-                      customerType: formData.customerType,
-                      customerRiskLimit: formData.customerRiskLimit,
-                    }}
-                    onChange={handleBasicInfoChange}
-                  />
-                )}
+                <form onSubmit={formik.handleSubmit}>
+                  {currentStep === 1 && (
+                    <BasicInfoForm
+                      data={{
+                        isCompany: formik.values.isCompany,
+                        title: formik.values.title,
+                        firstName: formik.values.firstName,
+                        lastName: formik.values.lastName,
+                        nationalId: formik.values.nationalId,
+                        taxId: formik.values.taxId,
+                        gender: formik.values.gender,
+                        nickname: formik.values.nickname,
+                        maritalStatus: formik.values.maritalStatus,
+                        customerType: formik.values.customerType,
+                        customerRiskLimit: formik.values.customerRiskLimit,
+                      }}
+                      onChange={(values) => {
+                        Object.keys(values).forEach((key) => {
+                          formik.setFieldValue(key, values[key]);
+                        });
+                      }}
+                    />
+                  )}
 
-                {currentStep === 2 && (
-                  <ContactInfoForm
-                    data={{
-                      phone: formData.phone,
-                      email: formData.email,
-                      fax: formData.fax,
-                      website: formData.website,
-                      licensePlate: formData.licensePlate,
-                      addresses: formData.addresses,
-                    }}
-                    onChange={handleContactInfoChange}
-                  />
-                )}
+                  {currentStep === 2 && (
+                    <ContactInfoForm
+                      data={{
+                        phone: formik.values.phone,
+                        email: formik.values.email,
+                        fax: formik.values.fax,
+                        website: formik.values.website,
+                        licensePlate: formik.values.licensePlate,
+                        addresses: formik.values.addresses,
+                      }}
+                      onChange={(values) => {
+                        Object.keys(values).forEach((key) => {
+                          formik.setFieldValue(key, values[key]);
+                        });
+                      }}
+                    />
+                  )}
 
-                {currentStep === 3 && (
-                  <BankAccountForm
-                    data={{
-                      bankAccounts: formData.bankAccounts,
-                    }}
-                    onChange={handleBankAccountChange}
-                  />
-                )}
+                  {currentStep === 3 && (
+                    <BankAccountForm
+                      data={{
+                        bankAccounts: formik.values.bankAccounts,
+                      }}
+                      onChange={(values) => {
+                        formik.setFieldValue(
+                          "bankAccounts",
+                          values.bankAccounts
+                        );
+                      }}
+                    />
+                  )}
 
-                <div className="d-flex justify-content-end mt-4">
-                  <div className="d-flex gap-2">
-                    {currentStep > 1 && (
-                      <Button color="secondary" onClick={handlePrevious}>
-                        {t("customer.form.buttons.previous")}
-                      </Button>
-                    )}
-                    {currentStep < 3 ? (
+                  <div className="d-flex justify-content-end mt-4">
+                    <div className="d-flex gap-2">
+                      {currentStep > 1 && (
+                        <Button color="secondary" onClick={handlePrevious}>
+                          {t("customer.form.buttons.previous")}
+                        </Button>
+                      )}
+
                       <Button color="primary" onClick={handleNext}>
                         {t("customer.form.buttons.next")}
                       </Button>
-                    ) : (
-                      <Button color="success" onClick={handleSubmit}>
+
+                      <Button color="success" onClick={handleSave}>
                         {isEdit
                           ? t("customer.form.buttons.update")
                           : t("customer.form.buttons.save")}
                       </Button>
-                    )}
+                    </div>
                   </div>
-                </div>
+                </form>
               </CardBody>
             </Card>
           </Col>

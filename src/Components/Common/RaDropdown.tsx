@@ -1,6 +1,11 @@
-import React, { useState } from 'react';
-import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
-import { useTranslation } from 'react-i18next';
+import React, { useState } from "react";
+import {
+  Dropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
+} from "reactstrap";
+import { useTranslation } from "react-i18next";
 
 export interface DropdownOption {
   value: string;
@@ -23,41 +28,45 @@ const RaDropdown: React.FC<RaDropdownProps> = ({
   onChange,
   placeholder,
   showClear = true,
-  className = '',
-  disabled = false
+  className = "",
+  disabled = false,
 }) => {
   const { t } = useTranslation();
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  const toggleDropdown = () => setDropdownOpen(prevState => !prevState);
+  const toggleDropdown = () => setDropdownOpen((prevState) => !prevState);
 
   const handleSelect = (selectedValue: string) => {
     onChange(selectedValue);
   };
 
-  const selectedOption = options.find(option => option.value === value);
+  const selectedOption = options.find((option) => option.value === value);
   const displayValue = selectedOption ? selectedOption.label : placeholder;
 
   return (
-    <Dropdown isOpen={dropdownOpen} toggle={toggleDropdown} className={`w-100 ${className}`}>
-      <DropdownToggle 
-        caret 
-        className="form-control d-flex justify-content-between align-items-center" 
-        style={{ backgroundColor: '#fff', color: '#495057' }}
+    <Dropdown
+      isOpen={dropdownOpen}
+      toggle={toggleDropdown}
+      className={`w-100 ${className}`}
+    >
+      <DropdownToggle
+        tag="div"
+        className="form-control d-flex justify-content-between align-items-center"
+        style={{ backgroundColor: "#fff", color: "#495057", cursor: "pointer" }}
         disabled={disabled}
       >
         <span>{displayValue}</span>
         <div className="d-flex align-items-center">
           {showClear && value && (
-            <button 
-              type="button" 
-              className="btn-close btn-close-white me-2" 
+            <div
+              role="button"
+              className="btn-close btn-close-white me-2"
               onClick={(e) => {
                 e.stopPropagation();
-                onChange('');
+                onChange("");
               }}
-              aria-label="Close"
-              style={{ fontSize: '0.7rem' }}
+              aria-label="Clear"
+              style={{ fontSize: "0.7rem", cursor: "pointer" }}
             />
           )}
           <i className="mdi mdi-chevron-down" />
@@ -67,14 +76,14 @@ const RaDropdown: React.FC<RaDropdownProps> = ({
         {showClear && value && (
           <>
             <DropdownItem
-              onClick={() => handleSelect('')}
+              onClick={() => handleSelect("")}
               className="py-2 text-danger"
-              style={{ 
-                color: '#dc3545',
-                backgroundColor: '#fff'
+              style={{
+                color: "#dc3545",
+                backgroundColor: "#fff",
               }}
             >
-              {t('Clear')}
+              {t("Clear")}
             </DropdownItem>
             <DropdownItem divider />
           </>
@@ -85,9 +94,9 @@ const RaDropdown: React.FC<RaDropdownProps> = ({
             onClick={() => handleSelect(option.value)}
             active={value === option.value}
             className="py-2"
-            style={{ 
-              color: value === option.value ? '#fff' : '#495057',
-              backgroundColor: value === option.value ? '#556ee6' : '#fff'
+            style={{
+              color: value === option.value ? "#fff" : "#495057",
+              backgroundColor: value === option.value ? "#556ee6" : "#fff",
             }}
           >
             {option.label}
@@ -98,4 +107,4 @@ const RaDropdown: React.FC<RaDropdownProps> = ({
   );
 };
 
-export default RaDropdown; 
+export default RaDropdown;
