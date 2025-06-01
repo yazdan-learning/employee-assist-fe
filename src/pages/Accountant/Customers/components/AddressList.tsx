@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Card, CardBody } from "reactstrap";
+import { Button, Card, CardBody, Row, Col } from "reactstrap";
 import { useTranslation } from "react-i18next";
 import { Address } from "../types";
 import AddressForm from "./AddressForm";
@@ -73,61 +73,99 @@ const AddressList: React.FC<AddressListProps> = ({
 
       {/* Add new address form */}
       {showAddForm && (
-        <Card className="mb-3">
-          <CardBody>
-            <AddressForm
-              onSave={(address) => handleSave(address)}
-              onCancel={() => setShowAddForm(false)}
-            />
-          </CardBody>
-        </Card>
+        <div className="mb-3">
+          <Card>
+            <CardBody>
+              <AddressForm
+                onSave={(address) => handleSave(address)}
+                onCancel={() => setShowAddForm(false)}
+              />
+            </CardBody>
+          </Card>
+        </div>
       )}
 
       {/* List of existing addresses */}
-      {addresses.map((address, index) => (
-        <Card key={index} className="mb-3">
-          <CardBody>
-            {editingIndex === index ? (
-              <AddressForm
-                address={address}
-                onSave={(updatedAddress) => handleSave(updatedAddress, index)}
-                onCancel={() => setEditingIndex(null)}
-              />
-            ) : (
-              <div>
-                <div className="d-flex justify-content-between align-items-start">
-                  <div>
-                    <h6>{address.title}</h6>
-                    <p className="mb-1">{address.value}</p>
-                    <p className="mb-1">{address.postalCode}</p>
-                    {address.isPrimary && (
-                      <span className="badge bg-success">
-                        {t("customer.form.contactInfo.addresses.primary")}
-                      </span>
-                    )}
-                  </div>
-                  <div>
-                    <Button
-                      color="link"
-                      className="p-0 me-2"
-                      onClick={() => handleEdit(index)}
-                    >
-                      {t("customer.form.buttons.edit")}
-                    </Button>
-                    <Button
-                      color="link"
-                      className="p-0 text-danger"
-                      onClick={() => handleRemove(index)}
-                    >
-                      {t("customer.form.buttons.remove")}
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            )}
-          </CardBody>
-        </Card>
-      ))}
+      {addresses.length > 0 && (
+        <Row>
+          {addresses.map((address, index) => (
+            <Col md={12} key={index} className="mb-3">
+              <Card>
+                <CardBody>
+                  {editingIndex === index ? (
+                    <AddressForm
+                      address={address}
+                      onSave={(updatedAddress) =>
+                        handleSave(updatedAddress, index)
+                      }
+                      onCancel={() => setEditingIndex(null)}
+                    />
+                  ) : (
+                    <div>
+                      <div className="d-flex justify-content-between align-items-start mb-3">
+                        <h6 className="mb-0">{address.title}</h6>
+                        <div className="d-flex gap-2">
+                          <Button
+                            color="primary"
+                            size="sm"
+                            onClick={() => handleEdit(index)}
+                          >
+                            <i className="bx bx-edit"></i>
+                          </Button>
+                          <Button
+                            color="danger"
+                            size="sm"
+                            onClick={() => handleRemove(index)}
+                          >
+                            <i className="bx bx-trash"></i>
+                          </Button>
+                        </div>
+                      </div>
+                      <Row>
+                        <Col md={6}>
+                          <div className="address-details">
+                            <div className="mb-2">
+                              <small className="text-muted">
+                                {t(
+                                  "customer.form.contactInfo.addresses.address"
+                                )}
+                                :
+                              </small>
+                              <div>{address.value}</div>
+                            </div>
+                          </div>
+                        </Col>
+                        <Col md={6}>
+                          <div className="address-details">
+                            <div className="mb-2">
+                              <small className="text-muted">
+                                {t(
+                                  "customer.form.contactInfo.addresses.postalCode"
+                                )}
+                                :
+                              </small>
+                              <div>{address.postalCode}</div>
+                            </div>
+                            {address.isPrimary && (
+                              <div className="mt-2">
+                                <span className="badge bg-success">
+                                  {t(
+                                    "customer.form.contactInfo.addresses.primary"
+                                  )}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        </Col>
+                      </Row>
+                    </div>
+                  )}
+                </CardBody>
+              </Card>
+            </Col>
+          ))}
+        </Row>
+      )}
     </div>
   );
 };

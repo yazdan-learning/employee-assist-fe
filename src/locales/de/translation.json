@@ -137,6 +137,29 @@
           "label": "Tags",
           "placeholder": "Tags durch Kommas getrennt eingeben"
         }
+      },
+      "bankInfo": {
+        "title": "Bankkonten",
+        "add": "Bankkonto hinzufügen",
+        "edit": "Bankkonto bearbeiten",
+        "remove": "Bankkonto entfernen",
+        "accountTitle": "Kontobezeichnung",
+        "accountNumber": "Kontonummer",
+        "iban": "IBAN",
+        "cardNumber": "Kartennummer",
+        "branchName": "Filialname",
+        "branchCode": "Bankleitzahl",
+        "bankId": "Bank-ID",
+        "actions": "Aktionen",
+        "placeholders": {
+          "accountTitle": "Kontobezeichnung eingeben",
+          "accountNumber": "Kontonummer eingeben",
+          "iban": "IBAN eingeben",
+          "cardNumber": "Kartennummer eingeben",
+          "branchName": "Filialname eingeben",
+          "branchCode": "Bankleitzahl eingeben",
+          "bankId": "Bank-ID eingeben"
+        }
       }
     }
   }

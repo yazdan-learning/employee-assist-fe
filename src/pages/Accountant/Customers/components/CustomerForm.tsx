@@ -135,15 +135,16 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
       })
     ),
 
-    // Bank Account Validation - making fields optional
+    // Bank Account Validation - making fields optional at customer level
     bankAccounts: Yup.array().of(
       Yup.object().shape({
-        accountNumber: Yup.string(),
-        iban: Yup.string(),
-        title: Yup.string(),
-        branchName: Yup.string(),
-        branchCode: Yup.string(),
-        bankId: Yup.number(),
+        accountNumber: Yup.string().required(t("validation.required")),
+        iban: Yup.string().required(t("validation.required")),
+        cardNumber: Yup.string().required(t("validation.required")),
+        title: Yup.string().required(t("validation.required")),
+        branchName: Yup.string().required(t("validation.required")),
+        branchCode: Yup.string().required(t("validation.required")),
+        bankId: Yup.number().required(t("validation.required")),
       })
     ),
   });
@@ -179,6 +180,30 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
       fields.forEach((field) => {
         formik.setFieldTouched(field, true);
       });
+
+      // For bank accounts step, validate each bank account
+      if (currentStep === 3 && formik.values.bankAccounts.length > 0) {
+        const bankAccountSchema = Yup.object().shape({
+          accountNumber: Yup.string().required(t("validation.required")),
+          iban: Yup.string().required(t("validation.required")),
+          cardNumber: Yup.string().required(t("validation.required")),
+          title: Yup.string().required(t("validation.required")),
+          branchName: Yup.string().required(t("validation.required")),
+          branchCode: Yup.string().required(t("validation.required")),
+          bankId: Yup.number().required(t("validation.required")),
+        });
+
+        try {
+          await Promise.all(
+            formik.values.bankAccounts.map((account) =>
+              bankAccountSchema.validate(account, { abortEarly: false })
+            )
+          );
+        } catch (error) {
+          // If there are validation errors, don't proceed
+          return;
+        }
+      }
 
       // Validate only the current step's fields
       const stepErrors = await formik.validateForm();
@@ -295,14 +320,9 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
 
                   {currentStep === 3 && (
                     <BankAccountForm
-                      data={{
-                        bankAccounts: formik.values.bankAccounts,
-                      }}
-                      onChange={(values) => {
-                        formik.setFieldValue(
-                          "bankAccounts",
-                          values.bankAccounts
-                        );
+                      bankAccounts={formik.values.bankAccounts}
+                      onChange={(bankAccounts) => {
+                        formik.setFieldValue("bankAccounts", bankAccounts);
                       }}
                     />
                   )}

@@ -297,6 +297,29 @@
           "label": "Tags",
           "placeholder": "Enter tags separated by commas"
         }
+      },
+      "bankInfo": {
+        "title": "Bank Accounts",
+        "add": "Add Bank Account",
+        "edit": "Edit Bank Account",
+        "remove": "Remove Bank Account",
+        "accountTitle": "Account Title",
+        "accountNumber": "Account Number",
+        "iban": "IBAN",
+        "cardNumber": "Card Number",
+        "branchName": "Branch Name",
+        "branchCode": "Branch Code",
+        "bankId": "Bank ID",
+        "actions": "Actions",
+        "placeholders": {
+          "accountTitle": "Enter account title",
+          "accountNumber": "Enter account number",
+          "iban": "Enter IBAN",
+          "cardNumber": "Enter card number",
+          "branchName": "Enter branch name",
+          "branchCode": "Enter branch code",
+          "bankId": "Enter bank ID"
+        }
       }
     }
   }
