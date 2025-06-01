@@ -1,9 +1,18 @@
+// src/config/api.ts
 export const API_CONFIG = {
-  BASE_URL: process.env.REACT_APP_API_URL || 'https://localhost:7190/api',
-  ENDPOINTS: {
-    CUSTOMERS: '/contacts',
+  SERVICES: {
+    ACCOUNTANT: {
+      BASE_URL:
+        process.env.REACT_APP_ACCOUNTANT_API_URL || 'https://localhost:7190/api',
+      ENDPOINTS: {
+        CUSTOMERS: '/contacts',
+        // add more endpoints as needed
+      },
+    },
+    // ⬇️ simply copy-paste and adjust for each extra micro-service
+    // ORDERS: { BASE_URL: '...', ENDPOINTS: { LIST: '/orders' } },
   },
-  HEADERS: {
+  DEFAULT_HEADERS: {
     'Content-Type': 'application/json',
   },
-}; 
+} as const;

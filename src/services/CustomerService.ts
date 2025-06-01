@@ -9,7 +9,9 @@ class CustomerService {
 
   constructor() {
     this.api = new APIClient();
-    this.endpoint = API_CONFIG.ENDPOINTS.CUSTOMERS;
+    this.endpoint =
+    API_CONFIG.SERVICES.ACCOUNTANT.BASE_URL +
+    API_CONFIG.SERVICES.ACCOUNTANT.ENDPOINTS.CUSTOMERS;
   }
 
   async getAllCustomers(request: ListRequest): Promise<ListResponse<Customer>> {
@@ -32,7 +34,11 @@ class CustomerService {
 
   async createCustomer(customer: Customer): Promise<Customer> {
     try {
-      const response = await this.api.create(this.endpoint, customer);
+      const customerToSend = {
+        ...customer,
+        phone: customer.phone.join(',')
+      };
+      const response = await this.api.create(this.endpoint, customerToSend);
       return (response as unknown) as Customer;
     } catch (error) {
       throw new Error(`Failed to create customer: ${error}`);
