@@ -5,13 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import {
-  Customer,
-  Gender,
-  MaritalStatus,
-  CustomerType,
-  CustomerInfo,
-} from "../types";
+import { Customer, Gender, MaritalStatus, CustomerType } from "../types";
 import {
   createCustomer,
   updateCustomerById,
@@ -22,11 +16,7 @@ import ContactInfoForm from "./ContactInfoForm";
 import BankAccountForm from "./BankAccountForm";
 import { AppDispatch, RootState } from "../../../../store";
 
-interface CustomerFormProps {
-  isEdit?: boolean;
-}
-
-const CustomerForm: React.FC<CustomerFormProps> = ({ isEdit = false }) => {
+const CustomerForm: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
@@ -38,29 +28,34 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ isEdit = false }) => {
   );
 
   useEffect(() => {
-    if (isEdit && id) {
+    if (id) {
       dispatch(fetchCustomerById(parseInt(id, 10)));
     }
-  }, [dispatch, id, isEdit]);
-
-  if (isEdit) {
-    if (loading) {
-      return <div>Loading...</div>;
-    }
-
-    if (error) {
-      return <div>Error: {error}</div>;
-    }
-
-    if (!selectedCustomer) {
-      return <div>Customer not found</div>;
-    }
-  }
+  }, [dispatch, id]);
 
   const initialValues: Customer =
-    isEdit && selectedCustomer
+    id && selectedCustomer
       ? {
-          ...selectedCustomer,
+          isCompany: selectedCustomer.isCompany,
+          title: selectedCustomer.title || "",
+          firstName: selectedCustomer.firstName || "",
+          lastName: selectedCustomer.lastName || "",
+          nationalId: selectedCustomer.nationalId || "",
+          taxId: selectedCustomer.taxId || "",
+          gender: selectedCustomer.gender || Gender.MALE,
+          nickname: selectedCustomer.nickname || "",
+          maritalStatus: selectedCustomer.maritalStatus || MaritalStatus.SINGLE,
+          customerType: selectedCustomer.customerType || CustomerType.NONE,
+          customerRiskLimit: selectedCustomer.customerRiskLimit || 0,
+          phone: selectedCustomer.phone || [],
+          email: selectedCustomer.email || "",
+          addresses: selectedCustomer.addresses || [],
+          bankAccounts: selectedCustomer.bankAccounts || [],
+          fax: selectedCustomer.fax || "",
+          website: selectedCustomer.website || "",
+          licensePlate: selectedCustomer.licensePlate || "",
+          tradeChamberNumber: selectedCustomer.tradeChamberNumber || "",
+          registrationNumber: selectedCustomer.registrationNumber || "",
         }
       : {
           isCompany: false,
@@ -139,14 +134,14 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ isEdit = false }) => {
       .nullable()
       .transform((value) => (value === "" ? null : value))
       .test("email", t("validation.invalidEmail"), (value) => {
-        if (!value) return true; // Allow empty/null values
+        if (!value) return true;
         return /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(value);
       }),
     website: Yup.string()
       .nullable()
       .transform((value) => (value === "" ? null : value))
       .test("website", t("validation.invalidWebsite"), (value) => {
-        if (!value) return true; // Allow empty/null values
+        if (!value) return true;
         return /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/.test(
           value
         );
@@ -160,13 +155,14 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ isEdit = false }) => {
     validationSchema,
     validateOnMount: true,
     validateOnChange: true,
+    enableReinitialize: true,
     onSubmit: async (values) => {
       try {
-        if (isEdit && selectedCustomer?.id) {
+        if (id) {
           await dispatch(
             updateCustomerById({
               ...values,
-              id: selectedCustomer.id,
+              id: parseInt(id, 10),
             })
           );
         } else {
@@ -239,6 +235,18 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ isEdit = false }) => {
     }
   };
 
+  if (id && loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (id && error) {
+    return <div>Error: {error}</div>;
+  }
+
+  if (id && !selectedCustomer) {
+    return <div>Customer not found</div>;
+  }
+
   return (
     <div className="page-content">
       <div className="container-fluid">
@@ -247,7 +255,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ isEdit = false }) => {
             <Card>
               <CardBody>
                 <h4 className="card-title mb-4">
-                  {isEdit
+                  {id
                     ? t("customer.form.title.edit")
                     : t("customer.form.title.new")}
                 </h4>
@@ -315,12 +323,14 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ isEdit = false }) => {
                         </Button>
                       )}
 
-                      <Button color="primary" onClick={handleNext}>
-                        {t("customer.form.buttons.next")}
-                      </Button>
+                      {currentStep < 3 && (
+                        <Button color="primary" onClick={handleNext}>
+                          {t("customer.form.buttons.next")}
+                        </Button>
+                      )}
 
                       <Button color="success" onClick={handleSave}>
-                        {isEdit
+                        {id
                           ? t("customer.form.buttons.update")
                           : t("customer.form.buttons.save")}
                       </Button>

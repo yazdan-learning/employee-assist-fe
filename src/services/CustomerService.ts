@@ -26,7 +26,7 @@ class CustomerService {
   async getCustomerById(id: number): Promise<Customer> {
     try {
       const response = await this.api.get(`${this.endpoint}/${id}`, null);
-      return (response as unknown) as Customer;
+      return response.data as Customer;
     } catch (error) {
       throw new Error(`Failed to fetch customer with ID ${id}: ${error}`);
     }
