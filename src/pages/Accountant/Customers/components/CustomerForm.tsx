@@ -108,7 +108,23 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
     customerRiskLimit: Yup.number(),
 
     // Contact Info Validation - making fields optional
-    email: Yup.string().email(t("customer.form.validation.invalidEmail")),
+    email: Yup.string()
+      .nullable()
+      .transform((value) => (value === "" ? null : value))
+      .test("email", t("validation.invalidEmail"), (value) => {
+        if (!value) return true; // Allow empty/null values
+        return /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(value);
+      }),
+    website: Yup.string()
+      .nullable()
+      .transform((value) => (value === "" ? null : value))
+      .test("website", t("validation.invalidWebsite"), (value) => {
+        if (!value) return true; // Allow empty/null values
+        return /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/.test(
+          value
+        );
+      }),
+    fax: Yup.string(),
     phone: Yup.array().of(Yup.string()),
     addresses: Yup.array().of(
       Yup.object().shape({
@@ -272,6 +288,8 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
                           formik.setFieldValue(key, values[key]);
                         });
                       }}
+                      errors={formik.errors}
+                      touched={formik.touched}
                     />
                   )}
 

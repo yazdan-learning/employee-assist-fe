@@ -296,8 +296,7 @@
         "phones": {
           "title": "شماره‌های تماس",
           "add": "افزودن شماره تماس",
-          "remove": "حذف شماره تماس",
-          "placeholder": "+98 9123456789"
+          "remove": "حذف شماره تماس"
         },
         "email": {
           "label": "ایمیل",
@@ -307,22 +306,24 @@
           "label": "وب‌سایت",
           "placeholder": "www.example.com"
         },
-        "buttons": {
-          "addAddress": "افزودن آدرس",
-          "addPhone": "افزودن شماره تماس",
-          "remove": "حذف"
+        "fax": {
+          "label": "فکس",
+          "placeholder": "+98 21 1234567"
+        },
+        "licensePlate": {
+          "label": "پلاک خودرو",
+          "placeholder": "شماره پلاک را وارد کنید"
         },
         "placeholders": {
-          "phone": "+98 9123456789",
+          "phone": "+98 912 345 6789",
           "email": "example@domain.com",
           "website": "www.example.com",
+          "fax": "+98 21 1234567",
+          "licensePlate": "شماره پلاک را وارد کنید",
           "addressTitle": "عنوان آدرس را وارد کنید",
           "address": "آدرس را وارد کنید",
           "postalCode": "کد پستی را وارد کنید"
-        },
-        "address": "آدرس",
-        "postalCode": "کد پستی",
-        "city": "شهر"
+        }
       },
       "additionalDetails": {
         "title": "اطلاعات تکمیلی",
@@ -348,6 +349,8 @@
   },
   "validation": {
     "required": "این فیلد الزامی است",
-    "postalCodeFormat": "کد پستی باید بین ۵ تا ۱۰ رقم باشد"
+    "postalCodeFormat": "کد پستی باید بین ۵ تا ۱۰ رقم باشد",
+    "invalidEmail": "لطفا یک آدرس ایمیل معتبر وارد کنید",
+    "invalidWebsite": "لطفا یک آدرس وب‌سایت معتبر وارد کنید"
   }
 } 

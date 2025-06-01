@@ -1,7 +1,9 @@
 {
   "validation": {
     "required": "Dieses Feld ist erforderlich",
-    "postalCodeFormat": "Die Postleitzahl muss zwischen 5 und 10 Ziffern haben"
+    "postalCodeFormat": "Die Postleitzahl muss zwischen 5 und 10 Ziffern haben",
+    "invalidEmail": "Bitte geben Sie eine gültige E-Mail-Adresse ein",
+    "invalidWebsite": "Bitte geben Sie eine gültige Website-URL ein"
   },
   "customer": {
     "form": {
@@ -87,8 +89,7 @@
         "phones": {
           "title": "Telefonnummern",
           "add": "Telefonnummer hinzufügen",
-          "remove": "Telefonnummer entfernen",
-          "placeholder": "+49 123456789"
+          "remove": "Telefonnummer entfernen"
         },
         "email": {
           "label": "E-Mail",
@@ -98,22 +99,24 @@
           "label": "Webseite",
           "placeholder": "www.beispiel.de"
         },
-        "buttons": {
-          "addAddress": "Adresse hinzufügen",
-          "addPhone": "Telefonnummer hinzufügen",
-          "remove": "Entfernen"
+        "fax": {
+          "label": "Fax",
+          "placeholder": "+49 123 456789"
+        },
+        "licensePlate": {
+          "label": "Kennzeichen",
+          "placeholder": "Kennzeichen eingeben"
         },
         "placeholders": {
-          "phone": "+49 123456789",
+          "phone": "+49 123 456789",
           "email": "beispiel@domain.de",
           "website": "www.beispiel.de",
+          "fax": "+49 123 456789",
+          "licensePlate": "Kennzeichen eingeben",
           "addressTitle": "Adresstitel eingeben",
           "address": "Adresse eingeben",
           "postalCode": "Postleitzahl eingeben"
-        },
-        "address": "Adresse",
-        "postalCode": "Postleitzahl",
-        "city": "Stadt"
+        }
       },
       "additionalDetails": {
         "title": "Zusätzliche Details",

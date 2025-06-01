@@ -160,7 +160,9 @@
   "Compact Sidebar": "Compact Sidebar",
   "validation": {
     "required": "This field is required",
-    "postalCodeFormat": "Postal code must be between 5 and 10 digits"
+    "postalCodeFormat": "Postal code must be between 5 and 10 digits",
+    "invalidEmail": "Please enter a valid email address",
+    "invalidWebsite": "Please enter a valid website URL"
   },
   "customer": {
     "form": {
@@ -247,8 +249,7 @@
         "phones": {
           "title": "Phone Numbers",
           "add": "Add Phone Number",
-          "remove": "Remove Phone Number",
-          "placeholder": "+1 234 567 8900"
+          "remove": "Remove Phone Number"
         },
         "email": {
           "label": "Email",
@@ -258,22 +259,24 @@
           "label": "Website",
           "placeholder": "www.example.com"
         },
-        "buttons": {
-          "addAddress": "Add Address",
-          "addPhone": "Add Phone Number",
-          "remove": "Remove"
+        "fax": {
+          "label": "Fax",
+          "placeholder": "+1 234 567 8900"
+        },
+        "licensePlate": {
+          "label": "License Plate",
+          "placeholder": "Enter license plate"
         },
         "placeholders": {
           "phone": "+1 234 567 8900",
           "email": "example@domain.com",
           "website": "www.example.com",
+          "fax": "+1 234 567 8900",
+          "licensePlate": "Enter license plate",
           "addressTitle": "Enter address title",
           "address": "Enter address",
           "postalCode": "Enter postal code"
-        },
-        "address": "Address",
-        "postalCode": "Postal Code",
-        "city": "City"
+        }
       },
       "additionalDetails": {
         "title": "Additional Details",

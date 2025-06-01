@@ -1,5 +1,5 @@
 import React from "react";
-import { Row, Col, FormGroup, Label, Input } from "reactstrap";
+import { Row, Col, FormGroup, Label, Input, Button } from "reactstrap";
 import { useTranslation } from "react-i18next";
 import { Address } from "../types";
 import AddressList from "./AddressList";
@@ -41,11 +41,26 @@ const ContactInfoForm: React.FC<ContactInfoFormProps> = ({
     handleInputChange("addresses", addresses);
   };
 
+  const handlePhoneChange = (index: number, value: string) => {
+    const newPhones = [...data.phone];
+    newPhones[index] = value;
+    handleInputChange("phone", newPhones);
+  };
+
+  const handleAddPhone = () => {
+    handleInputChange("phone", [...data.phone, ""]);
+  };
+
+  const handleRemovePhone = (index: number) => {
+    const newPhones = data.phone.filter((_, i) => i !== index);
+    handleInputChange("phone", newPhones);
+  };
+
   return (
     <div>
       <h5>{t("customer.form.contactInfo.title")}</h5>
 
-      {/* Addresses - Moved to top */}
+      {/* Addresses */}
       <div className="mb-4">
         <AddressList
           addresses={data.addresses}
@@ -53,10 +68,45 @@ const ContactInfoForm: React.FC<ContactInfoFormProps> = ({
         />
       </div>
 
+      {/* Phone Numbers */}
+      <div className="mb-4">
+        <div className="d-flex justify-content-between align-items-center mb-3">
+          <h6>{t("customer.form.contactInfo.phones.title")}</h6>
+          <Button color="primary" size="sm" onClick={handleAddPhone}>
+            {t("customer.form.contactInfo.phones.add")}
+          </Button>
+        </div>
+        {data.phone.map((phone, index) => (
+          <Row key={index} className="mb-2">
+            <Col md={11}>
+              <FormGroup>
+                <Input
+                  type="text"
+                  value={phone}
+                  onChange={(e) => handlePhoneChange(index, e.target.value)}
+                  placeholder={t(
+                    "customer.form.contactInfo.placeholders.phone"
+                  )}
+                />
+              </FormGroup>
+            </Col>
+            <Col md={1} className="d-flex align-items-center">
+              <Button
+                color="link"
+                className="p-0 text-danger"
+                onClick={() => handleRemovePhone(index)}
+              >
+                <i className="fas fa-times"></i>
+              </Button>
+            </Col>
+          </Row>
+        ))}
+      </div>
+
       <Row>
         <Col md={6}>
           <FormGroup>
-            <Label>{t("customer.form.contactInfo.email")}</Label>
+            <Label>{t("customer.form.contactInfo.email.label")}</Label>
             <Input
               type="email"
               id="email"
@@ -74,7 +124,7 @@ const ContactInfoForm: React.FC<ContactInfoFormProps> = ({
         </Col>
         <Col md={6}>
           <FormGroup>
-            <Label>{t("customer.form.contactInfo.website")}</Label>
+            <Label>{t("customer.form.contactInfo.website.label")}</Label>
             <Input
               type="text"
               id="website"
@@ -92,7 +142,7 @@ const ContactInfoForm: React.FC<ContactInfoFormProps> = ({
         </Col>
         <Col md={6}>
           <FormGroup>
-            <Label>{t("customer.form.contactInfo.fax")}</Label>
+            <Label>{t("customer.form.contactInfo.fax.label")}</Label>
             <Input
               type="text"
               id="fax"
@@ -108,7 +158,7 @@ const ContactInfoForm: React.FC<ContactInfoFormProps> = ({
         </Col>
         <Col md={6}>
           <FormGroup>
-            <Label>{t("customer.form.contactInfo.licensePlate")}</Label>
+            <Label>{t("customer.form.contactInfo.licensePlate.label")}</Label>
             <Input
               type="text"
               id="licensePlate"
@@ -129,12 +179,6 @@ const ContactInfoForm: React.FC<ContactInfoFormProps> = ({
           </FormGroup>
         </Col>
       </Row>
-
-      {/* Phone Numbers */}
-      <div className="mt-4">
-        <h6>{t("customer.form.contactInfo.phones.title")}</h6>
-        {/* Add phone number list component here */}
-      </div>
     </div>
   );
 };
