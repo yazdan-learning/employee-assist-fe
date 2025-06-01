@@ -1,4 +1,8 @@
 {
+  "validation": {
+    "required": "Dieses Feld ist erforderlich",
+    "postalCodeFormat": "Die Postleitzahl muss zwischen 5 und 10 Ziffern haben"
+  },
   "customer": {
     "form": {
       "title": {
@@ -76,7 +80,9 @@
           "remove": "Adresse entfernen",
           "address": "Adresse",
           "postalCode": "Postleitzahl",
-          "city": "Stadt"
+          "addressTitle": "Titel",
+          "primary": "Hauptadresse",
+          "isPrimary": "Hauptadresse"
         },
         "phones": {
           "title": "Telefonnummern",
@@ -101,9 +107,9 @@
           "phone": "+49 123456789",
           "email": "beispiel@domain.de",
           "website": "www.beispiel.de",
+          "addressTitle": "Adresstitel eingeben",
           "address": "Adresse eingeben",
-          "postalCode": "Postleitzahl eingeben",
-          "city": "Stadt eingeben"
+          "postalCode": "Postleitzahl eingeben"
         },
         "address": "Adresse",
         "postalCode": "Postleitzahl",

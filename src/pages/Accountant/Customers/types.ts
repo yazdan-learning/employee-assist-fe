@@ -19,6 +19,7 @@ export enum MaritalStatus {
 }
 
 export interface Address {
+  id?: string;
   title: string;
   value: string;
   postalCode: string;

@@ -1,111 +1,170 @@
 import React from "react";
-import { Row, Col, FormGroup, Label, Input, Button } from "reactstrap";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { Button, FormGroup, Label, Input, Row, Col } from "reactstrap";
 import { useTranslation } from "react-i18next";
 import { Address } from "../types";
 
 interface AddressFormProps {
-  address: Address;
-  onChange: (address: Address) => void;
-  onRemove: () => void;
-  showRemove?: boolean;
+  address?: Address;
+  onSave: (address: Address) => void;
+  onCancel: () => void;
 }
 
 const AddressForm: React.FC<AddressFormProps> = ({
   address,
-  onChange,
-  onRemove,
-  showRemove = true,
+  onSave,
+  onCancel,
 }) => {
   const { t } = useTranslation();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    onChange({
-      ...address,
-      [name]: value,
-    });
-  };
+  const validationSchema = Yup.object().shape({
+    title: Yup.string().required(t("validation.required")),
+    value: Yup.string().required(t("validation.required")),
+    postalCode: Yup.string()
+      .required(t("validation.required"))
+      .matches(/^\d{5,10}$/, t("validation.postalCodeFormat")),
+    isPrimary: Yup.boolean(),
+  });
 
-  const handlePrimaryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange({
-      ...address,
-      isPrimary: e.target.checked,
+  const formik = useFormik({
+    initialValues: {
+      title: address?.title || "",
+      value: address?.value || "",
+      postalCode: address?.postalCode || "",
+      isPrimary: address?.isPrimary || false,
+    },
+    validationSchema,
+    onSubmit: (values) => {
+      console.log(values);
+    },
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Touch all fields to show validation errors
+    Object.keys(formik.values).forEach((field) => {
+      formik.setFieldTouched(field, true);
     });
+
+    // Validate all fields
+    const errors = await formik.validateForm();
+
+    // If no errors, proceed with save
+    if (Object.keys(errors).length === 0) {
+      onSave({
+        ...formik.values,
+        id: address?.id,
+      });
+    }
   };
 
   return (
-    <div className="border p-3 rounded">
+    <form>
       <Row>
-        <Col md={12}>
+        <Col md={6}>
           <FormGroup>
-            <Label>{t("customer.form.contactInfo.addressTitle")}</Label>
+            <Label for="title">
+              {t("customer.form.contactInfo.addresses.addressTitle")}
+            </Label>
             <Input
-              type="text"
+              id="title"
               name="title"
-              value={address.title}
-              onChange={handleChange}
+              type="text"
+              value={formik.values.title}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              invalid={formik.touched.title && Boolean(formik.errors.title)}
               placeholder={t(
                 "customer.form.contactInfo.placeholders.addressTitle"
               )}
             />
+            {formik.touched.title && formik.errors.title && (
+              <div className="invalid-feedback d-block">
+                {formik.errors.title}
+              </div>
+            )}
           </FormGroup>
         </Col>
-      </Row>
-      <Row>
-        <Col md={12}>
-          <FormGroup>
-            <Label>{t("customer.form.contactInfo.address")}</Label>
-            <Input
-              type="textarea"
-              name="value"
-              value={address.value}
-              onChange={handleChange}
-              placeholder={t("customer.form.contactInfo.placeholders.address")}
-            />
-          </FormGroup>
-        </Col>
-      </Row>
-      <Row>
         <Col md={6}>
           <FormGroup>
-            <Label>{t("customer.form.contactInfo.postalCode")}</Label>
+            <Label for="postalCode">
+              {t("customer.form.contactInfo.addresses.postalCode")}
+            </Label>
             <Input
-              type="text"
+              id="postalCode"
               name="postalCode"
-              value={address.postalCode}
-              onChange={handleChange}
+              type="text"
+              value={formik.values.postalCode}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              invalid={
+                formik.touched.postalCode && Boolean(formik.errors.postalCode)
+              }
               placeholder={t(
                 "customer.form.contactInfo.placeholders.postalCode"
               )}
             />
-          </FormGroup>
-        </Col>
-        <Col md={6}>
-          <FormGroup>
-            <Label>{t("customer.form.contactInfo.isPrimary")}</Label>
-            <div className="form-check">
-              <Input
-                type="checkbox"
-                className="form-check-input"
-                id="isPrimary"
-                checked={address.isPrimary}
-                onChange={handlePrimaryChange}
-              />
-              <Label className="form-check-label" htmlFor="isPrimary">
-                {t("customer.form.contactInfo.makePrimary")}
-              </Label>
-            </div>
+            {formik.touched.postalCode && formik.errors.postalCode && (
+              <div className="invalid-feedback d-block">
+                {formik.errors.postalCode}
+              </div>
+            )}
           </FormGroup>
         </Col>
       </Row>
-      {showRemove && (
-        <div className="text-end mt-3">
-          <Button color="danger" size="sm" onClick={onRemove}>
-            {t("customer.form.contactInfo.buttons.remove")}
-          </Button>
-        </div>
-      )}
-    </div>
+
+      <Row>
+        <Col md={12}>
+          <FormGroup>
+            <Label for="value">
+              {t("customer.form.contactInfo.addresses.address")}
+            </Label>
+            <Input
+              id="value"
+              name="value"
+              type="textarea"
+              value={formik.values.value}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              invalid={formik.touched.value && Boolean(formik.errors.value)}
+              placeholder={t("customer.form.contactInfo.placeholders.address")}
+            />
+            {formik.touched.value && formik.errors.value && (
+              <div className="invalid-feedback d-block">
+                {formik.errors.value}
+              </div>
+            )}
+          </FormGroup>
+        </Col>
+      </Row>
+
+      <Row>
+        <Col md={12}>
+          <FormGroup check>
+            <Label check>
+              <Input
+                type="checkbox"
+                name="isPrimary"
+                checked={formik.values.isPrimary}
+                onChange={formik.handleChange}
+              />{" "}
+              {t("customer.form.contactInfo.addresses.isPrimary")}
+            </Label>
+          </FormGroup>
+        </Col>
+      </Row>
+
+      <div className="d-flex justify-content-end gap-2 mt-3">
+        <Button type="button" color="secondary" onClick={onCancel}>
+          {t("customer.form.buttons.cancel")}
+        </Button>
+        <Button type="submit" color="primary" onClick={handleSubmit}>
+          {t("customer.form.buttons.save")}
+        </Button>
+      </div>
+    </form>
   );
 };
 

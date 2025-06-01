@@ -289,7 +289,9 @@
           "remove": "حذف آدرس",
           "address": "آدرس",
           "postalCode": "کد پستی",
-          "city": "شهر"
+          "addressTitle": "عنوان",
+          "primary": "آدرس اصلی",
+          "isPrimary": "آدرس اصلی"
         },
         "phones": {
           "title": "شماره‌های تماس",
@@ -314,9 +316,9 @@
           "phone": "+98 9123456789",
           "email": "example@domain.com",
           "website": "www.example.com",
+          "addressTitle": "عنوان آدرس را وارد کنید",
           "address": "آدرس را وارد کنید",
-          "postalCode": "کد پستی را وارد کنید",
-          "city": "شهر را وارد کنید"
+          "postalCode": "کد پستی را وارد کنید"
         },
         "address": "آدرس",
         "postalCode": "کد پستی",
@@ -343,5 +345,9 @@
         }
       }
     }
+  },
+  "validation": {
+    "required": "این فیلد الزامی است",
+    "postalCodeFormat": "کد پستی باید بین ۵ تا ۱۰ رقم باشد"
   }
 } 

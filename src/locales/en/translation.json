@@ -158,6 +158,10 @@
   "Horizontal layout": "Horizontal layout",
   "Light Sidebar": "Light Sidebar",
   "Compact Sidebar": "Compact Sidebar",
+  "validation": {
+    "required": "This field is required",
+    "postalCodeFormat": "Postal code must be between 5 and 10 digits"
+  },
   "customer": {
     "form": {
       "title": {
@@ -177,7 +181,8 @@
         "add": "Add",
         "remove": "Remove",
         "edit": "Edit",
-        "actions": "Actions"
+        "actions": "Actions",
+        "cancel": "Cancel"
       },
       "basicInfo": {
         "isCompany": "Legal Entity",
@@ -235,7 +240,9 @@
           "remove": "Remove Address",
           "address": "Address",
           "postalCode": "Postal Code",
-          "city": "City"
+          "addressTitle": "Title",
+          "primary": "Primary Address",
+          "isPrimary": "Primary Address"
         },
         "phones": {
           "title": "Phone Numbers",
@@ -260,9 +267,9 @@
           "phone": "+1 234 567 8900",
           "email": "example@domain.com",
           "website": "www.example.com",
+          "addressTitle": "Enter address title",
           "address": "Enter address",
-          "postalCode": "Enter postal code",
-          "city": "Enter city"
+          "postalCode": "Enter postal code"
         },
         "address": "Address",
         "postalCode": "Postal Code",

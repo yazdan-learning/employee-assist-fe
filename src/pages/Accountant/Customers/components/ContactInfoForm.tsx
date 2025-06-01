@@ -44,6 +44,15 @@ const ContactInfoForm: React.FC<ContactInfoFormProps> = ({
   return (
     <div>
       <h5>{t("customer.form.contactInfo.title")}</h5>
+
+      {/* Addresses - Moved to top */}
+      <div className="mb-4">
+        <AddressList
+          addresses={data.addresses}
+          onChange={handleAddressesChange}
+        />
+      </div>
+
       <Row>
         <Col md={6}>
           <FormGroup>
@@ -125,14 +134,6 @@ const ContactInfoForm: React.FC<ContactInfoFormProps> = ({
       <div className="mt-4">
         <h6>{t("customer.form.contactInfo.phones.title")}</h6>
         {/* Add phone number list component here */}
-      </div>
-
-      {/* Addresses */}
-      <div className="mt-4">
-        <AddressList
-          addresses={data.addresses}
-          onChange={handleAddressesChange}
-        />
       </div>
     </div>
   );
