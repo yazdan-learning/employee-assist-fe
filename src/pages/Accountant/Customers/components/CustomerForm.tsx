@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Row, Col, Card, CardBody, Button } from "reactstrap";
-import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -15,48 +15,75 @@ import {
 import {
   createCustomer,
   updateCustomerById,
+  fetchCustomerById,
 } from "../../../../slices/customers/thunk";
 import BasicInfoForm from "./BasicInfoForm";
 import ContactInfoForm from "./ContactInfoForm";
 import BankAccountForm from "./BankAccountForm";
-import { AppDispatch } from "../../../../store";
+import { AppDispatch, RootState } from "../../../../store";
 
 interface CustomerFormProps {
-  customer?: CustomerInfo & Partial<Customer>;
   isEdit?: boolean;
 }
 
-const CustomerForm: React.FC<CustomerFormProps> = ({
-  customer,
-  isEdit = false,
-}) => {
+const CustomerForm: React.FC<CustomerFormProps> = ({ isEdit = false }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
+  const { id } = useParams<{ id: string }>();
   const [currentStep, setCurrentStep] = useState(1);
 
-  const initialValues: Customer = {
-    isCompany: customer?.isCompany ?? false,
-    title: customer?.title ?? "",
-    firstName: customer?.firstName ?? "",
-    lastName: customer?.lastName ?? "",
-    nationalId: customer?.nationalId ?? "",
-    taxId: customer?.taxId ?? "",
-    gender: customer?.gender ?? Gender.MALE,
-    nickname: customer?.nickname ?? "",
-    maritalStatus: customer?.maritalStatus ?? MaritalStatus.SINGLE,
-    customerType: customer?.customerType ?? CustomerType.NONE,
-    customerRiskLimit: customer?.customerRiskLimit ?? 0,
-    phone: customer?.phone ?? [],
-    email: customer?.email ?? "",
-    addresses: customer?.addresses ?? [],
-    bankAccounts: customer?.bankAccounts ?? [],
-    fax: customer?.fax ?? "",
-    website: customer?.website ?? "",
-    licensePlate: customer?.licensePlate ?? "",
-    tradeChamberNumber: customer?.tradeChamberNumber ?? "",
-    registrationNumber: customer?.registrationNumber ?? "",
-  };
+  const { selectedCustomer, loading, error } = useSelector(
+    (state: RootState) => state.customer
+  );
+
+  useEffect(() => {
+    if (isEdit && id) {
+      dispatch(fetchCustomerById(parseInt(id, 10)));
+    }
+  }, [dispatch, id, isEdit]);
+
+  if (isEdit) {
+    if (loading) {
+      return <div>Loading...</div>;
+    }
+
+    if (error) {
+      return <div>Error: {error}</div>;
+    }
+
+    if (!selectedCustomer) {
+      return <div>Customer not found</div>;
+    }
+  }
+
+  const initialValues: Customer =
+    isEdit && selectedCustomer
+      ? {
+          ...selectedCustomer,
+        }
+      : {
+          isCompany: false,
+          title: "",
+          firstName: "",
+          lastName: "",
+          nationalId: "",
+          taxId: "",
+          gender: Gender.MALE,
+          nickname: "",
+          maritalStatus: MaritalStatus.SINGLE,
+          customerType: CustomerType.NONE,
+          customerRiskLimit: 0,
+          phone: [],
+          email: "",
+          addresses: [],
+          bankAccounts: [],
+          fax: "",
+          website: "",
+          licensePlate: "",
+          tradeChamberNumber: "",
+          registrationNumber: "",
+        };
 
   const validationSchema = Yup.object().shape({
     // Basic Info Validation
@@ -107,7 +134,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
     customerType: Yup.number(),
     customerRiskLimit: Yup.number(),
 
-    // Contact Info Validation - making fields optional
+    // Contact Info Validation
     email: Yup.string()
       .nullable()
       .transform((value) => (value === "" ? null : value))
@@ -126,27 +153,6 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
       }),
     fax: Yup.string(),
     phone: Yup.array().of(Yup.string()),
-    addresses: Yup.array().of(
-      Yup.object().shape({
-        title: Yup.string(),
-        value: Yup.string(),
-        postalCode: Yup.string(),
-        isPrimary: Yup.boolean(),
-      })
-    ),
-
-    // Bank Account Validation - making fields optional at customer level
-    bankAccounts: Yup.array().of(
-      Yup.object().shape({
-        accountNumber: Yup.string().required(t("validation.required")),
-        iban: Yup.string().required(t("validation.required")),
-        cardNumber: Yup.string().required(t("validation.required")),
-        title: Yup.string().required(t("validation.required")),
-        branchName: Yup.string().required(t("validation.required")),
-        branchCode: Yup.string().required(t("validation.required")),
-        bankId: Yup.number().required(t("validation.required")),
-      })
-    ),
   });
 
   const formik = useFormik({
@@ -156,11 +162,11 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
     validateOnChange: true,
     onSubmit: async (values) => {
       try {
-        if (isEdit && customer?.id) {
+        if (isEdit && selectedCustomer?.id) {
           await dispatch(
             updateCustomerById({
               ...values,
-              id: customer.id,
+              id: selectedCustomer.id,
             })
           );
         } else {
@@ -173,47 +179,19 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
     },
   });
 
-  const handleNext = async () => {
+  const handleNext = () => {
     const fields = getFieldsForCurrentStep();
-    try {
-      // Touch all fields in current step to show validation errors
-      fields.forEach((field) => {
-        formik.setFieldTouched(field, true);
-      });
 
-      // For bank accounts step, validate each bank account
-      if (currentStep === 3 && formik.values.bankAccounts.length > 0) {
-        const bankAccountSchema = Yup.object().shape({
-          accountNumber: Yup.string().required(t("validation.required")),
-          iban: Yup.string().required(t("validation.required")),
-          cardNumber: Yup.string().required(t("validation.required")),
-          title: Yup.string().required(t("validation.required")),
-          branchName: Yup.string().required(t("validation.required")),
-          branchCode: Yup.string().required(t("validation.required")),
-          bankId: Yup.number().required(t("validation.required")),
-        });
+    // Touch all fields in current step to show validation errors
+    fields.forEach((field) => {
+      formik.setFieldTouched(field, true);
+    });
 
-        try {
-          await Promise.all(
-            formik.values.bankAccounts.map((account) =>
-              bankAccountSchema.validate(account, { abortEarly: false })
-            )
-          );
-        } catch (error) {
-          // If there are validation errors, don't proceed
-          return;
-        }
-      }
+    // Check if there are any errors in the current step's fields
+    const hasErrors = fields.some((field) => formik.errors[field]);
 
-      // Validate only the current step's fields
-      const stepErrors = await formik.validateForm();
-      const hasErrors = fields.some((field) => stepErrors[field]);
-
-      if (!hasErrors) {
-        setCurrentStep((prev) => prev + 1);
-      }
-    } catch (error) {
-      console.error("Validation error:", error);
+    if (!hasErrors) {
+      setCurrentStep((prev) => prev + 1);
     }
   };
 
@@ -249,11 +227,13 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
           "maritalStatus",
           "customerType",
           "customerRiskLimit",
+          "tradeChamberNumber",
+          "registrationNumber",
         ];
       case 2:
-        return ["email", "phone", "addresses"];
+        return ["email", "phone", "fax", "website", "licensePlate"];
       case 3:
-        return ["bankAccounts"];
+        return [];
       default:
         return [];
     }
