@@ -1,4 +1,5 @@
 import axios from "axios";
+import { handleError } from "./error-handler";
 
 // default
 axios.defaults.baseURL = "";
@@ -14,22 +15,20 @@ axios.interceptors.response.use(
     return response.data ? response.data : response;
   },
   function (error: any) {
-    // Any status codes that falls outside the range of 2xx cause this function to trigger
-    let message: any;
-    switch (error.status) {
-      case 500:
-        message = "Internal Server Error";
-        break;
-      case 401:
-        message = "Invalid credentials";
-        break;
-      case 404:
-        message = "Sorry! the data you are looking for could not be found";
-        break;
-      default:
-        message = error.message || error;
-    }
-    return Promise.reject(message);
+    // Get the error details from the response
+    const errorResponse = error.response || {};
+    const errorData = {
+      status: errorResponse.status,
+      message: errorResponse.data?.message || error.message,
+      data: errorResponse.data
+    };
+
+    // Handle the error using our error handler - only show notifications, no redirects
+    handleError(errorData, {
+      shouldRedirect: false // Let components handle navigation
+    });
+
+    return Promise.reject(errorData);
   }
 );
 /**
