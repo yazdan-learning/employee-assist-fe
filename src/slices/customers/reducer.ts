@@ -23,17 +23,6 @@ const initialState: CustomerState = {
 };
 
 // Helper function to transform Customer to CustomerInfo
-const transformToCustomerInfo = (customer: Customer): CustomerInfo => ({
-  id: customer.id || 0,  // Keep as number, default to 0 if undefined
-  name: customer.isCompany ? customer.title : `${customer.firstName} ${customer.lastName}`,
-  isFirm: customer.isCompany,
-  companyName: customer.isCompany ? customer.title : undefined,
-  firstName: !customer.isCompany ? customer.firstName : undefined,
-  lastName: !customer.isCompany ? customer.lastName : undefined,
-  nationalCode: customer.nationalId,
-  taxId: customer.taxId,
-  customerType: customer.customerType
-});
 
 const customerSlice = createSlice({
   name: "customer",
@@ -52,7 +41,7 @@ const customerSlice = createSlice({
       })
       .addCase(fetchCustomers.fulfilled, (state, action) => {
         state.loading = false;
-        state.customers = action.payload.data.map(transformToCustomerInfo);
+        state.customers = action.payload.data.items;
       })
       .addCase(fetchCustomers.rejected, (state, action) => {
         state.loading = false;
@@ -65,7 +54,7 @@ const customerSlice = createSlice({
       })
       .addCase(fetchCustomerById.fulfilled, (state, action) => {
         state.loading = false;
-        state.selectedCustomer = action.payload;
+        state.selectedCustomer = action.payload.data;
       })
       .addCase(fetchCustomerById.rejected, (state, action) => {
         state.loading = false;
@@ -78,7 +67,7 @@ const customerSlice = createSlice({
       })
       .addCase(createCustomer.fulfilled, (state, action) => {
         state.loading = false;
-        state.customers.push(transformToCustomerInfo(action.payload));
+        state.customers.push(action.payload.data as unknown as CustomerInfo);
       })
       .addCase(createCustomer.rejected, (state, action) => {
         state.loading = false;
@@ -91,16 +80,16 @@ const customerSlice = createSlice({
       })
       .addCase(updateCustomerById.fulfilled, (state, action) => {
         state.loading = false;
-        const customerInfo = transformToCustomerInfo(action.payload);
+        const customerInfo = action.payload.data as unknown as CustomerInfo;
         const index = state.customers.findIndex(
-          (customer) => customer.id === action.payload.id
+          (customer) => customer.id === action.payload.data.id
         );
         if (index !== -1) {
           state.customers[index] = customerInfo;
         }
         // Update selectedCustomer if it's the one being updated
-        if (state.selectedCustomer?.id === action.payload.id) {
-          state.selectedCustomer = action.payload;
+        if (state.selectedCustomer?.id === action.payload.data.id) {
+          state.selectedCustomer = action.payload.data;
         }
       })
       .addCase(updateCustomerById.rejected, (state, action) => {

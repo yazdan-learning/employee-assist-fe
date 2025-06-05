@@ -1,4 +1,5 @@
 import React from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./App.css";
 import { publicRoutes } from "./Routes/allRoutes";
 import { Route, Routes } from "react-router-dom";
@@ -7,12 +8,21 @@ import "./assets/scss/theme.scss";
 // import NonAuthLayout from "./Layouts/NonLayout";
 // import AuthProtected from "./Routes/AuthProtected";
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: 1,
+    },
+  },
+});
+
 // Default Layout (Removed Redux-based layout selection)
 const DefaultLayout = VerticalLayout;
 
 function App() {
   return (
-    <React.Fragment>
+    <QueryClientProvider client={queryClient}>
       <Routes>
         {/* Public Routes (No authentication required) */}
         {publicRoutes.map((route, idx) => (
@@ -36,7 +46,7 @@ function App() {
           />
         ))} */}
       </Routes>
-    </React.Fragment>
+    </QueryClientProvider>
   );
 }
 

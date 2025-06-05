@@ -41,12 +41,12 @@ const productSlice = createSlice({
       })
       .addCase(fetchProducts.fulfilled, (state, action) => {
         state.loading = false;
-        state.products = action.payload.data;
+        state.products = action.payload.data.items;
         state.pagination = {
-          currentPage: action.payload.currentPage,
-          pageSize: action.payload.pageSize,
-          totalItems: action.payload.totalItems,
-          totalPages: action.payload.totalPages,
+          currentPage: action.payload.data.pageNumber,
+          pageSize: action.payload.data.pageSize,
+          totalItems: action.payload.data.totalCount,
+          totalPages: action.payload.data.totalPages,
         };
       })
       .addCase(fetchProducts.rejected, (state, action) => {

@@ -62,13 +62,14 @@ export interface Customer {
 
 // For list view and basic info display
 export interface CustomerInfo {
+  isCompany: boolean;
+  title: string;
   id: number;
-  name: string;
   isFirm: boolean;
   companyName?: string;
   firstName?: string;
   lastName?: string;
-  nationalCode: string;
+  nationalId: string;
   taxId: string;
   customerType: CustomerType;
 } 

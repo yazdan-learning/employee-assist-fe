@@ -1,12 +1,11 @@
-import React, { useEffect, useMemo, useState, useCallback } from "react";
+import React, { useMemo, useState, useCallback, useEffect } from "react";
 import { Container } from "reactstrap";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from "react-redux";
 import {
-  fetchCustomers,
-  deleteCustomerById,
-} from "../../../slices/customers/thunk";
+  useCustomerList,
+  useDeleteCustomer,
+} from "../../../hooks/useCustomers";
 import { CustomerInfo } from "./types";
 import Breadcrumbs from "../../../Components/Common/Breadcrumb";
 import TableContainer from "../../../Components/Common/TableContainer";
@@ -14,21 +13,9 @@ import { debounce } from "lodash";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-interface RootState {
-  customer: {
-    customers: CustomerInfo[];
-    loading: boolean;
-    error: string | null;
-  };
-}
-
 const CustomerList: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const dispatch = useDispatch<any>();
-  const { customers, loading } = useSelector(
-    (state: RootState) => state.customer
-  );
 
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
@@ -36,59 +23,41 @@ const CustomerList: React.FC = () => {
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  const [totalItems, setTotalItems] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
+
+  const { data: response, isLoading } = useCustomerList({
+    page: currentPage,
+    pageSize: pageSize,
+    searchTerm: debouncedSearchTerm,
+    sortField: sortField,
+    sortDirection: sortDirection,
+  });
+
+  console.log("response", response);
+
+  const deleteMutation = useDeleteCustomer();
 
   // Debounced search function
   const debouncedSearch = useCallback(
     debounce((term: string) => {
       setDebouncedSearchTerm(term);
-      setCurrentPage(1); // Reset to first page when searching
     }, 300),
     []
   );
 
-  // Effect for loading customers
-  useEffect(() => {
-    dispatch(
-      fetchCustomers({
-        page: currentPage,
-        pageSize: pageSize,
-        searchTerm: debouncedSearchTerm,
-        sortField: sortField,
-        sortDirection: sortDirection,
-      })
-    ).then((response: any) => {
-      console.log("fetchCustomers response:", response);
-      if (response.payload) {
-        setTotalItems(response.payload.totalItems);
-        setTotalPages(response.payload.totalPages);
-      }
-    });
-  }, [
-    dispatch,
-    debouncedSearchTerm,
-    sortField,
-    sortDirection,
-    currentPage,
-    pageSize,
-  ]);
-
-  // Effect for handling search term changes
-  useEffect(() => {
-    console.log("totalPages", totalPages);
-    console.log("totalItems", totalItems);
-    debouncedSearch(searchTerm);
-  }, [searchTerm, debouncedSearch]);
-
+  // Keep handleSearch simple - just update the searchTerm
   const handleSearch = (value: string) => {
     setSearchTerm(value);
   };
 
+  // Effect to handle search and show pagination info
+  useEffect(() => {
+    debouncedSearch(searchTerm);
+  }, [searchTerm, debouncedSearch]);
+
   const handleSort = (field: string, direction: "asc" | "desc") => {
     setSortField(field);
     setSortDirection(direction);
-    setCurrentPage(1); // Reset to first page when sorting
+    setCurrentPage(1);
   };
 
   const handlePageChange = (page: number) => {
@@ -100,7 +69,7 @@ const CustomerList: React.FC = () => {
   const handlePageSizeChange = (size: number) => {
     if (size !== pageSize) {
       setPageSize(size);
-      setCurrentPage(1); // Reset to first page when changing page size
+      setCurrentPage(1);
     }
   };
 
@@ -173,8 +142,12 @@ const CustomerList: React.FC = () => {
   const handleDelete = async (id: number) => {
     if (window.confirm(t("Are you sure you want to delete this customer?"))) {
       try {
-        await dispatch(deleteCustomerById(id));
-        toast.success(t("Customer deleted successfully"));
+        const response = await deleteMutation.mutateAsync(id);
+        if (response.succeeded) {
+          toast.success(t("Customer deleted successfully"));
+        } else {
+          toast.error(response.errors || t("Error deleting customer"));
+        }
       } catch (error) {
         toast.error(t("Error deleting customer"));
       }
@@ -190,7 +163,7 @@ const CustomerList: React.FC = () => {
         />
         <TableContainer
           columns={columns}
-          data={customers || []}
+          data={response?.data?.items || []}
           isGlobalFilter={true}
           isPagination={true}
           isCustomPageSize={true}
@@ -203,16 +176,15 @@ const CustomerList: React.FC = () => {
           buttonName={t("Add Customer")}
           buttonClass="btn btn-primary"
           handleUserClick={() => navigate("/accountant/customers/add")}
-          // Server-side props
           onSearch={handleSearch}
           onSort={handleSort}
           onPageChange={handlePageChange}
           onPageSizeChange={handlePageSizeChange}
           currentPage={currentPage}
           pageSize={pageSize}
-          totalItems={totalItems}
-          totalPages={totalPages}
-          loading={loading}
+          totalItems={response?.data?.totalCount || 0}
+          totalPages={response?.data?.totalPages || 0}
+          loading={isLoading}
         />
         <ToastContainer />
       </Container>

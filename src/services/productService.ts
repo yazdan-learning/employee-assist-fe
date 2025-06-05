@@ -64,11 +64,19 @@ export const getProducts = async (request: ListRequest): Promise<ListResponse<Pr
       const end = start + request.pageSize;
       
       resolve({
-        data: filteredProducts.slice(start, end),
-        currentPage: request.page,
-        pageSize: request.pageSize,
-        totalItems,
-        totalPages
+        data: {
+          items: filteredProducts.slice(start, end),
+          totalCount: totalItems,
+          pageNumber: request.page,
+          pageSize: request.pageSize,
+          totalPages: totalPages,
+          hasPreviousPage: request.page > 1,
+          hasNextPage: request.page < totalPages
+        },
+        succeeded: true,
+        statusCode: 200,
+        errors: null,
+        message: null
       });
     }, 500);
   });

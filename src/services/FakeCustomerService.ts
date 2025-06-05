@@ -45,11 +45,19 @@ class FakeCustomerService {
     const end = start + request.pageSize;
     
     return {
-      data: filteredCustomers.slice(start, end),
-      currentPage: request.page,
-      pageSize: request.pageSize,
-      totalItems,
-      totalPages
+      data: {
+        items: filteredCustomers.slice(start, end),
+        totalCount: totalItems,
+        pageNumber: request.page,
+        pageSize: request.pageSize,
+        totalPages: totalPages,
+        hasPreviousPage: request.page > 1,
+        hasNextPage: request.page < totalPages
+      },
+      succeeded: true,
+      statusCode: 200,
+      errors: null,
+      message: null
     };
   }
 

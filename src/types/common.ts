@@ -1,9 +1,10 @@
 // Base API Response Model
 export interface BaseResponse<T> {
-  success: boolean;
-  data?: T;
-  errorCode?: string;
-  errorMessage?: string;
+  statusCode: number;
+  succeeded: boolean;
+  message: string | null;
+  errors: string | null;
+  data: T;
 }
 
 // List Request Model
@@ -16,13 +17,17 @@ export interface ListRequest {
 }
 
 // List Response Model
-export interface ListResponse<T> {
-  data: T[];
-  currentPage: number;
+export interface PaginatedData<T> {
+  items: T[];
+  totalCount: number;
+  pageNumber: number;
   pageSize: number;
-  totalItems: number;
   totalPages: number;
+  hasPreviousPage: boolean;
+  hasNextPage: boolean;
 }
+
+export type ListResponse<T> = BaseResponse<PaginatedData<T>>;
 
 // Column Definition
 export interface ColumnDef {
