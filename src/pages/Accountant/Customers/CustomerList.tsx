@@ -77,14 +77,14 @@ const CustomerList: React.FC = () => {
     () => [
       {
         header: t("Name"),
-        accessorKey: "name",
+        accessorKey: "displayName",
         enableColumnFilter: false,
         enableSorting: true,
         cell: (row: any) => row.getValue(),
       },
       {
         header: t("Type"),
-        accessorKey: "isFirm",
+        accessorKey: "isCompany",
         enableColumnFilter: false,
         enableSorting: true,
         cell: (row: any) => (
@@ -99,7 +99,7 @@ const CustomerList: React.FC = () => {
       },
       {
         header: t("National Code"),
-        accessorKey: "nationalCode",
+        accessorKey: "nationalId",
         enableColumnFilter: false,
         enableSorting: true,
         cell: (row: any) => row.getValue(),
