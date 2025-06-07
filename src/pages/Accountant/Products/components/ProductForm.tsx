@@ -180,45 +180,6 @@ const ProductForm: React.FC = () => {
                     </Col>
                   </Row>
 
-                  <Row>
-                    <Col md={4}>
-                      <FormGroup check>
-                        <Label check>
-                          <Input
-                            type="checkbox"
-                            {...formik.getFieldProps("isService")}
-                            checked={formik.values.isService}
-                          />{" "}
-                          {t("product.form.isService")}
-                        </Label>
-                      </FormGroup>
-                    </Col>
-                    <Col md={4}>
-                      <FormGroup check>
-                        <Label check>
-                          <Input
-                            type="checkbox"
-                            {...formik.getFieldProps("hasSerial")}
-                            checked={formik.values.hasSerial}
-                          />{" "}
-                          {t("product.form.hasSerial")}
-                        </Label>
-                      </FormGroup>
-                    </Col>
-                    <Col md={4}>
-                      <FormGroup check>
-                        <Label check>
-                          <Input
-                            type="checkbox"
-                            {...formik.getFieldProps("allowNegativeStock")}
-                            checked={formik.values.allowNegativeStock}
-                          />{" "}
-                          {t("product.form.allowNegativeStock")}
-                        </Label>
-                      </FormGroup>
-                    </Col>
-                  </Row>
-
                   <Row className="mt-3">
                     <Col md={6}>
                       <FormGroup>
@@ -264,17 +225,6 @@ const ProductForm: React.FC = () => {
 
                   <Row className="mt-3">
                     <Col md={12}>
-                      <AttributeList
-                        attributes={formik.values.attributes}
-                        onChange={(attributes) =>
-                          formik.setFieldValue("attributes", attributes)
-                        }
-                      />
-                    </Col>
-                  </Row>
-
-                  <Row className="mt-3">
-                    <Col md={12}>
                       <FormGroup>
                         <Label for="locationId">
                           {t("product.form.location")}
@@ -294,6 +244,65 @@ const ProductForm: React.FC = () => {
                           placeholder={t("product.form.placeholders.location")}
                         />
                       </FormGroup>
+                    </Col>
+                  </Row>
+
+                  <Row className="mt-4">
+                    <Col md={12}>
+                      <AttributeList
+                        attributes={formik.values.attributes}
+                        onChange={(attributes) =>
+                          formik.setFieldValue("attributes", attributes)
+                        }
+                      />
+                    </Col>
+                  </Row>
+
+                  <Row className="mt-4">
+                    <Col md={12}>
+                      <div className="d-flex flex-wrap gap-4">
+                        <FormGroup check>
+                          <Input
+                            type="checkbox"
+                            className="form-check-input"
+                            id="isService"
+                            {...formik.getFieldProps("isService")}
+                            checked={formik.values.isService}
+                          />
+                          <Label className="form-check-label" for="isService">
+                            {t("product.form.isService")}
+                          </Label>
+                        </FormGroup>
+
+                        <FormGroup check>
+                          <Input
+                            type="checkbox"
+                            className="form-check-input"
+                            id="hasSerial"
+                            {...formik.getFieldProps("hasSerial")}
+                            checked={formik.values.hasSerial}
+                          />
+                          <Label className="form-check-label" for="hasSerial">
+                            {t("product.form.hasSerial")}
+                          </Label>
+                        </FormGroup>
+
+                        <FormGroup check>
+                          <Input
+                            type="checkbox"
+                            className="form-check-input"
+                            id="allowNegativeStock"
+                            {...formik.getFieldProps("allowNegativeStock")}
+                            checked={formik.values.allowNegativeStock}
+                          />
+                          <Label
+                            className="form-check-label"
+                            for="allowNegativeStock"
+                          >
+                            {t("product.form.allowNegativeStock")}
+                          </Label>
+                        </FormGroup>
+                      </div>
                     </Col>
                   </Row>
 
