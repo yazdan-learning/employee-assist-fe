@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Card, CardBody } from "reactstrap";
+import { Button, Card, CardBody, Row, Col } from "reactstrap";
 import { useTranslation } from "react-i18next";
 import { ProductAttribute, Attribute, AttributeValue } from "../types";
 import AttributeForm from "./AttributeForm";
@@ -90,18 +90,37 @@ const AttributeList: React.FC<AttributeListProps> = ({
             setEditingIndex(null);
           }}
         >
+          <i className="bx bx-plus me-1"></i>
           {t("product.form.attributes.add")}
         </Button>
       </div>
 
-      {/* Add new attribute form */}
-      {showAddForm && (
+      {/* Add/Edit form */}
+      {(showAddForm || editingIndex !== null) && (
         <div className="mb-3">
           <Card>
             <CardBody>
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <h6 className="mb-0">
+                  {editingIndex !== null
+                    ? t("product.form.attributes.edit")
+                    : t("product.form.attributes.add")}
+                </h6>
+              </div>
               <AttributeForm
-                onSave={(attribute) => handleSave(attribute)}
-                onCancel={() => setShowAddForm(false)}
+                attribute={
+                  editingIndex !== null ? attributes[editingIndex] : undefined
+                }
+                onSave={(attribute) =>
+                  handleSave(
+                    attribute,
+                    editingIndex !== null ? editingIndex : undefined
+                  )
+                }
+                onCancel={() => {
+                  setShowAddForm(false);
+                  setEditingIndex(null);
+                }}
               />
             </CardBody>
           </Card>
@@ -109,44 +128,52 @@ const AttributeList: React.FC<AttributeListProps> = ({
       )}
 
       {/* List of existing attributes */}
-      {attributes.map((attribute, index) => (
-        <Card key={index} className="mb-2">
-          <CardBody>
-            {editingIndex === index ? (
-              <AttributeForm
-                attribute={attribute}
-                onSave={(updatedAttribute) =>
-                  handleSave(updatedAttribute, index)
-                }
-                onCancel={() => setEditingIndex(null)}
-              />
-            ) : (
-              <div className="d-flex justify-content-between align-items-center">
-                <div>
-                  <strong>{getAttributeName(attribute.attributeId)}:</strong>{" "}
-                  {getValueName(attribute.valueId)}
+      <Row className="justify-content-start">
+        {attributes.map((attribute, index) => (
+          <Col
+            key={index}
+            lg={3}
+            md={4}
+            sm={6}
+            className="mb-2"
+            style={{ maxWidth: "280px" }}
+          >
+            <Card
+              className="border shadow-none"
+              style={{ backgroundColor: "var(--bs-light)" }}
+            >
+              <CardBody className="p-2">
+                <div className="d-flex justify-content-between align-items-center">
+                  <div className="d-flex align-items-center">
+                    <span className="text-muted me-2">
+                      {getAttributeName(attribute.attributeId)}:
+                    </span>
+                    <span className="fw-medium">
+                      {getValueName(attribute.valueId)}
+                    </span>
+                  </div>
+                  <div className="d-flex gap-2">
+                    <Button
+                      color="link"
+                      className="p-0 text-primary"
+                      onClick={() => handleEdit(index)}
+                    >
+                      <i className="bx bx-edit-alt fs-4"></i>
+                    </Button>
+                    <Button
+                      color="link"
+                      className="p-0 text-danger"
+                      onClick={() => handleRemove(index)}
+                    >
+                      <i className="bx bx-x fs-4"></i>
+                    </Button>
+                  </div>
                 </div>
-                <div>
-                  <Button
-                    color="link"
-                    className="p-0 me-2"
-                    onClick={() => handleEdit(index)}
-                  >
-                    {t("product.form.buttons.edit")}
-                  </Button>
-                  <Button
-                    color="link"
-                    className="p-0 text-danger"
-                    onClick={() => handleRemove(index)}
-                  >
-                    {t("product.form.buttons.remove")}
-                  </Button>
-                </div>
-              </div>
-            )}
-          </CardBody>
-        </Card>
-      ))}
+              </CardBody>
+            </Card>
+          </Col>
+        ))}
+      </Row>
     </div>
   );
 };
