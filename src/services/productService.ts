@@ -1,171 +1,218 @@
-import { Product, ProductFormData, ProductInfo } from "../pages/Accountant/Products/types";
-import { ListRequest, ListResponse } from "../types/common";
-import { v4 as uuidv4 } from 'uuid';
-import { mockProducts as initialMockProducts } from "../common/data/mock-products";
+import { Product, AttributeValue } from '../pages/Accountant/Products/types';
+import { ListRequest, ListResponse, BaseResponse } from '../types/common';
+import { APIClient } from '../helpers/api_helper';
+import { API_CONFIG } from '../config/api.config';
+import { mockCategories, mockAttributes, mockAttributeValues, mockUnits, mockLocations } from '../common/data/mock-products';
 
-// Use the mock data from the data folder
-// Using let because this array is modified by CRUD operations
-/* eslint-disable prefer-const */
-let mockProducts = [...initialMockProducts];
-/* eslint-enable prefer-const */
+class ProductService {
+  private api: APIClient;
+  private endpoint: string;
+  private mockProducts: Product[] = [];
 
-// Mock API functions
-export const getProducts = async (request: ListRequest): Promise<ListResponse<ProductInfo>> => {
-  console.log("request", request);
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      let filteredProducts = [...mockProducts].map(product => ({
-        id: product.id,
-        name: product.basicInfo.name,
-        sku: product.basicInfo.sku,
-        price: product.basicInfo.price,
-        description: product.basicInfo.description,
-        category: product.details.category,
-        stock: product.details.stock,
-        cost: product.details.cost,
-        barcode: product.details.barcode,
-        image: product.details.image,
-        status: product.status,
-        createdAt: product.createdAt,
-        updatedAt: product.updatedAt
-      }));
+  constructor() {
+    this.api = new APIClient();
+    this.endpoint = API_CONFIG.SERVICES.ACCOUNTANT.BASE_URL + '/products';
+  }
 
-      // Apply search
-      if (request.searchTerm) {
-        const searchLower = request.searchTerm.toLowerCase();
-        filteredProducts = filteredProducts.filter(product => 
-          product.name.toLowerCase().includes(searchLower) ||
-          product.sku.toLowerCase().includes(searchLower) ||
-          product.category.toLowerCase().includes(searchLower)
-        );
-      }
+  // Mock implementation until API is ready
+  async getAllProducts(request: ListRequest): Promise<ListResponse<Product>> {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 500));
 
-      // Apply sorting
-      if (request.sortField) {
-        filteredProducts.sort((a, b) => {
-          const aValue = a[request.sortField!];
-          const bValue = b[request.sortField!];
-          
-          if (typeof aValue === 'string') {
-            return request.sortDirection === 'desc' 
-              ? bValue.localeCompare(aValue) 
-              : aValue.localeCompare(bValue);
-          }
+    let filteredProducts = [...this.mockProducts];
+
+    // Apply search
+    if (request.searchTerm) {
+      const searchLower = request.searchTerm.toLowerCase();
+      filteredProducts = filteredProducts.filter(product => 
+        product.name.toLowerCase().includes(searchLower) ||
+        product.barcode?.toLowerCase().includes(searchLower)
+      );
+    }
+
+    // Apply sorting
+    if (request.sortField && request.sortDirection) {
+      filteredProducts.sort((a, b) => {
+        const aValue = a[request.sortField as keyof Product];
+        const bValue = b[request.sortField as keyof Product];
+        
+        if (typeof aValue === 'string' && typeof bValue === 'string') {
+          return request.sortDirection === 'desc' 
+            ? bValue.localeCompare(aValue) 
+            : aValue.localeCompare(bValue);
+        }
+        if (typeof aValue === 'number' && typeof bValue === 'number') {
           return request.sortDirection === 'desc' 
             ? bValue - aValue 
             : aValue - bValue;
-        });
-      }
-
-      // Calculate pagination
-      const totalItems = filteredProducts.length;
-      const totalPages = Math.ceil(totalItems / request.pageSize);
-      const start = (request.page - 1) * request.pageSize;
-      const end = start + request.pageSize;
-      
-      resolve({
-        data: {
-          items: filteredProducts.slice(start, end),
-          totalCount: totalItems,
-          pageNumber: request.page,
-          pageSize: request.pageSize,
-          totalPages: totalPages,
-          hasPreviousPage: request.page > 1,
-          hasNextPage: request.page < totalPages
-        },
-        succeeded: true,
-        statusCode: 200,
-        errors: null,
-        message: null
+        }
+        return 0;
       });
-    }, 500);
-  });
-};
+    }
 
-export const getProductById = async (id: string): Promise<Product> => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const product = mockProducts.find((p) => p.id === id);
-      if (product) {
-        resolve(product);
-      } else {
-        reject(new Error("Product not found"));
-      }
-    }, 500);
-  });
-};
+    // Calculate pagination
+    const totalItems = filteredProducts.length;
+    const totalPages = Math.ceil(totalItems / request.pageSize);
+    const start = (request.page - 1) * request.pageSize;
+    const end = start + request.pageSize;
+    
+    return {
+      data: {
+        items: filteredProducts.slice(start, end),
+        totalCount: totalItems,
+        pageNumber: request.page,
+        pageSize: request.pageSize,
+        totalPages: totalPages,
+        hasPreviousPage: request.page > 1,
+        hasNextPage: request.page < totalPages
+      },
+      succeeded: true,
+      statusCode: 200,
+      errors: null,
+      message: null
+    };
+  }
 
-export const createProduct = async (data: ProductFormData): Promise<Product> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const newProduct: Product = {
-        id: uuidv4(),
-        basicInfo: {
-          name: data.name,
-          description: data.description,
-          price: data.price,
-          sku: data.sku
+  async getProductById(id: number): Promise<BaseResponse<Product>> {
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    const product = this.mockProducts.find(p => p.id === id);
+    
+    if (!product) {
+      return {
+        data: {
+          id: 0,
+          name: "",
+          barcode: "",
+          isService: false,
+          hasSerial: false,
+          allowNegativeStock: false,
+          categoryId: null,
+          attributes: [],
+          unitId: null,
+          locationId: null
         },
-        details: {
-          category: data.category,
-          cost: data.cost,
-          stock: data.stock,
-          barcode: data.barcode,
-          image: data.image
-        },
-        status: data.status,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        succeeded: false,
+        statusCode: 404,
+        errors: "Product not found",
+        message: "Product not found"
       };
-      mockProducts.push(newProduct);
-      resolve(newProduct);
-    }, 500);
-  });
-};
+    }
 
-export const updateProduct = async (id: string, data: ProductFormData): Promise<Product> => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const index = mockProducts.findIndex((p) => p.id === id);
-      if (index !== -1) {
-        const updatedProduct: Product = {
-          id,
-          basicInfo: {
-            name: data.name,
-            description: data.description,
-            price: data.price,
-            sku: data.sku
-          },
-          details: {
-            category: data.category,
-            cost: data.cost,
-            stock: data.stock,
-            barcode: data.barcode,
-            image: data.image
-          },
-          status: data.status,
-          createdAt: mockProducts[index].createdAt,
-          updatedAt: new Date().toISOString()
-        };
-        mockProducts[index] = updatedProduct;
-        resolve(updatedProduct);
-      } else {
-        reject(new Error("Product not found"));
-      }
-    }, 500);
-  });
-};
+    return {
+      data: product,
+      succeeded: true,
+      statusCode: 200,
+      errors: null,
+      message: null
+    };
+  }
 
-export const deleteProduct = async (id: string): Promise<void> => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const index = mockProducts.findIndex((p) => p.id === id);
-      if (index !== -1) {
-        mockProducts.splice(index, 1);
-        resolve();
-      } else {
-        reject(new Error("Product not found"));
-      }
-    }, 500);
-  });
-}; 
+  async createProduct(product: Product): Promise<BaseResponse<Product>> {
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    const newProduct = {
+      ...product,
+      id: Math.max(0, ...this.mockProducts.map(p => p.id || 0)) + 1
+    };
+    
+    this.mockProducts.push(newProduct);
+
+    return {
+      data: newProduct,
+      succeeded: true,
+      statusCode: 200,
+      errors: null,
+      message: null
+    };
+  }
+
+  async updateProduct(product: Product): Promise<BaseResponse<Product>> {
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    const index = this.mockProducts.findIndex(p => p.id === product.id);
+    if (index === -1) {
+      return {
+        data: {
+          id: 0,
+          name: "",
+          barcode: "",
+          isService: false,
+          hasSerial: false,
+          allowNegativeStock: false,
+          categoryId: null,
+          attributes: [],
+          unitId: null,
+          locationId: null
+        },
+        succeeded: false,
+        statusCode: 404,
+        errors: "Product not found",
+        message: "Product not found"
+      };
+    }
+
+    this.mockProducts[index] = product;
+
+    return {
+      data: product,
+      succeeded: true,
+      statusCode: 200,
+      errors: null,
+      message: null
+    };
+  }
+
+  async deleteProduct(id: number): Promise<BaseResponse<void>> {
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    const index = this.mockProducts.findIndex(p => p.id === id);
+    if (index === -1) {
+      return {
+        data: undefined,
+        succeeded: false,
+        statusCode: 404,
+        errors: "Product not found",
+        message: "Product not found"
+      };
+    }
+
+    this.mockProducts.splice(index, 1);
+
+    return {
+      data: undefined,
+      succeeded: true,
+      statusCode: 200,
+      errors: null,
+      message: null
+    };
+  }
+
+  // Mock dropdown data methods
+  async getCategories() {
+    await new Promise(resolve => setTimeout(resolve, 500));
+    return mockCategories;
+  }
+
+  async getAttributes() {
+    await new Promise(resolve => setTimeout(resolve, 500));
+    return mockAttributes;
+  }
+
+  async getAttributeValues(attributeId: number | null): Promise<AttributeValue[]> {
+    await new Promise(resolve => setTimeout(resolve, 500));
+    return attributeId ? mockAttributeValues.filter(v => v.attributeId === attributeId) : [];
+  }
+
+  async getUnits() {
+    await new Promise(resolve => setTimeout(resolve, 500));
+    return mockUnits;
+  }
+
+  async getLocations() {
+    await new Promise(resolve => setTimeout(resolve, 500));
+    return mockLocations;
+  }
+}
+
+export const productService = new ProductService(); 

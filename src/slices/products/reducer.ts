@@ -1,3 +1,5 @@
+// Commented out as we're migrating from Redux to React Query
+/*
 import { createSlice } from "@reduxjs/toolkit";
 import {
   fetchProducts,
@@ -111,4 +113,8 @@ const productSlice = createSlice({
   },
 });
 
-export default productSlice.reducer; 
+export default productSlice.reducer;
+*/
+
+// Placeholder export to prevent import errors
+export default {}; 

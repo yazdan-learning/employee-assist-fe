@@ -19,13 +19,48 @@ export interface ProductDetails {
   image?: string;
 }
 
+export interface ProductAttribute {
+  attributeId: number;
+  valueId: number;
+}
+
 export interface Product {
-  id: string;
-  basicInfo: ProductBasicInfo;
-  details: ProductDetails;
-  status: ProductStatus;
-  createdAt?: string;
-  updatedAt?: string;
+  id?: number;
+  name: string;
+  barcode?: string;
+  isService: boolean;
+  hasSerial: boolean;
+  allowNegativeStock: boolean;
+  categoryId: number | null;
+  attributes: ProductAttribute[];
+  unitId: number | null;
+  locationId: number | null;
+}
+
+export interface Category {
+  id: number;
+  name: string;
+}
+
+export interface Attribute {
+  id: number;
+  name: string;
+}
+
+export interface AttributeValue {
+  id: number;
+  attributeId: number;
+  value: string;
+}
+
+export interface Unit {
+  id: number;
+  name: string;
+}
+
+export interface Location {
+  id: number;
+  name: string;
 }
 
 export interface ProductState {

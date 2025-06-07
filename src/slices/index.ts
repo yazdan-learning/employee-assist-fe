@@ -9,7 +9,7 @@ import ForgotPasswordReducer from "./auth/forgetpwd/reducer";
 import AccountReducer from "./auth/register/reducer";
 import ChatsReducer from "./chats/reducer";
 import CustomerReducer from "./customers/reducer";
-import productReducer from "./products/reducer";
+// import productReducer from "./products/reducer";
 
 const rootReducer = combineReducers({
     Layout: LayoutReducer,
@@ -19,7 +19,7 @@ const rootReducer = combineReducers({
     Account: AccountReducer,
     chats: ChatsReducer,
     customer: CustomerReducer,
-    product: productReducer,
+    // product: productReducer,
 });
 
 export default rootReducer;

@@ -387,6 +387,69 @@
     "required": "این فیلد الزامی است",
     "postalCodeFormat": "کد پستی باید بین ۵ تا ۱۰ رقم باشد",
     "invalidEmail": "لطفا یک آدرس ایمیل معتبر وارد کنید",
-    "invalidWebsite": "لطفا یک آدرس وب‌سایت معتبر وارد کنید"
+    "invalidWebsite": "لطفا یک آدرس وب‌سایت معتبر وارد کنید",
+    "required": "این فیلد الزامی است"
+  },
+  "product": {
+    "form": {
+      "title": {
+        "new": "افزودن محصول جدید",
+        "edit": "ویرایش محصول"
+      },
+      "name": "نام",
+      "barcode": "بارکد",
+      "isService": "خدمات",
+      "hasSerial": "دارای شماره سریال",
+      "allowNegativeStock": "اجازه موجودی منفی",
+      "category": "دسته‌بندی",
+      "attribute": "ویژگی",
+      "value": "مقدار",
+      "unit": "واحد",
+      "location": "موقعیت",
+      "placeholders": {
+        "category": "انتخاب دسته‌بندی",
+        "attribute": "انتخاب ویژگی",
+        "value": "انتخاب مقدار",
+        "unit": "انتخاب واحد",
+        "location": "انتخاب موقعیت"
+      },
+      "buttons": {
+        "save": "ذخیره محصول",
+        "update": "به‌روزرسانی محصول"
+      },
+      "messages": {
+        "createSuccess": "محصول با موفقیت ایجاد شد",
+        "updateSuccess": "محصول با موفقیت به‌روزرسانی شد",
+        "createError": "خطا در ایجاد محصول",
+        "updateError": "خطا در به‌روزرسانی محصول",
+        "saveError": "خطا در ذخیره محصول",
+        "loadError": "خطا در بارگذاری اطلاعات فرم"
+      }
+    },
+    "list": {
+      "title": "محصولات",
+      "search": "جستجوی محصولات...",
+      "buttons": {
+        "add": "افزودن محصول"
+      },
+      "columns": {
+        "name": "نام",
+        "barcode": "بارکد",
+        "category": "دسته‌بندی",
+        "unit": "واحد",
+        "location": "موقعیت",
+        "isService": "خدمات",
+        "hasSerial": "سریال"
+      },
+      "messages": {
+        "deleteSuccess": "محصول با موفقیت حذف شد",
+        "deleteError": "خطا در حذف محصول"
+      }
+    }
+  },
+  "common": {
+    "yes": "بله",
+    "no": "خیر",
+    "actions": "عملیات"
   }
 } 

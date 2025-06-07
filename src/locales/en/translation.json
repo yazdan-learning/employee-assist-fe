@@ -174,6 +174,11 @@
     "invalidEmail": "Please enter a valid email address",
     "invalidWebsite": "Please enter a valid website URL"
   },
+  "common": {
+    "yes": "Yes",
+    "no": "No",
+    "actions": "Actions"
+  },
   "customer": {
     "form": {
       "title": {
@@ -343,6 +348,63 @@
         "atLeastOneNameRequired": "At least one name is required",
         "genderRequired": "Please select a gender",
         "maritalStatusRequired": "Please select a marital status"
+      }
+    }
+  },
+  "product": {
+    "form": {
+      "title": {
+        "new": "Add New Product",
+        "edit": "Edit Product"
+      },
+      "name": "Name",
+      "barcode": "Barcode",
+      "isService": "Is Service",
+      "hasSerial": "Has Serial Number",
+      "allowNegativeStock": "Allow Negative Stock",
+      "category": "Category",
+      "attribute": "Attribute",
+      "value": "Value",
+      "unit": "Unit",
+      "location": "Location",
+      "placeholders": {
+        "category": "Select Category",
+        "attribute": "Select Attribute",
+        "value": "Select Value",
+        "unit": "Select Unit",
+        "location": "Select Location"
+      },
+      "buttons": {
+        "save": "Save Product",
+        "update": "Update Product"
+      },
+      "messages": {
+        "createSuccess": "Product created successfully",
+        "updateSuccess": "Product updated successfully",
+        "createError": "Failed to create product",
+        "updateError": "Failed to update product",
+        "saveError": "Error saving product",
+        "loadError": "Error loading form data"
+      }
+    },
+    "list": {
+      "title": "Products",
+      "search": "Search products...",
+      "buttons": {
+        "add": "Add Product"
+      },
+      "columns": {
+        "name": "Name",
+        "barcode": "Barcode",
+        "category": "Category",
+        "unit": "Unit",
+        "location": "Location",
+        "isService": "Service",
+        "hasSerial": "Serial"
+      },
+      "messages": {
+        "deleteSuccess": "Product deleted successfully",
+        "deleteError": "Failed to delete product"
       }
     }
   }

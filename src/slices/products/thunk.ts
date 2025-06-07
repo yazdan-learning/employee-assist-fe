@@ -1,3 +1,5 @@
+// Commented out as we're migrating from Redux to React Query
+/*
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
   getProducts,
@@ -5,7 +7,7 @@ import {
   createProduct,
   updateProduct,
   deleteProduct,
-} from "../../services/productService";
+} from "../../services/ProductService";
 import { Product, ProductFormData, ProductInfo } from "../../pages/Accountant/Products/types";
 import { ListRequest } from "../../types/common";
 
@@ -64,4 +66,12 @@ export const deleteProductById = createAsyncThunk(
     await deleteProduct(id);
     return id;
   }
-); 
+);
+*/
+
+// Placeholder exports to prevent import errors
+export const fetchProducts = () => undefined;
+export const fetchProductById = () => undefined;
+export const createNewProduct = () => undefined;
+export const updateProductById = () => undefined;
+export const deleteProductById = () => undefined; 

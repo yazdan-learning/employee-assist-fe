@@ -11,8 +11,7 @@ import Chat from "../pages/Chat/Chat";
 import React from "react";
 import CustomerList from "../pages/Accountant/Customers/CustomerList";
 import ProductList from "../pages/Accountant/Products/ProductList";
-import ProductForm from "../pages/Accountant/Products/ProductForm";
-import ProductDetails from "../pages/Accountant/Products/ProductDetails";
+import ProductForm from "../pages/Accountant/Products/components/ProductForm";
 import CustomerForm from "../pages/Accountant/Customers/components/CustomerForm";
 
 //Authentication pages
@@ -67,7 +66,6 @@ const publicRoutes = [
   { path: "/accountant/products", component: <ProductList /> },
   { path: "/accountant/products/add", component: <ProductForm /> },
   { path: "/accountant/products/edit/:id", component: <ProductForm /> },
-  { path: "/accountant/products/:id", component: <ProductDetails /> },
 
   // { path: "/login", component: <Login /> },
   // { path: "/logout", component: <Logout /> },
