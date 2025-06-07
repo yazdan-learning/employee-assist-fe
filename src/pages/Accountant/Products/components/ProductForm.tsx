@@ -306,11 +306,16 @@ const ProductForm: React.FC = () => {
                     </Col>
                   </Row>
 
-                  <div className="d-flex justify-content-end mt-4">
+                  <div className="d-flex justify-content-end mt-4 gap-2">
+                    <Button
+                      color="light"
+                      type="button"
+                      onClick={() => navigate("/accountant/products")}
+                    >
+                      {t("common.cancel")}
+                    </Button>
                     <Button color="success" type="submit">
-                      {id
-                        ? t("product.form.buttons.update")
-                        : t("product.form.buttons.save")}
+                      {t("common.save")}
                     </Button>
                   </div>
                 </form>

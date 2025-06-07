@@ -177,7 +177,9 @@
   "common": {
     "yes": "Yes",
     "no": "No",
-    "actions": "Actions"
+    "actions": "Actions",
+    "save": "Save",
+    "cancel": "Cancel"
   },
   "customer": {
     "form": {
@@ -363,20 +365,30 @@
       "hasSerial": "Has Serial Number",
       "allowNegativeStock": "Allow Negative Stock",
       "category": "Category",
-      "attribute": "Attribute",
-      "value": "Value",
       "unit": "Unit",
       "location": "Location",
+      "settings": "Settings",
+      "attributes": {
+        "title": "Product Attributes",
+        "add": "Add Attribute",
+        "edit": "Edit Attribute",
+        "remove": "Remove Attribute"
+      },
       "placeholders": {
+        "name": "Enter product name",
+        "barcode": "Enter barcode",
         "category": "Select Category",
-        "attribute": "Select Attribute",
-        "value": "Select Value",
         "unit": "Select Unit",
-        "location": "Select Location"
+        "location": "Select Location",
+        "attribute": "Select Attribute",
+        "value": "Select Value"
       },
       "buttons": {
         "save": "Save Product",
-        "update": "Update Product"
+        "update": "Update Product",
+        "cancel": "Cancel",
+        "edit": "Edit",
+        "remove": "Remove"
       },
       "messages": {
         "createSuccess": "Product created successfully",

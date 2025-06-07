@@ -1,9 +1,83 @@
 {
+  "product": {
+    "form": {
+      "title": {
+        "new": "Neues Produkt hinzufügen",
+        "edit": "Produkt bearbeiten"
+      },
+      "name": "Name",
+      "barcode": "Barcode",
+      "isService": "Ist Dienstleistung",
+      "hasSerial": "Hat Seriennummer",
+      "allowNegativeStock": "Negativer Bestand erlaubt",
+      "category": "Kategorie",
+      "unit": "Einheit",
+      "location": "Standort",
+      "settings": "Einstellungen",
+      "attributes": {
+        "title": "Produktattribute",
+        "add": "Attribut hinzufügen",
+        "edit": "Attribut bearbeiten",
+        "remove": "Attribut entfernen"
+      },
+      "placeholders": {
+        "name": "Produktname eingeben",
+        "barcode": "Barcode eingeben",
+        "category": "Kategorie auswählen",
+        "unit": "Einheit auswählen",
+        "location": "Standort auswählen",
+        "attribute": "Attribut auswählen",
+        "value": "Wert auswählen"
+      },
+      "buttons": {
+        "save": "Produkt speichern",
+        "update": "Produkt aktualisieren",
+        "cancel": "Abbrechen",
+        "edit": "Bearbeiten",
+        "remove": "Entfernen"
+      },
+      "messages": {
+        "createSuccess": "Produkt erfolgreich erstellt",
+        "updateSuccess": "Produkt erfolgreich aktualisiert",
+        "createError": "Fehler beim Erstellen des Produkts",
+        "updateError": "Fehler beim Aktualisieren des Produkts",
+        "saveError": "Fehler beim Speichern des Produkts",
+        "loadError": "Fehler beim Laden der Formulardaten"
+      }
+    },
+    "list": {
+      "title": "Produkte",
+      "search": "Produkte suchen...",
+      "buttons": {
+        "add": "Produkt hinzufügen"
+      },
+      "columns": {
+        "name": "Name",
+        "barcode": "Barcode",
+        "category": "Kategorie",
+        "unit": "Einheit",
+        "location": "Standort",
+        "isService": "Dienstleistung",
+        "hasSerial": "Seriennummer"
+      },
+      "messages": {
+        "deleteSuccess": "Produkt erfolgreich gelöscht",
+        "deleteError": "Fehler beim Löschen des Produkts"
+      }
+    }
+  },
   "validation": {
     "required": "Dieses Feld ist erforderlich",
     "postalCodeFormat": "Die Postleitzahl muss zwischen 5 und 10 Ziffern haben",
     "invalidEmail": "Bitte geben Sie eine gültige E-Mail-Adresse ein",
     "invalidWebsite": "Bitte geben Sie eine gültige Website-URL ein"
+  },
+  "common": {
+    "yes": "Ja",
+    "no": "Nein",
+    "actions": "Aktionen",
+    "save": "Speichern",
+    "cancel": "Abbrechen"
   },
   "customer": {
     "form": {
