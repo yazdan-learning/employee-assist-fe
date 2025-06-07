@@ -42,9 +42,9 @@ const CustomerForm: React.FC = () => {
           gender: customerResponse.data.gender || null,
           nickname: customerResponse.data.nickname || "",
           maritalStatus: customerResponse.data.maritalStatus || null,
-          customerType: customerResponse.data.customerType || CustomerType.NONE,
+          customerType: customerResponse.data.customerType || null,
           customerRiskLimit: customerResponse.data.customerRiskLimit || 0,
-          phone: customerResponse.data.phone || [],
+          Phones: customerResponse.data.Phones || [],
           email: customerResponse.data.email || "",
           addresses: customerResponse.data.addresses || [],
           bankAccounts: customerResponse.data.bankAccounts || [],
@@ -64,9 +64,9 @@ const CustomerForm: React.FC = () => {
           gender: null,
           nickname: "",
           maritalStatus: null,
-          customerType: CustomerType.NONE,
+          customerType: null,
           customerRiskLimit: 0,
-          phone: [],
+          Phones: [],
           email: "",
           addresses: [],
           bankAccounts: [],
@@ -76,6 +76,7 @@ const CustomerForm: React.FC = () => {
           tradeChamberNumber: "",
           registrationNumber: "",
         };
+  console.log("initialValues", initialValues);
 
   const validationSchema = Yup.object().shape({
     // Basic Info Validation
@@ -144,7 +145,7 @@ const CustomerForm: React.FC = () => {
         );
       }),
     fax: Yup.string(),
-    phone: Yup.array().of(Yup.string()),
+    phones: Yup.array().of(Yup.string()),
   });
 
   const formik = useFormik({
@@ -238,7 +239,7 @@ const CustomerForm: React.FC = () => {
           "registrationNumber",
         ];
       case 2:
-        return ["email", "phone", "fax", "website", "licensePlate"];
+        return ["email", "Phones", "fax", "website", "licensePlate"];
       case 3:
         return [];
       default:
@@ -300,7 +301,7 @@ const CustomerForm: React.FC = () => {
                   {currentStep === 2 && (
                     <ContactInfoForm
                       data={{
-                        phone: formik.values.phone,
+                        phones: formik.values.Phones,
                         email: formik.values.email,
                         fax: formik.values.fax,
                         website: formik.values.website,
@@ -309,7 +310,9 @@ const CustomerForm: React.FC = () => {
                       }}
                       onChange={(values) => {
                         Object.keys(values).forEach((key) => {
-                          formik.setFieldValue(key, values[key]);
+                          // Map 'phones' back to 'Phones' for the form values
+                          const formikKey = key === "phones" ? "Phones" : key;
+                          formik.setFieldValue(formikKey, values[key]);
                         });
                       }}
                       errors={formik.errors}

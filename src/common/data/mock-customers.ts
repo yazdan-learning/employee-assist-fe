@@ -13,7 +13,7 @@ export const mockCustomers: Customer[] = [
     maritalStatus: MaritalStatus.SINGLE,
     customerType: CustomerType.BUYER,
     customerRiskLimit: 1000000,
-    phone: ["021-12345678"],
+    Phones: ["021-12345678"],
     email: "info@novintech.ir",
     website: "www.novintech.ir",
     addresses: [{
@@ -36,7 +36,7 @@ export const mockCustomers: Customer[] = [
     maritalStatus: MaritalStatus.SINGLE,
     customerType: CustomerType.SELLER,
     customerRiskLimit: 500000,
-    phone: ["09123456789"],
+    Phones: ["09123456789"],
     email: "ali.mohammadi@email.com",
     addresses: [{
       title: "منزل",
@@ -58,7 +58,7 @@ export const mockCustomers: Customer[] = [
     maritalStatus: MaritalStatus.SINGLE,
     customerType: CustomerType.BOTH,
     customerRiskLimit: 2000000,
-    phone: ["021-23456789", "09123456788"],
+    Phones: ["021-23456789", "09123456788"],
     email: "info@healthmed.ir",
     website: "www.healthmed.ir",
     addresses: [{
@@ -81,7 +81,7 @@ export const mockCustomers: Customer[] = [
     maritalStatus: MaritalStatus.SINGLE,
     customerType: CustomerType.BUYER,
     customerRiskLimit: 300000,
-    phone: ["09123456787"],
+    Phones: ["09123456787"],
     email: "reza.karimi@email.com",
     addresses: [{
       title: "منزل",
@@ -103,7 +103,7 @@ export const mockCustomers: Customer[] = [
     maritalStatus: MaritalStatus.SINGLE,
     customerType: CustomerType.BOTH,
     customerRiskLimit: 1500000,
-    phone: ["021-34567890", "09123456786"],
+    Phones: ["021-34567890", "09123456786"],
     email: "info@healthfood.ir",
     website: "www.healthfood.ir",
     addresses: [{

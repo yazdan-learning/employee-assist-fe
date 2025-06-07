@@ -49,9 +49,9 @@ export interface Customer {
   maritalStatus: MaritalStatus | null;
   tradeChamberNumber?: string;
   registrationNumber?: string;
-  customerType: CustomerType;
+  customerType: CustomerType | null;
   customerRiskLimit: number;
-  phone: string[];
+  Phones: string[];
   fax?: string;
   email: string;
   website?: string;

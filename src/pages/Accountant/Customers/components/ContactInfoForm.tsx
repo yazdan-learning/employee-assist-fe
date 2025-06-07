@@ -7,7 +7,7 @@ import { FormikErrors, FormikTouched } from "formik";
 import { Customer } from "../types";
 
 export interface ContactInfoFormData {
-  phone: string[];
+  phones: string[];
   fax?: string | null;
   email: string | null;
   website?: string | null;
@@ -42,18 +42,18 @@ const ContactInfoForm: React.FC<ContactInfoFormProps> = ({
   };
 
   const handlePhoneChange = (index: number, value: string) => {
-    const newPhones = [...data.phone];
+    const newPhones = [...data.phones];
     newPhones[index] = value;
-    handleInputChange("phone", newPhones);
+    handleInputChange("phones", newPhones);
   };
 
   const handleAddPhone = () => {
-    handleInputChange("phone", [...data.phone, ""]);
+    handleInputChange("phones", [...data.phones, ""]);
   };
 
   const handleRemovePhone = (index: number) => {
-    const newPhones = data.phone.filter((_, i) => i !== index);
-    handleInputChange("phone", newPhones);
+    const newPhones = data.phones.filter((_, i) => i !== index);
+    handleInputChange("phones", newPhones);
   };
 
   return (
@@ -76,7 +76,7 @@ const ContactInfoForm: React.FC<ContactInfoFormProps> = ({
             {t("customer.form.contactInfo.phones.add")}
           </Button>
         </div>
-        {data.phone.map((phone, index) => (
+        {data.phones.map((phone, index) => (
           <Row key={index} className="mb-2">
             <Col md={11}>
               <FormGroup>
