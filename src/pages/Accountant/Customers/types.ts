@@ -44,9 +44,9 @@ export interface Customer {
   lastName: string;
   nationalId: string;
   taxId: string;
-  gender: Gender;
+  gender: Gender | null;
   nickname?: string;
-  maritalStatus: MaritalStatus;
+  maritalStatus: MaritalStatus | null;
   tradeChamberNumber?: string;
   registrationNumber?: string;
   customerType: CustomerType;

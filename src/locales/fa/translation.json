@@ -219,6 +219,13 @@
         "new": "مشتری جدید",
         "edit": "ویرایش مشتری"
       },
+      "messages": {
+        "createSuccess": "مشتری با موفقیت ایجاد شد",
+        "createError": "خطا در ایجاد مشتری",
+        "updateSuccess": "مشتری با موفقیت به‌روزرسانی شد",
+        "updateError": "خطا در به‌روزرسانی مشتری",
+        "saveError": "خطا در ذخیره مشتری"
+      },
       "steps": {
         "basic": "اطلاعات اولیه",
         "contact": "اطلاعات تماس",
@@ -367,6 +374,12 @@
           "branchCode": "کد شعبه را وارد کنید",
           "bankId": "شناسه بانک را وارد کنید"
         }
+      },
+      "validation": {
+        "companyNameRequired": "نام شرکت الزامی است",
+        "atLeastOneNameRequired": "حداقل یکی از فیلدهای نام یا نام خانوادگی الزامی است",
+        "genderRequired": "لطفاً جنسیت را انتخاب کنید",
+        "maritalStatusRequired": "لطفاً وضعیت تأهل را انتخاب کنید"
       }
     }
   },

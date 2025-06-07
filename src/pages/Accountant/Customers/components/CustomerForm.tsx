@@ -1,61 +1,58 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Row, Col, Card, CardBody, Button } from "reactstrap";
 import { useNavigate, useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Customer, Gender, MaritalStatus, CustomerType } from "../types";
 import {
-  createCustomer,
-  updateCustomerById,
-  fetchCustomerById,
-} from "../../../../slices/customers/thunk";
+  useCreateCustomer,
+  useUpdateCustomer,
+  useCustomerById,
+} from "../../../../hooks/useCustomers";
 import BasicInfoForm from "./BasicInfoForm";
 import ContactInfoForm from "./ContactInfoForm";
 import BankAccountForm from "./BankAccountForm";
-import { AppDispatch, RootState } from "../../../../store";
+import { toast } from "react-toastify";
 
 const CustomerForm: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
   const { id } = useParams<{ id: string }>();
   const [currentStep, setCurrentStep] = useState(1);
 
-  const { selectedCustomer, loading, error } = useSelector(
-    (state: RootState) => state.customer
-  );
-
-  useEffect(() => {
-    if (id) {
-      dispatch(fetchCustomerById(parseInt(id, 10)));
-    }
-  }, [dispatch, id]);
+  const {
+    data: customerResponse,
+    isLoading,
+    isError,
+    error,
+  } = useCustomerById(id ? parseInt(id, 10) : 0);
+  const createMutation = useCreateCustomer();
+  const updateMutation = useUpdateCustomer();
 
   const initialValues: Customer =
-    id && selectedCustomer
+    id && customerResponse?.data
       ? {
-          isCompany: selectedCustomer.isCompany,
-          title: selectedCustomer.title || "",
-          firstName: selectedCustomer.firstName || "",
-          lastName: selectedCustomer.lastName || "",
-          nationalId: selectedCustomer.nationalId || "",
-          taxId: selectedCustomer.taxId || "",
-          gender: selectedCustomer.gender || Gender.MALE,
-          nickname: selectedCustomer.nickname || "",
-          maritalStatus: selectedCustomer.maritalStatus || MaritalStatus.SINGLE,
-          customerType: selectedCustomer.customerType || CustomerType.NONE,
-          customerRiskLimit: selectedCustomer.customerRiskLimit || 0,
-          phone: selectedCustomer.phone || [],
-          email: selectedCustomer.email || "",
-          addresses: selectedCustomer.addresses || [],
-          bankAccounts: selectedCustomer.bankAccounts || [],
-          fax: selectedCustomer.fax || "",
-          website: selectedCustomer.website || "",
-          licensePlate: selectedCustomer.licensePlate || "",
-          tradeChamberNumber: selectedCustomer.tradeChamberNumber || "",
-          registrationNumber: selectedCustomer.registrationNumber || "",
+          isCompany: customerResponse.data.isCompany,
+          title: customerResponse.data.title || "",
+          firstName: customerResponse.data.firstName || "",
+          lastName: customerResponse.data.lastName || "",
+          nationalId: customerResponse.data.nationalId || "",
+          taxId: customerResponse.data.taxId || "",
+          gender: customerResponse.data.gender || null,
+          nickname: customerResponse.data.nickname || "",
+          maritalStatus: customerResponse.data.maritalStatus || null,
+          customerType: customerResponse.data.customerType || CustomerType.NONE,
+          customerRiskLimit: customerResponse.data.customerRiskLimit || 0,
+          phone: customerResponse.data.phone || [],
+          email: customerResponse.data.email || "",
+          addresses: customerResponse.data.addresses || [],
+          bankAccounts: customerResponse.data.bankAccounts || [],
+          fax: customerResponse.data.fax || "",
+          website: customerResponse.data.website || "",
+          licensePlate: customerResponse.data.licensePlate || "",
+          tradeChamberNumber: customerResponse.data.tradeChamberNumber || "",
+          registrationNumber: customerResponse.data.registrationNumber || "",
         }
       : {
           isCompany: false,
@@ -64,9 +61,9 @@ const CustomerForm: React.FC = () => {
           lastName: "",
           nationalId: "",
           taxId: "",
-          gender: Gender.MALE,
+          gender: null,
           nickname: "",
-          maritalStatus: MaritalStatus.SINGLE,
+          maritalStatus: null,
           customerType: CustomerType.NONE,
           customerRiskLimit: 0,
           phone: [],
@@ -159,18 +156,32 @@ const CustomerForm: React.FC = () => {
     onSubmit: async (values) => {
       try {
         if (id) {
-          await dispatch(
-            updateCustomerById({
-              ...values,
-              id: parseInt(id, 10),
-            })
-          );
+          const response = await updateMutation.mutateAsync({
+            ...values,
+            id: parseInt(id, 10),
+          });
+          if (response.succeeded) {
+            toast.success(t("customer.form.messages.updateSuccess"));
+            navigate("/accountant/customers");
+          } else {
+            toast.error(
+              response.errors || t("customer.form.messages.updateError")
+            );
+          }
         } else {
-          await dispatch(createCustomer(values));
+          const response = await createMutation.mutateAsync(values);
+          if (response.succeeded) {
+            toast.success(t("customer.form.messages.createSuccess"));
+            navigate("/accountant/customers");
+          } else {
+            toast.error(
+              response.errors || t("customer.form.messages.createError")
+            );
+          }
         }
-        navigate("/accountant/customers");
       } catch (error) {
         console.error("Error saving customer:", error);
+        toast.error(t("customer.form.messages.saveError"));
       }
     },
   });
@@ -235,15 +246,15 @@ const CustomerForm: React.FC = () => {
     }
   };
 
-  if (id && loading) {
+  if (id && isLoading) {
     return <div>Loading...</div>;
   }
 
-  if (id && error) {
-    return <div>Error: {error}</div>;
+  if (id && isError) {
+    return <div>Error: {error?.message}</div>;
   }
 
-  if (id && !selectedCustomer) {
+  if (id && !customerResponse?.data) {
     return <div>Customer not found</div>;
   }
 

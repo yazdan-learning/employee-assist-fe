@@ -6,7 +6,6 @@ import {
   useCustomerList,
   useDeleteCustomer,
 } from "../../../hooks/useCustomers";
-import { CustomerInfo } from "./types";
 import Breadcrumbs from "../../../Components/Common/Breadcrumb";
 import TableContainer from "../../../Components/Common/TableContainer";
 import { debounce } from "lodash";
@@ -31,8 +30,6 @@ const CustomerList: React.FC = () => {
     sortField: sortField,
     sortDirection: sortDirection,
   });
-
-  console.log("response", response);
 
   const deleteMutation = useDeleteCustomer();
 

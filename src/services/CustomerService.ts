@@ -38,11 +38,7 @@ class CustomerService {
 
   async createCustomer(customer: Customer): Promise<BaseResponse<Customer>> {
     try {
-      const customerToSend = {
-        ...customer,
-        phone: customer.phone.join(',')
-      };
-      const response = await this.api.create(this.endpoint, customerToSend);
+      const response = await this.api.create(this.endpoint,  customer);
       return response as unknown as BaseResponse<Customer>;
     } catch (error) {
       throw new Error(`Failed to create customer: ${error}`);
@@ -51,7 +47,7 @@ class CustomerService {
 
   async updateCustomer(customerData: Partial<Customer>): Promise<BaseResponse<Customer>> {
     try {
-      const response = await this.api.update(this.endpoint, customerData);
+      const response = await this.api.put(`${this.endpoint}/${customerData.id}`, customerData);
       return response as unknown as BaseResponse<Customer>;
     } catch (error) {
       throw new Error(`Failed to update customer: ${error}`);

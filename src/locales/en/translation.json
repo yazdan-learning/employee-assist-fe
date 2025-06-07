@@ -180,6 +180,13 @@
         "new": "New Customer",
         "edit": "Edit Customer"
       },
+      "messages": {
+        "createSuccess": "Customer created successfully",
+        "createError": "Error creating customer",
+        "updateSuccess": "Customer updated successfully",
+        "updateError": "Error updating customer",
+        "saveError": "Error saving customer"
+      },
       "steps": {
         "basic": "Basic Information",
         "contact": "Contact Information",
@@ -330,6 +337,12 @@
           "branchCode": "Enter branch code",
           "bankId": "Enter bank ID"
         }
+      },
+      "validation": {
+        "companyNameRequired": "Company name is required",
+        "atLeastOneNameRequired": "At least one name is required",
+        "genderRequired": "Please select a gender",
+        "maritalStatusRequired": "Please select a marital status"
       }
     }
   }
