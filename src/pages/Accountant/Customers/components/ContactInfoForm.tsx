@@ -42,17 +42,17 @@ const ContactInfoForm: React.FC<ContactInfoFormProps> = ({
   };
 
   const handlePhoneChange = (index: number, value: string) => {
-    const newPhones = [...data.phones];
+    const newPhones = [...(data.phones || [])];
     newPhones[index] = value;
     handleInputChange("phones", newPhones);
   };
 
   const handleAddPhone = () => {
-    handleInputChange("phones", [...data.phones, ""]);
+    handleInputChange("phones", [...(data.phones || []), ""]);
   };
 
   const handleRemovePhone = (index: number) => {
-    const newPhones = data.phones.filter((_, i) => i !== index);
+    const newPhones = (data.phones || []).filter((_, i) => i !== index);
     handleInputChange("phones", newPhones);
   };
 

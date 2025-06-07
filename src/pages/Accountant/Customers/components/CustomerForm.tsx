@@ -27,6 +27,7 @@ const CustomerForm: React.FC = () => {
     isError,
     error,
   } = useCustomerById(id ? parseInt(id, 10) : 0);
+
   const createMutation = useCreateCustomer();
   const updateMutation = useUpdateCustomer();
 
@@ -42,9 +43,11 @@ const CustomerForm: React.FC = () => {
           gender: customerResponse.data.gender || null,
           nickname: customerResponse.data.nickname || "",
           maritalStatus: customerResponse.data.maritalStatus || null,
-          customerType: customerResponse.data.customerType || null,
+          customerType: customerResponse.data.customerType || CustomerType.NONE,
           customerRiskLimit: customerResponse.data.customerRiskLimit || 0,
-          Phones: customerResponse.data.Phones || [],
+          phones: Array.isArray(customerResponse.data.phones)
+            ? customerResponse.data.phones
+            : [],
           email: customerResponse.data.email || "",
           addresses: customerResponse.data.addresses || [],
           bankAccounts: customerResponse.data.bankAccounts || [],
@@ -64,9 +67,9 @@ const CustomerForm: React.FC = () => {
           gender: null,
           nickname: "",
           maritalStatus: null,
-          customerType: null,
+          customerType: CustomerType.NONE,
           customerRiskLimit: 0,
-          Phones: [],
+          phones: [],
           email: "",
           addresses: [],
           bankAccounts: [],
@@ -121,10 +124,10 @@ const CustomerForm: React.FC = () => {
     }),
     nationalId: Yup.string(),
     taxId: Yup.string(),
-    gender: Yup.mixed(),
+    gender: Yup.mixed().nullable(),
     nickname: Yup.string(),
-    maritalStatus: Yup.mixed(),
-    customerType: Yup.number(),
+    maritalStatus: Yup.mixed().nullable(),
+    customerType: Yup.number().nullable(),
     customerRiskLimit: Yup.number(),
 
     // Contact Info Validation
@@ -239,7 +242,7 @@ const CustomerForm: React.FC = () => {
           "registrationNumber",
         ];
       case 2:
-        return ["email", "Phones", "fax", "website", "licensePlate"];
+        return ["email", "phones", "fax", "website", "licensePlate"];
       case 3:
         return [];
       default:
@@ -301,7 +304,9 @@ const CustomerForm: React.FC = () => {
                   {currentStep === 2 && (
                     <ContactInfoForm
                       data={{
-                        phones: formik.values.Phones,
+                        phones: Array.isArray(formik.values.phones)
+                          ? formik.values.phones
+                          : [],
                         email: formik.values.email,
                         fax: formik.values.fax,
                         website: formik.values.website,
@@ -310,9 +315,7 @@ const CustomerForm: React.FC = () => {
                       }}
                       onChange={(values) => {
                         Object.keys(values).forEach((key) => {
-                          // Map 'phones' back to 'Phones' for the form values
-                          const formikKey = key === "phones" ? "Phones" : key;
-                          formik.setFieldValue(formikKey, values[key]);
+                          formik.setFieldValue(key, values[key]);
                         });
                       }}
                       errors={formik.errors}

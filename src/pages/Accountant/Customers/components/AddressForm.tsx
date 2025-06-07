@@ -19,11 +19,12 @@ const AddressForm: React.FC<AddressFormProps> = ({
   const { t } = useTranslation();
 
   const validationSchema = Yup.object().shape({
-    title: Yup.string().required(t("validation.required")),
+    title: Yup.string(),
     value: Yup.string().required(t("validation.required")),
-    postalCode: Yup.string()
-      .required(t("validation.required"))
-      .matches(/^\d{5,10}$/, t("validation.postalCodeFormat")),
+    postalCode: Yup.string().matches(
+      /^\d{5,10}$/,
+      t("validation.postalCodeFormat")
+    ),
     isPrimary: Yup.boolean(),
   });
 

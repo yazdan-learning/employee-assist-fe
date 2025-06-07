@@ -51,7 +51,7 @@ export interface Customer {
   registrationNumber?: string;
   customerType: CustomerType | null;
   customerRiskLimit: number;
-  Phones: string[];
+  phones: string[];
   fax?: string;
   email: string;
   website?: string;
