@@ -10,10 +10,7 @@ import {
   flexRender,
 } from "@tanstack/react-table";
 
-
-
 // Column Filter
-
 
 // Global Filter
 const DebouncedInput = ({
@@ -147,12 +144,7 @@ const TableContainer = ({
   const handleSort = (column: any) => {
     if (onSort && column.getCanSort()) {
       const currentSortDirection = column.getIsSorted();
-      const nextSortDirection = !currentSortDirection
-        ? "asc"
-        : currentSortDirection === "asc"
-        ? "desc"
-        : "asc";
-      onSort(column.id, nextSortDirection);
+      onSort(column.id, currentSortDirection === "asc" ? "desc" : "asc");
     }
   };
 
@@ -161,7 +153,7 @@ const TableContainer = ({
     { value: "20", label: t("Show 20") },
     { value: "30", label: t("Show 30") },
     { value: "40", label: t("Show 40") },
-    { value: "50", label: t("Show 50") }
+    { value: "50", label: t("Show 50") },
   ];
 
   return (
@@ -229,9 +221,9 @@ const TableContainer = ({
                         header.column.columnDef.header,
                         header.getContext()
                       )}
-                      <span>
-                        {header.column.getIsSorted() === "asc" ? " 🔼" : ""}
-                        {header.column.getIsSorted() === "desc" ? " 🔽" : ""}
+                      <span className="ms-1">
+                        {header.column.getIsSorted() === "asc" ? "↑" : ""}
+                        {header.column.getIsSorted() === "desc" ? "↓" : ""}
                       </span>
                     </th>
                   ))}

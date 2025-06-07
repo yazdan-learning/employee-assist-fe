@@ -18,8 +18,10 @@ const CustomerList: React.FC = () => {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
-  const [sortField, setSortField] = useState("");
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+  const [sortState, setSortState] = useState<{
+    field: string;
+    direction: "asc" | "desc";
+  } | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
@@ -27,8 +29,8 @@ const CustomerList: React.FC = () => {
     page: currentPage,
     pageSize: pageSize,
     searchTerm: debouncedSearchTerm,
-    sortField: sortField,
-    sortDirection: sortDirection,
+    sortField: sortState?.field || "",
+    sortDirection: sortState?.direction || "asc",
   });
 
   const deleteMutation = useDeleteCustomer();
@@ -51,10 +53,17 @@ const CustomerList: React.FC = () => {
     debouncedSearch(searchTerm);
   }, [searchTerm, debouncedSearch]);
 
-  const handleSort = (field: string, direction: "asc" | "desc") => {
-    setSortField(field);
-    setSortDirection(direction);
-    setCurrentPage(1);
+  const handleSort = (field: string) => {
+    setSortState((prev) => {
+      if (!prev || prev.field !== field) {
+        return { field, direction: "asc" };
+      }
+      if (prev.direction === "asc") {
+        return { field, direction: "desc" };
+      }
+      return null; // Reset sorting when clicking third time
+    });
+    setCurrentPage(1); // Reset to first page when sorting changes
   };
 
   const handlePageChange = (page: number) => {
@@ -78,6 +87,7 @@ const CustomerList: React.FC = () => {
         enableColumnFilter: false,
         enableSorting: true,
         cell: (row: any) => row.getValue(),
+        sortingFn: "alphanumeric",
       },
       {
         header: t("Type"),
@@ -93,6 +103,7 @@ const CustomerList: React.FC = () => {
             {row.getValue() ? t("Firm") : t("Individual")}
           </span>
         ),
+        sortingFn: "boolean",
       },
       {
         header: t("National Code"),
@@ -100,6 +111,7 @@ const CustomerList: React.FC = () => {
         enableColumnFilter: false,
         enableSorting: true,
         cell: (row: any) => row.getValue(),
+        sortingFn: "alphanumeric",
       },
       {
         header: t("Tax ID"),
@@ -107,6 +119,7 @@ const CustomerList: React.FC = () => {
         enableColumnFilter: false,
         enableSorting: true,
         cell: (row: any) => row.getValue(),
+        sortingFn: "alphanumeric",
       },
       {
         header: t("Actions"),
