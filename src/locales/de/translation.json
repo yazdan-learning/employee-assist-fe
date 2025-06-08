@@ -43,6 +43,27 @@
         "updateError": "Fehler beim Aktualisieren des Produkts",
         "saveError": "Fehler beim Speichern des Produkts",
         "loadError": "Fehler beim Laden der Formulardaten"
+      },
+      "units": {
+        "title": "Produkteinheiten",
+        "add": "Einheit hinzufügen",
+        "edit": "Einheit bearbeiten",
+        "unit": "Einheit",
+        "conversionRate": "Umrechnungskurs",
+        "weightPerUnit": "Gewicht pro Einheit",
+        "isPrimary": "Haupteinheit",
+        "primaryBadge": "Primär",
+        "placeholders": {
+          "unit": "Einheit auswählen",
+          "conversionRate": "Umrechnungskurs eingeben",
+          "weightPerUnit": "Gewicht pro Einheit eingeben"
+        },
+        "validation": {
+          "minOneUnit": "Mindestens eine Einheit ist erforderlich",
+          "conversionRateMin": "Umrechnungskurs muss größer als 0 sein",
+          "weightPerUnitMin": "Gewicht pro Einheit muss 0 oder größer sein",
+          "error": "Bitte überprüfen Sie die Einheiteninformationen"
+        }
       }
     },
     "list": {

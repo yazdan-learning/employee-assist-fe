@@ -89,7 +89,7 @@ class ProductService {
           allowNegativeStock: false,
           categoryId: null,
           attributes: [],
-          unitId: null,
+          units: [],
           locationId: null
         },
         succeeded: false,
@@ -110,6 +110,17 @@ class ProductService {
 
   async createProduct(product: Product): Promise<BaseResponse<Product>> {
     await new Promise(resolve => setTimeout(resolve, 500));
+    
+    // Ensure at least one unit is marked as primary
+    if (product.units.length > 0 && !product.units.some(u => u.isPrimary)) {
+      product.units[0].isPrimary = true;
+    }
+
+    // Generate IDs for new units
+    product.units = product.units.map((unit, index) => ({
+      ...unit,
+      id: Math.max(0, ...this.mockProducts.flatMap(p => p.units.map(u => u.id || 0))) + index + 1
+    }));
     
     const newProduct = {
       ...product,
@@ -142,7 +153,7 @@ class ProductService {
           allowNegativeStock: false,
           categoryId: null,
           attributes: [],
-          unitId: null,
+          units: [],
           locationId: null
         },
         succeeded: false,
@@ -151,6 +162,22 @@ class ProductService {
         message: "Product not found"
       };
     }
+
+    // Ensure at least one unit is marked as primary
+    if (product.units.length > 0 && !product.units.some(u => u.isPrimary)) {
+      product.units[0].isPrimary = true;
+    }
+
+    // Generate IDs for any new units
+    product.units = product.units.map(unit => {
+      if (!unit.id) {
+        return {
+          ...unit,
+          id: Math.max(0, ...this.mockProducts.flatMap(p => p.units.map(u => u.id || 0))) + 1
+        };
+      }
+      return unit;
+    });
 
     this.mockProducts[index] = product;
 

@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { Button, Card, CardBody, Row, Col } from "reactstrap";
+import { Button, Card, CardBody } from "reactstrap";
 import { useTranslation } from "react-i18next";
 import { Address } from "../types";
 import AddressForm from "./AddressForm";
+import CardListContainer from "../../../../Components/Common/CardListContainer";
 
 interface AddressListProps {
   addresses: Address[];
@@ -55,10 +56,60 @@ const AddressList: React.FC<AddressListProps> = ({
     setShowAddForm(false);
   };
 
+  const columns = [
+    {
+      key: "title",
+      header: t("customer.form.contactInfo.addresses.addressTitle"),
+      width: 3,
+      render: (address: Address) => (
+        <span className="fw-medium">{address.title}</span>
+      ),
+    },
+    {
+      key: "address",
+      header: t("customer.form.contactInfo.addresses.address"),
+      width: 3,
+      render: (address: Address) => <span>{address.value}</span>,
+    },
+    {
+      key: "postalCode",
+      header: t("customer.form.contactInfo.addresses.postalCode"),
+      width: 2,
+      render: (address: Address) => <span>{address.postalCode}</span>,
+    },
+    {
+      key: "primary",
+      header: t("customer.form.contactInfo.addresses.primary"),
+      width: 2,
+      align: "center" as const,
+      render: (address: Address) =>
+        address.isPrimary ? (
+          <span className="badge bg-success">
+            {t("customer.form.contactInfo.addresses.primary")}
+          </span>
+        ) : null,
+    },
+  ];
+
+  const actions = [
+    {
+      icon: "bx bx-edit-alt",
+      color: "primary",
+      onClick: (_: any, index: number) => handleEdit(index),
+    },
+    {
+      icon: "bx bx-trash",
+      color: "danger",
+      onClick: (_: any, index: number) => handleRemove(index),
+    },
+  ];
+
   return (
-    <div>
+    <div className="mb-4">
       <div className="d-flex justify-content-between align-items-center mb-3">
-        <h6>{t("customer.form.contactInfo.addresses.title")}</h6>
+        <h5 className="mb-0">
+          {t("customer.form.contactInfo.addresses.title")}
+        </h5>
         <Button
           color="primary"
           size="sm"
@@ -67,105 +118,46 @@ const AddressList: React.FC<AddressListProps> = ({
             setEditingIndex(null);
           }}
         >
+          <i className="bx bx-plus me-1"></i>
           {t("customer.form.contactInfo.addresses.add")}
         </Button>
       </div>
 
-      {/* Add new address form */}
-      {showAddForm && (
-        <div className="mb-3">
-          <Card>
-            <CardBody>
-              <AddressForm
-                onSave={(address) => handleSave(address)}
-                onCancel={() => setShowAddForm(false)}
-              />
-            </CardBody>
-          </Card>
-        </div>
+      {/* Add/Edit Form */}
+      {(showAddForm || editingIndex !== null) && (
+        <Card className="mb-3">
+          <CardBody>
+            <h6 className="mb-3">
+              {editingIndex !== null
+                ? t("customer.form.contactInfo.addresses.edit")
+                : t("customer.form.contactInfo.addresses.add")}
+            </h6>
+            <AddressForm
+              address={
+                editingIndex !== null ? addresses[editingIndex] : undefined
+              }
+              onSave={(address) =>
+                handleSave(
+                  address,
+                  editingIndex !== null ? editingIndex : undefined
+                )
+              }
+              onCancel={() => {
+                setShowAddForm(false);
+                setEditingIndex(null);
+              }}
+            />
+          </CardBody>
+        </Card>
       )}
 
-      {/* List of existing addresses */}
-      {addresses.length > 0 && (
-        <Row>
-          {addresses.map((address, index) => (
-            <Col md={12} key={index} className="mb-3">
-              <Card>
-                <CardBody>
-                  {editingIndex === index ? (
-                    <AddressForm
-                      address={address}
-                      onSave={(updatedAddress) =>
-                        handleSave(updatedAddress, index)
-                      }
-                      onCancel={() => setEditingIndex(null)}
-                    />
-                  ) : (
-                    <div>
-                      <div className="d-flex justify-content-between align-items-start mb-3">
-                        <h6 className="mb-0">{address.title}</h6>
-                        <div className="d-flex gap-2">
-                          <Button
-                            color="primary"
-                            size="sm"
-                            onClick={() => handleEdit(index)}
-                          >
-                            <i className="bx bx-edit"></i>
-                          </Button>
-                          <Button
-                            color="danger"
-                            size="sm"
-                            onClick={() => handleRemove(index)}
-                          >
-                            <i className="bx bx-trash"></i>
-                          </Button>
-                        </div>
-                      </div>
-                      <Row>
-                        <Col md={6}>
-                          <div className="address-details">
-                            <div className="mb-2">
-                              <small className="text-muted">
-                                {t(
-                                  "customer.form.contactInfo.addresses.address"
-                                )}
-                                :
-                              </small>
-                              <div>{address.value}</div>
-                            </div>
-                          </div>
-                        </Col>
-                        <Col md={6}>
-                          <div className="address-details">
-                            <div className="mb-2">
-                              <small className="text-muted">
-                                {t(
-                                  "customer.form.contactInfo.addresses.postalCode"
-                                )}
-                                :
-                              </small>
-                              <div>{address.postalCode}</div>
-                            </div>
-                            {address.isPrimary && (
-                              <div className="mt-2">
-                                <span className="badge bg-success">
-                                  {t(
-                                    "customer.form.contactInfo.addresses.primary"
-                                  )}
-                                </span>
-                              </div>
-                            )}
-                          </div>
-                        </Col>
-                      </Row>
-                    </div>
-                  )}
-                </CardBody>
-              </Card>
-            </Col>
-          ))}
-        </Row>
-      )}
+      {/* Addresses List */}
+      <CardListContainer
+        items={addresses}
+        columns={columns}
+        actions={actions}
+        keyField="id"
+      />
     </div>
   );
 };

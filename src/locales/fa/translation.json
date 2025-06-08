@@ -433,6 +433,27 @@
         "updateError": "خطا در به‌روزرسانی محصول",
         "saveError": "خطا در ذخیره محصول",
         "loadError": "خطا در بارگذاری اطلاعات فرم"
+      },
+      "units": {
+        "title": "واحدهای محصول",
+        "add": "افزودن واحد",
+        "edit": "ویرایش واحد",
+        "unit": "واحد",
+        "conversionRate": "نرخ تبدیل",
+        "weightPerUnit": "وزن هر واحد",
+        "isPrimary": "واحد اصلی",
+        "primaryBadge": "اصلی",
+        "placeholders": {
+          "unit": "انتخاب واحد",
+          "conversionRate": "نرخ تبدیل را وارد کنید",
+          "weightPerUnit": "وزن هر واحد را وارد کنید"
+        },
+        "validation": {
+          "minOneUnit": "حداقل یک واحد الزامی است",
+          "conversionRateMin": "نرخ تبدیل باید بزرگتر از صفر باشد",
+          "weightPerUnitMin": "وزن هر واحد باید صفر یا بزرگتر باشد",
+          "error": "لطفاً اطلاعات واحد را بررسی کنید"
+        }
       }
     },
     "list": {

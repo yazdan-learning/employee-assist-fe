@@ -128,8 +128,19 @@ const generateSampleProducts = (): Product[] => {
     // Generate attributes
     const attributes = generateRandomAttributes(categoryId);
     
-    // Randomly assign unit and location
-    const unitId = Math.random() > 0.2 ? Math.floor(Math.random() * mockUnits.length) + 1 : null;
+    // Generate units (1-3 units per product)
+    const numUnits = Math.floor(Math.random() * 3) + 1;
+    const units = Array.from({ length: numUnits }, (_, index) => {
+      const unitId = Math.floor(Math.random() * mockUnits.length) + 1;
+      return {
+        id: i * 10 + index, // Generate unique ID for each unit
+        unitId,
+        isPrimary: index === 0, // First unit is primary
+        conversionRate: index === 0 ? 1 : Math.random() * 10 + 0.1, // Random conversion rate between 0.1 and 10.1
+        weightPerUnit: Math.random() * 5 // Random weight between 0 and 5
+      };
+    });
+    
     const locationId = Math.random() > 0.2 ? Math.floor(Math.random() * mockLocations.length) + 1 : null;
     
     products.push({
@@ -141,7 +152,7 @@ const generateSampleProducts = (): Product[] => {
       allowNegativeStock: Math.random() < 0.2, // 20% chance of allowing negative stock
       categoryId,
       attributes,
-      unitId,
+      units,
       locationId
     });
   }

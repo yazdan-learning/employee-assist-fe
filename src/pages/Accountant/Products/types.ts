@@ -24,16 +24,24 @@ export interface ProductAttribute {
   valueId: number;
 }
 
+export interface ProductUnit {
+  id?: number;
+  unitId: number;
+  isPrimary: boolean;
+  conversionRate: number;
+  weightPerUnit: number;
+}
+
 export interface Product {
   id?: number;
   name: string;
-  barcode?: string;
+  barcode: string;
   isService: boolean;
   hasSerial: boolean;
   allowNegativeStock: boolean;
   categoryId: number | null;
   attributes: ProductAttribute[];
-  unitId: number | null;
+  units: ProductUnit[];
   locationId: number | null;
 }
 

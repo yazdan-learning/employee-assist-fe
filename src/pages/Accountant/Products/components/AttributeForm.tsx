@@ -4,7 +4,7 @@ import * as Yup from "yup";
 import { Button, FormGroup, Label, Row, Col } from "reactstrap";
 import { useTranslation } from "react-i18next";
 import RaDropdown from "../../../../Components/Common/RaDropdown";
-import { ProductAttribute, Attribute, AttributeValue } from "../types";
+import { ProductAttribute, Attribute } from "../types";
 import { useAttributeValues } from "../../../../hooks/useProducts";
 import { productService } from "../../../../services/ProductService";
 
@@ -101,6 +101,7 @@ const AttributeForm: React.FC<AttributeFormProps> = ({
                 value: v.id.toString(),
                 label: v.value,
               }))}
+              showClear={true}
               value={formik.values.valueId?.toString() || ""}
               onChange={(value) =>
                 formik.setFieldValue("valueId", value ? Number(value) : 0)

@@ -397,6 +397,27 @@
         "updateError": "Failed to update product",
         "saveError": "Error saving product",
         "loadError": "Error loading form data"
+      },
+      "units": {
+        "title": "Product Units",
+        "add": "Add Unit",
+        "edit": "Edit Unit",
+        "unit": "Unit",
+        "conversionRate": "Conversion Rate",
+        "weightPerUnit": "Weight per Unit",
+        "isPrimary": "Primary Unit",
+        "primaryBadge": "Primary",
+        "placeholders": {
+          "unit": "Select unit",
+          "conversionRate": "Enter conversion rate",
+          "weightPerUnit": "Enter weight per unit"
+        },
+        "validation": {
+          "minOneUnit": "At least one unit is required",
+          "conversionRateMin": "Conversion rate must be greater than 0",
+          "weightPerUnitMin": "Weight per unit must be 0 or greater",
+          "error": "Please check unit information"
+        }
       }
     },
     "list": {

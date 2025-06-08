@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { Button, Card, CardBody, Row, Col } from "reactstrap";
+import { Button, Card, CardBody } from "reactstrap";
 import { useTranslation } from "react-i18next";
 import { BankAccount } from "../types";
 import BankAccountFormFields from "./BankAccountFormFields";
+import CardListContainer from "../../../../Components/Common/CardListContainer";
 
 interface BankAccountFormProps {
   bankAccounts: BankAccount[];
@@ -50,102 +51,85 @@ const BankAccountForm: React.FC<BankAccountFormProps> = ({
     setEditIndex(null);
   };
 
+  const columns = [
+    {
+      key: "title",
+      header: t("customer.form.bankInfo.accountTitle"),
+      width: 2,
+      render: (account: BankAccount) => (
+        <span className="fw-medium">{account.title}</span>
+      ),
+    },
+    {
+      key: "accountNumber",
+      header: t("customer.form.bankInfo.accountNumber"),
+      width: 3,
+      render: (account: BankAccount) => <span>{account.accountNumber}</span>,
+    },
+    {
+      key: "iban",
+      header: t("customer.form.bankInfo.iban"),
+      width: 3,
+      render: (account: BankAccount) => <span>{account.iban}</span>,
+    },
+    {
+      key: "branchName",
+      header: t("customer.form.bankInfo.branchName"),
+      width: 2,
+      render: (account: BankAccount) => <span>{account.branchName}</span>,
+    },
+  ];
+
+  const actions = [
+    {
+      icon: "bx bx-edit-alt",
+      color: "primary",
+      onClick: (_: any, index: number) => handleEdit(index),
+    },
+    {
+      icon: "bx bx-trash",
+      color: "danger",
+      onClick: (_: any, index: number) => handleRemove(index),
+    },
+  ];
+
   return (
-    <div>
+    <div className="mb-4">
       <div className="d-flex justify-content-between align-items-center mb-3">
-        <h6>{t("customer.form.bankInfo.title")}</h6>
+        <h5 className="mb-0">{t("customer.form.bankInfo.title")}</h5>
         <Button color="primary" size="sm" onClick={handleAdd}>
+          <i className="bx bx-plus me-1"></i>
           {t("customer.form.bankInfo.add")}
         </Button>
       </div>
 
+      {/* Add/Edit Form */}
       {showForm && (
-        <div className="mb-3">
-          <Card>
-            <CardBody>
-              <BankAccountFormFields
-                bankAccount={
-                  editIndex !== null ? bankAccounts[editIndex] : undefined
-                }
-                onSave={handleSave}
-                onCancel={handleCancel}
-              />
-            </CardBody>
-          </Card>
-        </div>
+        <Card className="mb-3">
+          <CardBody>
+            <h6 className="mb-3">
+              {editIndex !== null
+                ? t("customer.form.bankInfo.edit")
+                : t("customer.form.bankInfo.add")}
+            </h6>
+            <BankAccountFormFields
+              bankAccount={
+                editIndex !== null ? bankAccounts[editIndex] : undefined
+              }
+              onSave={handleSave}
+              onCancel={handleCancel}
+            />
+          </CardBody>
+        </Card>
       )}
 
-      {bankAccounts.length > 0 && (
-        <Row>
-          {bankAccounts.map((account, index) => (
-            <Col md={12} key={index} className="mb-3">
-              <Card>
-                <CardBody>
-                  <div className="d-flex justify-content-between align-items-start mb-3">
-                    <h6 className="mb-0">{account.title}</h6>
-                    <div className="d-flex gap-2">
-                      <Button
-                        color="primary"
-                        size="sm"
-                        onClick={() => handleEdit(index)}
-                      >
-                        <i className="bx bx-edit"></i>
-                      </Button>
-                      <Button
-                        color="danger"
-                        size="sm"
-                        onClick={() => handleRemove(index)}
-                      >
-                        <i className="bx bx-trash"></i>
-                      </Button>
-                    </div>
-                  </div>
-                  <Row>
-                    <Col md={6}>
-                      <div className="bank-account-details">
-                        <div className="mb-2">
-                          <small className="text-muted">
-                            {t("customer.form.bankInfo.accountNumber")}:
-                          </small>
-                          <div>{account.accountNumber}</div>
-                        </div>
-                        <div className="mb-2">
-                          <small className="text-muted">
-                            {t("customer.form.bankInfo.iban")}:
-                          </small>
-                          <div>{account.iban}</div>
-                        </div>
-                        <div className="mb-2">
-                          <small className="text-muted">
-                            {t("customer.form.bankInfo.cardNumber")}:
-                          </small>
-                          <div>{account.cardNumber}</div>
-                        </div>
-                      </div>
-                    </Col>
-                    <Col md={6}>
-                      <div className="bank-account-details">
-                        <div className="mb-2">
-                          <small className="text-muted">
-                            {t("customer.form.bankInfo.branchName")}:
-                          </small>
-                          <div>{account.branchName}</div>
-                        </div>
-                        <div className="mb-2">
-                          <small className="text-muted">
-                            {t("customer.form.bankInfo.branchCode")}:
-                          </small>
-                          <div>{account.branchCode}</div>
-                        </div>
-                      </div>
-                    </Col>
-                  </Row>
-                </CardBody>
-              </Card>
-            </Col>
-          ))}
-        </Row>
-      )}
+      {/* Bank Accounts List */}
+      <CardListContainer
+        items={bankAccounts}
+        columns={columns}
+        actions={actions}
+        keyField="id"
+      />
     </div>
   );
 };

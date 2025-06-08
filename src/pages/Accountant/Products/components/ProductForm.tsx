@@ -23,6 +23,7 @@ import {
 } from "../../../../hooks/useProducts";
 import { productService } from "../../../../services/ProductService";
 import AttributeList from "./AttributeList";
+import UnitList from "./UnitList";
 
 const ProductForm: React.FC = () => {
   const { t } = useTranslation();
@@ -73,7 +74,7 @@ const ProductForm: React.FC = () => {
           allowNegativeStock: false,
           categoryId: null,
           attributes: [],
-          unitId: null,
+          units: [],
           locationId: null,
         };
 
@@ -90,7 +91,16 @@ const ProductForm: React.FC = () => {
         valueId: Yup.number().required(),
       })
     ),
-    unitId: Yup.number().nullable(),
+    units: Yup.array()
+      .of(
+        Yup.object().shape({
+          unitId: Yup.number().required(),
+          isPrimary: Yup.boolean(),
+          conversionRate: Yup.number().required().min(0.0001),
+          weightPerUnit: Yup.number().required().min(0),
+        })
+      )
+      .min(1, t("product.form.units.validation.minOneUnit")),
     locationId: Yup.number().nullable(),
   });
 
@@ -181,7 +191,7 @@ const ProductForm: React.FC = () => {
                   </Row>
 
                   <Row className="mt-3">
-                    <Col md={6}>
+                    <Col md={12}>
                       <FormGroup>
                         <Label for="categoryId">
                           {t("product.form.category")}
@@ -199,25 +209,6 @@ const ProductForm: React.FC = () => {
                             )
                           }
                           placeholder={t("product.form.placeholders.category")}
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col md={6}>
-                      <FormGroup>
-                        <Label for="unitId">{t("product.form.unit")}</Label>
-                        <RaDropdown
-                          options={units.map((u) => ({
-                            value: u.id.toString(),
-                            label: u.name,
-                          }))}
-                          value={formik.values.unitId?.toString() || ""}
-                          onChange={(value) =>
-                            formik.setFieldValue(
-                              "unitId",
-                              value ? Number(value) : null
-                            )
-                          }
-                          placeholder={t("product.form.placeholders.unit")}
                         />
                       </FormGroup>
                     </Col>
@@ -244,6 +235,24 @@ const ProductForm: React.FC = () => {
                           placeholder={t("product.form.placeholders.location")}
                         />
                       </FormGroup>
+                    </Col>
+                  </Row>
+
+                  <Row className="mt-4">
+                    <Col md={12}>
+                      <UnitList
+                        units={formik.values.units}
+                        onChange={(units) =>
+                          formik.setFieldValue("units", units)
+                        }
+                      />
+                      {formik.touched.units && formik.errors.units && (
+                        <div className="text-danger mt-2">
+                          {typeof formik.errors.units === "string"
+                            ? formik.errors.units
+                            : t("product.form.units.validation.error")}
+                        </div>
+                      )}
                     </Col>
                   </Row>
 
