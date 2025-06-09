@@ -4,13 +4,22 @@ import { useTranslation } from "react-i18next";
 import { ProductUnit } from "../types";
 import UnitForm from "./UnitForm";
 import CardListContainer from "../../../../Components/Common/CardListContainer";
+import { FormikErrors, FormikTouched } from "formik";
+import { Product } from "../types";
 
 interface UnitListProps {
   units: ProductUnit[];
   onChange: (units: ProductUnit[]) => void;
+  errors?: FormikErrors<Product>;
+  touched?: FormikTouched<Product>;
 }
 
-const UnitList: React.FC<UnitListProps> = ({ units = [], onChange }) => {
+const UnitList: React.FC<UnitListProps> = ({
+  units = [],
+  onChange,
+  errors = {},
+  touched = {},
+}) => {
   const { t } = useTranslation();
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);

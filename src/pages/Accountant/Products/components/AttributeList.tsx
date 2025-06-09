@@ -1,18 +1,23 @@
 import React, { useState } from "react";
 import { Button, Card, CardBody, Row, Col } from "reactstrap";
 import { useTranslation } from "react-i18next";
-import { ProductAttribute, Attribute, AttributeValue } from "../types";
+import { ProductAttribute, Attribute, AttributeValue, Product } from "../types";
 import AttributeForm from "./AttributeForm";
 import { productService } from "../../../../services/ProductService";
+import { FormikErrors, FormikTouched } from "formik";
 
 interface AttributeListProps {
-  attributes: ProductAttribute[];
-  onChange: (attributes: ProductAttribute[]) => void;
+  attributes: { attributeId: number; valueId: number }[];
+  onChange: (attributes: { attributeId: number; valueId: number }[]) => void;
+  errors?: FormikErrors<Product>;
+  touched?: FormikTouched<Product>;
 }
 
 const AttributeList: React.FC<AttributeListProps> = ({
-  attributes = [],
+  attributes,
   onChange,
+  errors = {},
+  touched = {},
 }) => {
   const { t } = useTranslation();
   const [showAddForm, setShowAddForm] = useState(false);

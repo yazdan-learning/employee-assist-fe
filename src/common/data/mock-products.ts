@@ -1,17 +1,17 @@
-import { Product, Category, Attribute, AttributeValue, Unit, Location, ProductAttribute } from "../../pages/Accountant/Products/types";
+import { Product, Category, Attribute, AttributeValue, Unit, ProductAttribute, ProductStatus } from "../../pages/Accountant/Products/types";
 
 // Mock data for dropdowns
 export const mockCategories: Category[] = [
-  { id: 1, name: "Electronics" },
-  { id: 2, name: "Accessories" },
-  { id: 3, name: "Gaming" },
-  { id: 4, name: "Audio" },
-  { id: 5, name: "Storage" },
-  { id: 6, name: "Networking" },
-  { id: 7, name: "Software" },
-  { id: 8, name: "Cameras" },
-  { id: 9, name: "Printers" },
-  { id: 10, name: "Components" }
+  { id: 1, name: "Electronics", code: "ELEC" },
+  { id: 2, name: "Accessories", code: "ACC" },
+  { id: 3, name: "Gaming", code: "GAME" },
+  { id: 4, name: "Audio", code: "AUD" },
+  { id: 5, name: "Storage", code: "STOR" },
+  { id: 6, name: "Networking", code: "NET" },
+  { id: 7, name: "Software", code: "SOFT" },
+  { id: 8, name: "Cameras", code: "CAM" },
+  { id: 9, name: "Printers", code: "PRINT" },
+  { id: 10, name: "Components", code: "COMP" }
 ];
 
 export const mockAttributes: Attribute[] = [
@@ -54,7 +54,14 @@ export const mockUnits: Unit[] = [
   { id: 4, name: "Pack" }
 ];
 
-export const mockLocations: Location[] = [
+// Define MockLocation interface
+interface MockLocation {
+  id: number;
+  name: string;
+}
+
+// Update mockLocations type
+export const mockLocations: MockLocation[] = [
   { id: 1, name: "Main Warehouse" },
   { id: 2, name: "Store Front" },
   { id: 3, name: "Back Store" },
@@ -133,27 +140,33 @@ const generateSampleProducts = (): Product[] => {
     const units = Array.from({ length: numUnits }, (_, index) => {
       const unitId = Math.floor(Math.random() * mockUnits.length) + 1;
       return {
-        id: i * 10 + index, // Generate unique ID for each unit
+        id: i * 10 + index,
         unitId,
-        isPrimary: index === 0, // First unit is primary
-        conversionRate: index === 0 ? 1 : Math.random() * 10 + 0.1, // Random conversion rate between 0.1 and 10.1
-        weightPerUnit: Math.random() * 5 // Random weight between 0 and 5
+        isPrimary: index === 0,
+        conversionRate: index === 0 ? 1 : Math.random() * 10 + 0.1,
+        weightPerUnit: Math.random() * 5
       };
     });
-    
-    const locationId = Math.random() > 0.2 ? Math.floor(Math.random() * mockLocations.length) + 1 : null;
     
     products.push({
       id: i,
       name: `${productType} ${Math.floor(Math.random() * 1000)}`,
+      code: `${category.code}-${Math.floor(Math.random() * 10000)}`,
+      description: `Description for ${productType}`,
       barcode: `${Math.floor(Math.random() * 1000000000000)}`,
-      isService: Math.random() < 0.1, // 10% chance of being a service
-      hasSerial: Math.random() < 0.3, // 30% chance of having serial
-      allowNegativeStock: Math.random() < 0.2, // 20% chance of allowing negative stock
+      isService: Math.random() < 0.1,
+      hasSerial: Math.random() < 0.3,
+      allowNegativeStock: Math.random() < 0.2,
+      status: ProductStatus.ACTIVE,
       categoryId,
       attributes,
       units,
-      locationId
+      locations: [],
+      images: [],
+      prices: [],
+      taxAmount: Math.floor(Math.random() * 20),
+      minQuantity: Math.floor(Math.random() * 10),
+      maxQuantity: Math.floor(Math.random() * 100) + 10
     });
   }
   

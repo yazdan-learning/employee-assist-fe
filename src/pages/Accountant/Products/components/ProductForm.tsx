@@ -1,34 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { Row, Col, Card, CardBody, Button } from "reactstrap";
+import { toast } from "react-toastify";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import {
-  Row,
-  Col,
-  Card,
-  CardBody,
-  FormGroup,
-  Label,
-  Input,
-  Button,
-} from "reactstrap";
-import { toast } from "react-toastify";
-import RaDropdown from "../../../../Components/Common/RaDropdown";
-import { Product, Category, Unit, Location } from "../types";
+import { Product, ProductStatus } from "../types";
 import {
   useCreateProduct,
   useUpdateProduct,
   useProductById,
 } from "../../../../hooks/useProducts";
-import { productService } from "../../../../services/ProductService";
-import AttributeList from "./AttributeList";
-import UnitList from "./UnitList";
+import BasicInfoForm from "./BasicInfoForm";
+import GeneralInfoForm from "./GeneralInfoForm";
+import PricingForm from "./PricingForm";
 
 const ProductForm: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
+  const [currentStep, setCurrentStep] = useState(1);
 
   const {
     data: productResponse,
@@ -40,57 +31,93 @@ const ProductForm: React.FC = () => {
   const createMutation = useCreateProduct();
   const updateMutation = useUpdateProduct();
 
-  // Load dropdown data
-  const [categories, setCategories] = React.useState<Category[]>([]);
-  const [units, setUnits] = React.useState<Unit[]>([]);
-  const [locations, setLocations] = React.useState<Location[]>([]);
-
-  React.useEffect(() => {
-    const loadDropdownData = async () => {
-      try {
-        const cats = await productService.getCategories();
-        const uns = await productService.getUnits();
-        const locs = await productService.getLocations();
-
-        setCategories(cats as Category[]);
-        setUnits(uns as Unit[]);
-        setLocations(locs as Location[]);
-      } catch (error) {
-        console.error("Error loading dropdown data:", error);
-        toast.error(t("product.form.messages.loadError"));
-      }
-    };
-    loadDropdownData();
-  }, [t]);
-
   const initialValues: Product =
     id && productResponse?.data
       ? productResponse.data
       : {
+          id: 0,
           name: "",
+          code: "",
+          description: "",
           barcode: "",
           isService: false,
           hasSerial: false,
           allowNegativeStock: false,
+          status: ProductStatus.INACTIVE,
           categoryId: null,
           attributes: [],
           units: [],
-          locationId: null,
+          locations: [],
+          images: [],
+          prices: [],
+          taxAmount: 0,
+          minQuantity: 0,
+          maxQuantity: 0,
         };
 
   const validationSchema = Yup.object().shape({
+    // Basic Info Validation
+    categoryId: Yup.number().required(t("validation.required")),
+    code: Yup.string().required(t("validation.required")),
     name: Yup.string().required(t("validation.required")),
-    barcode: Yup.string(),
+    description: Yup.string(),
+    status: Yup.string().required(t("validation.required")),
     isService: Yup.boolean(),
     hasSerial: Yup.boolean(),
     allowNegativeStock: Yup.boolean(),
-    categoryId: Yup.number().nullable(),
-    locationId: Yup.number().nullable(),
+
+    // General Info Validation
+    attributes: Yup.array().of(
+      Yup.object().shape({
+        attributeId: Yup.number().required(),
+        value: Yup.string().required(),
+      })
+    ),
+    units: Yup.array().of(
+      Yup.object().shape({
+        unitId: Yup.number().required(),
+        conversionRate: Yup.number().min(0).required(),
+        weightPerUnit: Yup.number().min(0),
+        isPrimary: Yup.boolean(),
+      })
+    ),
+    locations: Yup.array().of(
+      Yup.object().shape({
+        locationId: Yup.number().required(),
+        quantity: Yup.number().min(0).required(),
+      })
+    ),
+
+    // Pricing Validation
+    taxAmount: Yup.number()
+      .min(0, t("validation.min", { min: 0 }))
+      .max(100, t("validation.max", { max: 100 }))
+      .required(t("validation.required")),
+    minQuantity: Yup.number()
+      .min(0, t("validation.min", { min: 0 }))
+      .required(t("validation.required")),
+    maxQuantity: Yup.number()
+      .min(
+        Yup.ref("minQuantity"),
+        t("validation.greaterThan", { field: t("product.form.minQuantity") })
+      )
+      .required(t("validation.required")),
+    barcode: Yup.string(),
+    prices: Yup.array().of(
+      Yup.object().shape({
+        sellTypeId: Yup.number().required(),
+        price: Yup.number().min(0).required(),
+        currency: Yup.string().required(),
+        discountPercentage: Yup.number().min(0).max(100),
+      })
+    ),
   });
 
   const formik = useFormik({
     initialValues,
     validationSchema,
+    validateOnMount: true,
+    validateOnChange: true,
     enableReinitialize: true,
     onSubmit: async (values) => {
       try {
@@ -103,7 +130,9 @@ const ProductForm: React.FC = () => {
             toast.success(t("product.form.messages.updateSuccess"));
             navigate("/accountant/products");
           } else {
-            toast.error(t("product.form.messages.updateError"));
+            toast.error(
+              response.errors || t("product.form.messages.updateError")
+            );
           }
         } else {
           const response = await createMutation.mutateAsync(values);
@@ -111,7 +140,9 @@ const ProductForm: React.FC = () => {
             toast.success(t("product.form.messages.createSuccess"));
             navigate("/accountant/products");
           } else {
-            toast.error(t("product.form.messages.createError"));
+            toast.error(
+              response.errors || t("product.form.messages.createError")
+            );
           }
         }
       } catch (error) {
@@ -121,12 +152,72 @@ const ProductForm: React.FC = () => {
     },
   });
 
+  const handleNext = () => {
+    const fields = getFieldsForCurrentStep();
+
+    // Touch all fields in current step to show validation errors
+    fields.forEach((field) => {
+      formik.setFieldTouched(field, true);
+    });
+
+    // Check if there are any errors in the current step's fields
+    const hasErrors = fields.some((field) => formik.errors[field]);
+
+    if (!hasErrors) {
+      setCurrentStep((prev) => prev + 1);
+    }
+  };
+
+  const handlePrevious = () => {
+    setCurrentStep((prev) => prev - 1);
+  };
+
+  const handleSave = async () => {
+    try {
+      // Touch all fields to show all validation errors
+      Object.keys(formik.values).forEach((field) => {
+        formik.setFieldTouched(field, true);
+      });
+
+      // Submit the form
+      await formik.submitForm();
+    } catch (error) {
+      console.error("Save error:", error);
+    }
+  };
+
+  const getFieldsForCurrentStep = () => {
+    switch (currentStep) {
+      case 1:
+        return [
+          "categoryId",
+          "code",
+          "name",
+          "description",
+          "status",
+          "isService",
+          "hasSerial",
+          "allowNegativeStock",
+        ];
+      case 2:
+        return ["attributes", "units", "locations"];
+      case 3:
+        return ["taxAmount", "minQuantity", "maxQuantity", "barcode", "prices"];
+      default:
+        return [];
+    }
+  };
+
   if (id && isLoading) {
     return <div>Loading...</div>;
   }
 
   if (id && isError) {
     return <div>Error: {error?.message}</div>;
+  }
+
+  if (id && !productResponse?.data) {
+    return <div>Product not found</div>;
   }
 
   return (
@@ -136,181 +227,101 @@ const ProductForm: React.FC = () => {
           <Col lg={12}>
             <Card>
               <CardBody>
-                <h4 className="card-title mb-4">
-                  {id
-                    ? t("product.form.title.edit")
-                    : t("product.form.title.new")}
-                </h4>
+                <div className="d-flex justify-content-between align-items-center mb-4">
+                  <h4 className="card-title mb-0">
+                    {id
+                      ? t("product.form.title.edit")
+                      : t("product.form.title.new")}
+                  </h4>
+                  <div className="step-indicator d-flex align-items-center">
+                    <span className="me-2">
+                      {t("product.form.step", {
+                        current: currentStep,
+                        total: 3,
+                      })}
+                    </span>
+                    <div
+                      className="progress"
+                      style={{ width: "100px", height: "6px" }}
+                    >
+                      <div
+                        className="progress-bar"
+                        role="progressbar"
+                        style={{ width: `${(currentStep / 3) * 100}%` }}
+                        aria-valuenow={currentStep}
+                        aria-valuemin={1}
+                        aria-valuemax={3}
+                      />
+                    </div>
+                  </div>
+                </div>
 
                 <form onSubmit={formik.handleSubmit}>
-                  <Row>
-                    <Col md={6}>
-                      <FormGroup>
-                        <Label for="name">{t("product.form.name")}</Label>
-                        <Input
-                          type="text"
-                          id="name"
-                          {...formik.getFieldProps("name")}
-                          invalid={
-                            formik.touched.name && Boolean(formik.errors.name)
-                          }
-                        />
-                        {formik.touched.name && formik.errors.name && (
-                          <div className="invalid-feedback">
-                            {formik.errors.name}
-                          </div>
-                        )}
-                      </FormGroup>
-                    </Col>
-                    <Col md={6}>
-                      <FormGroup>
-                        <Label for="barcode">{t("product.form.barcode")}</Label>
-                        <Input
-                          type="text"
-                          id="barcode"
-                          {...formik.getFieldProps("barcode")}
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
+                  {currentStep === 1 && (
+                    <BasicInfoForm
+                      data={formik.values}
+                      onChange={(values) => {
+                        Object.keys(values).forEach((key) => {
+                          formik.setFieldValue(key, values[key]);
+                        });
+                      }}
+                      errors={formik.errors}
+                      touched={formik.touched}
+                    />
+                  )}
 
-                  <Row className="mt-3">
-                    <Col md={12}>
-                      <FormGroup>
-                        <Label for="categoryId">
-                          {t("product.form.category")}
-                        </Label>
-                        <RaDropdown
-                          options={categories.map((c) => ({
-                            value: c.id.toString(),
-                            label: c.name,
-                          }))}
-                          value={formik.values.categoryId?.toString() || ""}
-                          onChange={(value) =>
-                            formik.setFieldValue(
-                              "categoryId",
-                              value ? Number(value) : null
-                            )
-                          }
-                          placeholder={t("product.form.placeholders.category")}
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
+                  {currentStep === 2 && (
+                    <GeneralInfoForm
+                      data={formik.values}
+                      onChange={(values) => {
+                        Object.keys(values).forEach((key) => {
+                          formik.setFieldValue(key, values[key]);
+                        });
+                      }}
+                      errors={formik.errors}
+                      touched={formik.touched}
+                    />
+                  )}
 
-                  <Row className="mt-3">
-                    <Col md={12}>
-                      <FormGroup>
-                        <Label for="locationId">
-                          {t("product.form.location")}
-                        </Label>
-                        <RaDropdown
-                          options={locations.map((l) => ({
-                            value: l.id.toString(),
-                            showClear: true,
-                            label: l.name,
-                          }))}
-                          value={formik.values.locationId?.toString() || ""}
-                          onChange={(value) =>
-                            formik.setFieldValue(
-                              "locationId",
-                              value ? Number(value) : null
-                            )
-                          }
-                          placeholder={t("product.form.placeholders.location")}
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
+                  {currentStep === 3 && (
+                    <PricingForm
+                      data={formik.values}
+                      onChange={(values) => {
+                        Object.keys(values).forEach((key) => {
+                          formik.setFieldValue(key, values[key]);
+                        });
+                      }}
+                      errors={formik.errors}
+                      touched={formik.touched}
+                    />
+                  )}
 
-                  <Row className="mt-4">
-                    <Col md={12}>
-                      <UnitList
-                        units={formik.values.units}
-                        onChange={(units) =>
-                          formik.setFieldValue("units", units)
-                        }
-                      />
-                      {formik.touched.units && formik.errors.units && (
-                        <div className="text-danger mt-2">
-                          {typeof formik.errors.units === "string"
-                            ? formik.errors.units
-                            : t("product.form.units.validation.error")}
-                        </div>
-                      )}
-                    </Col>
-                  </Row>
-
-                  <Row className="mt-4">
-                    <Col md={12}>
-                      <AttributeList
-                        attributes={formik.values.attributes}
-                        onChange={(attributes) =>
-                          formik.setFieldValue("attributes", attributes)
-                        }
-                      />
-                    </Col>
-                  </Row>
-
-                  <Row className="mt-4">
-                    <Col md={12}>
-                      <div className="d-flex flex-wrap gap-4">
-                        <FormGroup check>
-                          <Input
-                            type="checkbox"
-                            className="form-check-input"
-                            id="isService"
-                            {...formik.getFieldProps("isService")}
-                            checked={formik.values.isService}
-                          />
-                          <Label className="form-check-label" for="isService">
-                            {t("product.form.isService")}
-                          </Label>
-                        </FormGroup>
-
-                        <FormGroup check>
-                          <Input
-                            type="checkbox"
-                            className="form-check-input"
-                            id="hasSerial"
-                            {...formik.getFieldProps("hasSerial")}
-                            checked={formik.values.hasSerial}
-                          />
-                          <Label className="form-check-label" for="hasSerial">
-                            {t("product.form.hasSerial")}
-                          </Label>
-                        </FormGroup>
-
-                        <FormGroup check>
-                          <Input
-                            type="checkbox"
-                            className="form-check-input"
-                            id="allowNegativeStock"
-                            {...formik.getFieldProps("allowNegativeStock")}
-                            checked={formik.values.allowNegativeStock}
-                          />
-                          <Label
-                            className="form-check-label"
-                            for="allowNegativeStock"
-                          >
-                            {t("product.form.allowNegativeStock")}
-                          </Label>
-                        </FormGroup>
-                      </div>
-                    </Col>
-                  </Row>
-
-                  <div className="d-flex justify-content-end mt-4 gap-2">
+                  <div className="d-flex justify-content-between mt-4">
                     <Button
                       color="light"
-                      type="button"
-                      onClick={() => navigate("/accountant/products")}
+                      onClick={handlePrevious}
+                      disabled={currentStep === 1}
                     >
-                      {t("common.cancel")}
+                      {t("common.back")}
                     </Button>
-                    <Button color="success" type="submit">
-                      {t("common.save")}
-                    </Button>
+                    <div className="d-flex gap-2">
+                      <Button
+                        color="light"
+                        onClick={() => navigate("/accountant/products")}
+                      >
+                        {t("common.cancel")}
+                      </Button>
+                      <Button
+                        color="primary"
+                        onClick={currentStep === 3 ? handleSave : handleNext}
+                      >
+                        {currentStep === 3
+                          ? id
+                            ? t("common.update")
+                            : t("common.save")
+                          : t("common.next")}
+                      </Button>
+                    </div>
                   </div>
                 </form>
               </CardBody>

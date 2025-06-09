@@ -4,25 +4,36 @@ export enum ProductStatus {
   OUT_OF_STOCK = "OUT_OF_STOCK"
 }
 
-export interface ProductBasicInfo {
-  name: string;
-  sku: string;
-  price: number;
-  description?: string;
-}
-
-export interface ProductDetails {
-  category: string;
-  stock: number;
-  cost?: number;
-  barcode?: string;
-  image?: string;
-}
 
 export interface ProductAttribute {
   id?: number;
   attributeId: number;
   valueId: number;
+}
+
+export interface ProductLocation {
+  id?: number;
+  warehouseId: number;
+  addressId: number;
+}
+
+export interface ProductImage {
+  id?: number;
+  title?: string;
+  imageUrl: string;
+}
+
+export interface ProductSellType {
+  id: number;
+  name: string;
+  discountPercentage: number;
+}
+
+export interface ProductPrice {
+  id?: number;
+  sellTypeId: number;
+  price: number;
+  currency: string;
 }
 
 export interface ProductUnit {
@@ -36,18 +47,27 @@ export interface ProductUnit {
 export interface Product {
   id?: number;
   name: string;
-  barcode: string;
+  description?: string;
+  code: string;
+  barcode?: string;
   isService: boolean;
   hasSerial: boolean;
   allowNegativeStock: boolean;
+  status: ProductStatus;
   categoryId: number | null;
   attributes: ProductAttribute[];
   units: ProductUnit[];
-  locationId: number | null;
+  images: ProductImage[];
+  prices: ProductPrice[];
+  locations: ProductLocation[];
+  taxAmount: number;
+  minQuantity: number;
+  maxQuantity: number;
 }
 
 export interface Category {
   id: number;
+  code: string;
   name: string;
 }
 
@@ -67,10 +87,6 @@ export interface Unit {
   name: string;
 }
 
-export interface Location {
-  id: number;
-  name: string;
-}
 
 export interface ProductState {
   products: Product[];
@@ -79,9 +95,6 @@ export interface ProductState {
   error: string | null;
 }
 
-export interface ProductFormData extends ProductBasicInfo, ProductDetails {
-  status: ProductStatus;
-}
 
 export interface ProductInfo {
   id: string;

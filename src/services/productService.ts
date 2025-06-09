@@ -1,8 +1,19 @@
-import { Product, AttributeValue } from '../pages/Accountant/Products/types';
+import { Product, AttributeValue, ProductStatus } from '../pages/Accountant/Products/types';
 import { ListRequest, ListResponse, BaseResponse } from '../types/common';
 import { APIClient } from '../helpers/api_helper';
 import { API_CONFIG } from '../config/api.config';
 import { mockCategories, mockAttributes, mockAttributeValues, mockUnits, mockLocations } from '../common/data/mock-products';
+import { 
+  mockSellTypes,
+  mockWarehouses,
+  mockWarehouseAddresses
+} from "./mockData";
+import { 
+  Category, 
+  Unit, 
+  Attribute, 
+  ProductSellType 
+} from "../pages/Accountant/Products/types";
 
 class ProductService {
   private api: APIClient;
@@ -83,14 +94,22 @@ class ProductService {
         data: {
           id: 0,
           name: "",
+          code: "",
+          description: "",
           barcode: "",
           isService: false,
           hasSerial: false,
           allowNegativeStock: false,
+          status: ProductStatus.INACTIVE,
           categoryId: null,
           attributes: [],
           units: [],
-          locationId: null
+          locations: [],
+          images: [],
+          prices: [],
+          taxAmount: 0,
+          minQuantity: 0,
+          maxQuantity: 0
         },
         succeeded: false,
         statusCode: 404,
@@ -147,14 +166,22 @@ class ProductService {
         data: {
           id: 0,
           name: "",
+          code: "",
+          description: "",
           barcode: "",
           isService: false,
           hasSerial: false,
           allowNegativeStock: false,
+          status: ProductStatus.ACTIVE,
           categoryId: null,
           attributes: [],
           units: [],
-          locationId: null
+          locations: [],
+          images: [],
+          prices: [],
+          taxAmount: 0,
+          minQuantity: 0,
+          maxQuantity: 0
         },
         succeeded: false,
         statusCode: 404,
@@ -216,29 +243,46 @@ class ProductService {
   }
 
   // Mock dropdown data methods
-  async getCategories() {
-    await new Promise(resolve => setTimeout(resolve, 500));
-    return mockCategories;
+  async getCategories(): Promise<Category[]> {
+    return Promise.resolve(mockCategories);
   }
 
-  async getAttributes() {
-    await new Promise(resolve => setTimeout(resolve, 500));
-    return mockAttributes;
+  async getAttributes(): Promise<Attribute[]> {
+    return Promise.resolve(mockAttributes);
   }
 
-  async getAttributeValues(attributeId: number | null): Promise<AttributeValue[]> {
-    await new Promise(resolve => setTimeout(resolve, 500));
-    return attributeId ? mockAttributeValues.filter(v => v.attributeId === attributeId) : [];
+  async getAttributeValues(attributeId: number): Promise<AttributeValue[]> {
+    return Promise.resolve(
+      mockAttributeValues.filter((v) => v.attributeId === attributeId)
+    );
   }
 
-  async getUnits() {
-    await new Promise(resolve => setTimeout(resolve, 500));
-    return mockUnits;
+  async getUnits(): Promise<Unit[]> {
+    return Promise.resolve(mockUnits);
   }
 
   async getLocations() {
     await new Promise(resolve => setTimeout(resolve, 500));
     return mockLocations;
+  }
+
+  async getSellTypes(): Promise<ProductSellType[]> {
+    return Promise.resolve(mockSellTypes);
+  }
+
+  async getWarehouses(): Promise<typeof mockWarehouses> {
+    return Promise.resolve(mockWarehouses);
+  }
+
+  async getWarehouseAddresses(warehouseId: number): Promise<typeof mockWarehouseAddresses> {
+    return Promise.resolve(
+      mockWarehouseAddresses.filter((a) => a.warehouseId === warehouseId)
+    );
+  }
+
+  generateProductCode(categoryCode: string): string {
+    const timestamp = Date.now().toString().slice(-6);
+    return `${categoryCode}-${timestamp}`;
   }
 }
 

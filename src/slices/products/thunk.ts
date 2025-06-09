@@ -66,7 +66,7 @@ export const deleteProductById = createAsyncThunk(
     await deleteProduct(id);
     return id;
   }
-);
+); 
 */
 
 // Placeholder exports to prevent import errors

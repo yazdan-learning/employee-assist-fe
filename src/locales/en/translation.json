@@ -359,6 +359,12 @@
         "new": "Add New Product",
         "edit": "Edit Product"
       },
+      "step": "Step {{current}} of {{total}}",
+      "steps": {
+        "basicInfo": "Basic Info",
+        "generalInfo": "General Info",
+        "pricing": "Pricing"
+      },
       "name": "Name",
       "barcode": "Barcode",
       "isService": "Is Service",

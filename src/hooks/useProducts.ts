@@ -2,6 +2,13 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import type { Product } from '../pages/Accountant/Products/types';
 import type { ListRequest, BaseResponse, ListResponse } from '../types/common';
 import { productService } from '../services/ProductService';
+import { 
+  Category, 
+  Unit, 
+  Attribute, 
+  AttributeValue, 
+  ProductSellType 
+} from "../pages/Accountant/Products/types";
 
 // Query keys for cache management
 const productKeys = {
@@ -71,8 +78,51 @@ export const useDeleteProduct = () => {
 // Get attribute values for a specific attribute
 export const useAttributeValues = (attributeId: number | null) => {
   return useQuery({
-    queryKey: ['attributeValues', attributeId],
-    queryFn: () => productService.getAttributeValues(attributeId),
-    enabled: !!attributeId,
+    queryKey: ["attributeValues", attributeId],
+    queryFn: () => attributeId ? productService.getAttributeValues(attributeId) : Promise.resolve([]),
+    enabled: !!attributeId
+  });
+};
+
+export const useCategories = () => {
+  return useQuery({
+    queryKey: ["categories"],
+    queryFn: () => productService.getCategories()
+  });
+};
+
+export const useUnits = () => {
+  return useQuery({
+    queryKey: ["units"],
+    queryFn: () => productService.getUnits()
+  });
+};
+
+export const useAttributes = () => {
+  return useQuery({
+    queryKey: ["attributes"],
+    queryFn: () => productService.getAttributes()
+  });
+};
+
+export const useSellTypes = () => {
+  return useQuery({
+    queryKey: ["sellTypes"],
+    queryFn: () => productService.getSellTypes()
+  });
+};
+
+export const useWarehouses = () => {
+  return useQuery({
+    queryKey: ["warehouses"],
+    queryFn: () => productService.getWarehouses()
+  });
+};
+
+export const useWarehouseAddresses = (warehouseId: number | null) => {
+  return useQuery({
+    queryKey: ["warehouseAddresses", warehouseId],
+    queryFn: () => warehouseId ? productService.getWarehouseAddresses(warehouseId) : Promise.resolve([]),
+    enabled: !!warehouseId
   });
 }; 
