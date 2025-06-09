@@ -79,7 +79,6 @@ const CustomerForm: React.FC = () => {
           tradeChamberNumber: "",
           registrationNumber: "",
         };
-  console.log("initialValues", initialValues);
 
   const validationSchema = Yup.object().shape({
     // Basic Info Validation

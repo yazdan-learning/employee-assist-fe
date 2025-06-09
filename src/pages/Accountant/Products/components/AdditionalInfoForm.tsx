@@ -6,14 +6,14 @@ import PriceForm from "./PriceForm";
 import { FormikErrors, FormikTouched } from "formik";
 import { Product } from "../types";
 
-interface PricingFormProps {
+interface AdditionalInfoFormProps {
   data: PricingFormData;
   onChange: (data: PricingFormData) => void;
   errors?: FormikErrors<Product>;
   touched?: FormikTouched<Product>;
 }
 
-const PricingForm: React.FC<PricingFormProps> = ({
+const AdditionalInfoForm: React.FC<AdditionalInfoFormProps> = ({
   data,
   onChange,
   errors = {},
@@ -47,7 +47,7 @@ const PricingForm: React.FC<PricingFormProps> = ({
         </CardBody>
       </Card>
 
-      {/* Other Pricing Fields */}
+      {/* Other Additional Info Fields */}
       <Card>
         <CardBody>
           <Row>
@@ -131,4 +131,4 @@ const PricingForm: React.FC<PricingFormProps> = ({
   );
 };
 
-export default PricingForm;
+export default AdditionalInfoForm;

@@ -13,7 +13,7 @@ import {
 } from "../../../../hooks/useProducts";
 import BasicInfoForm from "./BasicInfoForm";
 import GeneralInfoForm from "./GeneralInfoForm";
-import PricingForm from "./PricingForm";
+import AdditionalInfoForm from "./AdditionalInfoForm";
 
 const ProductForm: React.FC = () => {
   const { t } = useTranslation();
@@ -284,7 +284,7 @@ const ProductForm: React.FC = () => {
                   )}
 
                   {currentStep === 3 && (
-                    <PricingForm
+                    <AdditionalInfoForm
                       data={formik.values}
                       onChange={(values) => {
                         Object.keys(values).forEach((key) => {
