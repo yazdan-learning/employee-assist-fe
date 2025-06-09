@@ -80,6 +80,7 @@ const AttributeForm: React.FC<AttributeFormProps> = ({
                 label: a.name,
               }))}
               value={formik.values.attributeId?.toString() || ""}
+              showClear={true}
               onChange={(value) => {
                 formik.setFieldValue("attributeId", value ? Number(value) : 0);
                 formik.setFieldValue("valueId", 0);

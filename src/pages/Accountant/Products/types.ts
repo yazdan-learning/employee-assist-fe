@@ -20,6 +20,7 @@ export interface ProductDetails {
 }
 
 export interface ProductAttribute {
+  id?: number;
   attributeId: number;
   valueId: number;
 }

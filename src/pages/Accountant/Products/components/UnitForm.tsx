@@ -102,6 +102,7 @@ const UnitForm: React.FC<UnitFormProps> = ({
                 label: u.name,
               }))}
               value={formik.values.unitId?.toString() || ""}
+              showClear={true}
               onChange={(value) =>
                 formik.setFieldValue("unitId", value ? Number(value) : 0)
               }

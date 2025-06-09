@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { productService } from '../services/ProductService';
 import type { Product } from '../pages/Accountant/Products/types';
 import type { ListRequest, BaseResponse, ListResponse } from '../types/common';
+import { productService } from '../services/ProductService';
 
 // Query keys for cache management
 const productKeys = {

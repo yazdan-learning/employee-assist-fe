@@ -85,22 +85,6 @@ const ProductForm: React.FC = () => {
     hasSerial: Yup.boolean(),
     allowNegativeStock: Yup.boolean(),
     categoryId: Yup.number().nullable(),
-    attributes: Yup.array().of(
-      Yup.object().shape({
-        attributeId: Yup.number().required(),
-        valueId: Yup.number().required(),
-      })
-    ),
-    units: Yup.array()
-      .of(
-        Yup.object().shape({
-          unitId: Yup.number().required(),
-          isPrimary: Yup.boolean(),
-          conversionRate: Yup.number().required().min(0.0001),
-          weightPerUnit: Yup.number().required().min(0),
-        })
-      )
-      .min(1, t("product.form.units.validation.minOneUnit")),
     locationId: Yup.number().nullable(),
   });
 
@@ -223,6 +207,7 @@ const ProductForm: React.FC = () => {
                         <RaDropdown
                           options={locations.map((l) => ({
                             value: l.id.toString(),
+                            showClear: true,
                             label: l.name,
                           }))}
                           value={formik.values.locationId?.toString() || ""}
