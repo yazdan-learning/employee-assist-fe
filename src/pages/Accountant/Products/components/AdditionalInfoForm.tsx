@@ -2,7 +2,7 @@ import React from "react";
 import { Card, CardBody, Row, Col, FormGroup, Label, Input } from "reactstrap";
 import { useTranslation } from "react-i18next";
 import { PricingFormData } from "../types/forms";
-import PriceForm from "./PriceForm";
+import PriceList from "./PriceList";
 import { FormikErrors, FormikTouched } from "formik";
 import { Product } from "../types";
 
@@ -21,15 +21,24 @@ const AdditionalInfoForm: React.FC<AdditionalInfoFormProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const handleInputChange = (field: keyof PricingFormData, value: any) => {
-    onChange({
-      ...data,
-      [field]: value,
-    });
-  };
-
   const handlePricesChange = (prices: PricingFormData["prices"]) => {
     onChange({ ...data, prices });
+  };
+
+  const handleTaxAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange({ ...data, taxAmount: Number(e.target.value) });
+  };
+
+  const handleBarcodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange({ ...data, barcode: e.target.value });
+  };
+
+  const handleMinQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange({ ...data, minQuantity: Number(e.target.value) });
+  };
+
+  const handleMaxQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange({ ...data, maxQuantity: Number(e.target.value) });
   };
 
   return (
@@ -38,7 +47,7 @@ const AdditionalInfoForm: React.FC<AdditionalInfoFormProps> = ({
       <Card className="mb-4">
         <CardBody>
           <h5 className="mb-4">{t("product.form.prices.title")}</h5>
-          <PriceForm
+          <PriceList
             prices={data.prices}
             onChange={handlePricesChange}
             errors={errors}
@@ -60,9 +69,7 @@ const AdditionalInfoForm: React.FC<AdditionalInfoFormProps> = ({
                   min={0}
                   max={100}
                   value={data.taxAmount}
-                  onChange={(e) =>
-                    handleInputChange("taxAmount", Number(e.target.value))
-                  }
+                  onChange={handleTaxAmountChange}
                   invalid={touched.taxAmount && Boolean(errors.taxAmount)}
                 />
                 {touched.taxAmount && errors.taxAmount && (
@@ -77,7 +84,7 @@ const AdditionalInfoForm: React.FC<AdditionalInfoFormProps> = ({
                   id="barcode"
                   type="text"
                   value={data.barcode || ""}
-                  onChange={(e) => handleInputChange("barcode", e.target.value)}
+                  onChange={handleBarcodeChange}
                   invalid={touched.barcode && Boolean(errors.barcode)}
                 />
                 {touched.barcode && errors.barcode && (
@@ -96,9 +103,7 @@ const AdditionalInfoForm: React.FC<AdditionalInfoFormProps> = ({
                   type="number"
                   min={0}
                   value={data.minQuantity}
-                  onChange={(e) =>
-                    handleInputChange("minQuantity", Number(e.target.value))
-                  }
+                  onChange={handleMinQuantityChange}
                   invalid={touched.minQuantity && Boolean(errors.minQuantity)}
                 />
                 {touched.minQuantity && errors.minQuantity && (
@@ -114,9 +119,7 @@ const AdditionalInfoForm: React.FC<AdditionalInfoFormProps> = ({
                   type="number"
                   min={0}
                   value={data.maxQuantity}
-                  onChange={(e) =>
-                    handleInputChange("maxQuantity", Number(e.target.value))
-                  }
+                  onChange={handleMaxQuantityChange}
                   invalid={touched.maxQuantity && Boolean(errors.maxQuantity)}
                 />
                 {touched.maxQuantity && errors.maxQuantity && (

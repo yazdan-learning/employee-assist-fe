@@ -1,10 +1,12 @@
-import React, { useState } from "react";
-import { Button, Card, CardBody } from "reactstrap";
+import React from "react";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { Button, FormGroup, Label, Row, Col, Input } from "reactstrap";
 import { useTranslation } from "react-i18next";
-import PriceFormFields from "./PriceFormFields";
-import CardListContainer from "../../../../Components/Common/CardListContainer";
+import RaDropdown from "../../../../Components/Common/RaDropdown";
 import { FormikErrors, FormikTouched } from "formik";
 import { Product } from "../types";
+import { useSellTypes } from "../../../../hooks/useProducts";
 
 interface Price {
   sellTypeId: number;
@@ -14,130 +16,164 @@ interface Price {
 }
 
 interface PriceFormProps {
-  prices: Price[];
-  onChange: (prices: Price[]) => void;
+  price?: Price;
+  onSave: (price: Price) => void;
+  onCancel: () => void;
   errors?: FormikErrors<Product>;
   touched?: FormikTouched<Product>;
 }
 
 const PriceForm: React.FC<PriceFormProps> = ({
-  prices,
-  onChange,
+  price,
+  onSave,
+  onCancel,
   errors = {},
   touched = {},
 }) => {
   const { t } = useTranslation();
-  const [showForm, setShowForm] = useState(false);
-  const [editIndex, setEditIndex] = useState<number | null>(null);
+  const { data: sellTypes = [] } = useSellTypes();
 
-  const handleAdd = () => {
-    setShowForm(true);
-    setEditIndex(null);
-  };
+  const validationSchema = Yup.object().shape({
+    sellTypeId: Yup.number().required(t("validation.required")),
+    price: Yup.number()
+      .required(t("validation.required"))
+      .min(0, t("validation.min", { min: 0 })),
+    currency: Yup.string().required(t("validation.required")),
+    discountPercentage: Yup.number()
+      .min(0, t("validation.min", { min: 0 }))
+      .max(100, t("validation.max", { max: 100 }))
+      .nullable(),
+  });
 
-  const handleEdit = (index: number) => {
-    setShowForm(true);
-    setEditIndex(index);
-  };
+  const formik = useFormik({
+    initialValues: price || {
+      sellTypeId: 0,
+      price: 0,
+      currency: "",
+      discountPercentage: 0,
+    },
+    validationSchema,
+    onSubmit: (values) => {
+      onSave(values);
+    },
+  });
 
-  const handleRemove = (index: number) => {
-    const newPrices = prices.filter((_, i) => i !== index);
-    onChange(newPrices);
-  };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-  const handleSave = (price: Price) => {
-    let newPrices: Price[];
-    if (editIndex !== null) {
-      newPrices = [...prices];
-      newPrices[editIndex] = price;
-    } else {
-      newPrices = [...prices, price];
+    // Touch all fields to show validation errors
+    Object.keys(formik.values).forEach((field) => {
+      formik.setFieldTouched(field, true);
+    });
+
+    // Validate all fields
+    const errors = await formik.validateForm();
+
+    // If no errors, proceed with save
+    if (Object.keys(errors).length === 0) {
+      onSave(formik.values);
     }
-    onChange(newPrices);
-    setShowForm(false);
-    setEditIndex(null);
   };
-
-  const handleCancel = () => {
-    setShowForm(false);
-    setEditIndex(null);
-  };
-
-  const columns = [
-    {
-      key: "sellType",
-      header: t("product.form.prices.sellType"),
-      width: 2,
-      render: (price: Price) => (
-        <span className="fw-medium">{price.sellTypeId}</span>
-      ),
-    },
-    {
-      key: "price",
-      header: t("product.form.prices.price"),
-      width: 2,
-      render: (price: Price) => (
-        <span>
-          {price.price} {price.currency}
-        </span>
-      ),
-    },
-    {
-      key: "discount",
-      header: t("product.form.prices.discount"),
-      width: 2,
-      render: (price: Price) => <span>{price.discountPercentage}%</span>,
-    },
-  ];
-
-  const actions = [
-    {
-      icon: "bx bx-edit-alt",
-      color: "primary",
-      onClick: (_: any, index: number) => handleEdit(index),
-    },
-    {
-      icon: "bx bx-trash",
-      color: "danger",
-      onClick: (_: any, index: number) => handleRemove(index),
-    },
-  ];
 
   return (
-    <div>
-      <div className="d-flex justify-content-end mb-3">
-        <Button color="primary" size="sm" onClick={handleAdd}>
-          <i className="bx bx-plus me-1"></i>
-          {t("product.form.prices.add")}
+    <form>
+      <Row>
+        <Col md={3}>
+          <FormGroup>
+            <Label for="sellTypeId">{t("product.form.prices.sellType")}</Label>
+            <RaDropdown
+              options={sellTypes.map((st) => ({
+                value: st.id.toString(),
+                label: st.name,
+              }))}
+              value={formik.values.sellTypeId?.toString() || ""}
+              onChange={(value) =>
+                formik.setFieldValue("sellTypeId", value ? Number(value) : 0)
+              }
+              placeholder={t("product.form.prices.placeholders.sellType")}
+            />
+            {formik.touched.sellTypeId && formik.errors.sellTypeId && (
+              <div className="invalid-feedback d-block">
+                {formik.errors.sellTypeId}
+              </div>
+            )}
+          </FormGroup>
+        </Col>
+        <Col md={3}>
+          <FormGroup>
+            <Label for="price">{t("product.form.prices.price")}</Label>
+            <Input
+              id="price"
+              type="number"
+              min={0}
+              value={formik.values.price}
+              onChange={(e) =>
+                formik.setFieldValue("price", Number(e.target.value))
+              }
+              placeholder={t("product.form.prices.placeholders.price")}
+            />
+            {formik.touched.price && formik.errors.price && (
+              <div className="invalid-feedback d-block">
+                {formik.errors.price}
+              </div>
+            )}
+          </FormGroup>
+        </Col>
+        <Col md={3}>
+          <FormGroup>
+            <Label for="currency">{t("product.form.prices.currency")}</Label>
+            <Input
+              id="currency"
+              type="text"
+              value={formik.values.currency}
+              onChange={(e) => formik.setFieldValue("currency", e.target.value)}
+              placeholder={t("product.form.prices.placeholders.currency")}
+            />
+            {formik.touched.currency && formik.errors.currency && (
+              <div className="invalid-feedback d-block">
+                {formik.errors.currency}
+              </div>
+            )}
+          </FormGroup>
+        </Col>
+        <Col md={3}>
+          <FormGroup>
+            <Label for="discountPercentage">
+              {t("product.form.prices.discount")} (%)
+            </Label>
+            <Input
+              id="discountPercentage"
+              type="number"
+              min={0}
+              max={100}
+              value={formik.values.discountPercentage || ""}
+              onChange={(e) =>
+                formik.setFieldValue(
+                  "discountPercentage",
+                  e.target.value ? Number(e.target.value) : null
+                )
+              }
+              placeholder={t("product.form.prices.placeholders.discount")}
+            />
+            {formik.touched.discountPercentage &&
+              formik.errors.discountPercentage && (
+                <div className="invalid-feedback d-block">
+                  {formik.errors.discountPercentage}
+                </div>
+              )}
+          </FormGroup>
+        </Col>
+      </Row>
+
+      <div className="d-flex justify-content-end gap-2 mt-3">
+        <Button type="button" color="light" onClick={onCancel}>
+          {t("common.cancel")}
+        </Button>
+        <Button type="submit" color="primary" onClick={handleSubmit}>
+          {t("common.save")}
         </Button>
       </div>
-
-      {/* Add/Edit Form */}
-      {showForm && (
-        <Card className="mb-3">
-          <CardBody>
-            <h6 className="mb-3">
-              {editIndex !== null
-                ? t("product.form.prices.edit")
-                : t("product.form.prices.add")}
-            </h6>
-            <PriceFormFields
-              price={editIndex !== null ? prices[editIndex] : undefined}
-              onSave={handleSave}
-              onCancel={handleCancel}
-            />
-          </CardBody>
-        </Card>
-      )}
-
-      {/* Prices List */}
-      <CardListContainer
-        items={prices}
-        columns={columns}
-        actions={actions}
-        keyField="sellTypeId"
-      />
-    </div>
+    </form>
   );
 };
 
