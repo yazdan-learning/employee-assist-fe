@@ -2,7 +2,7 @@ import React from "react";
 import { Card, CardBody } from "reactstrap";
 import { useTranslation } from "react-i18next";
 import { GeneralInfoFormData } from "../types/forms";
-import LocationForm from "./LocationForm";
+import LocationList from "./LocationList";
 import UnitList from "./UnitList";
 import AttributeList from "./AttributeList";
 import { FormikErrors, FormikTouched } from "formik";
@@ -45,7 +45,7 @@ const GeneralInfoForm: React.FC<GeneralInfoFormProps> = ({
       <Card className="mb-4">
         <CardBody>
           <h5 className="mb-4">{t("product.form.locations.title")}</h5>
-          <LocationForm
+          <LocationList
             locations={data.locations}
             onChange={handleLocationsChange}
             errors={errors}

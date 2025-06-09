@@ -1,8 +1,13 @@
-import React, { useState } from "react";
-import { Button, Card, CardBody } from "reactstrap";
+import React from "react";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { Button, FormGroup, Label, Row, Col } from "reactstrap";
 import { useTranslation } from "react-i18next";
-import LocationFormFields from "./LocationFormFields";
-import CardListContainer from "../../../../Components/Common/CardListContainer";
+import RaDropdown from "../../../../Components/Common/RaDropdown";
+import {
+  useWarehouses,
+  useWarehouseAddresses,
+} from "../../../../hooks/useProducts";
 import { FormikErrors, FormikTouched } from "formik";
 import { Product } from "../types";
 
@@ -12,120 +17,120 @@ interface Location {
 }
 
 interface LocationFormProps {
-  locations: { warehouseId: number; addressId: number }[];
-  onChange: (locations: { warehouseId: number; addressId: number }[]) => void;
+  location?: Location;
+  onSave: (location: Location) => void;
+  onCancel: () => void;
   errors?: FormikErrors<Product>;
   touched?: FormikTouched<Product>;
 }
 
 const LocationForm: React.FC<LocationFormProps> = ({
-  locations,
-  onChange,
+  location,
+  onSave,
+  onCancel,
   errors = {},
   touched = {},
 }) => {
   const { t } = useTranslation();
-  const [showForm, setShowForm] = useState(false);
-  const [editIndex, setEditIndex] = useState<number | null>(null);
+  const { data: warehouses = [] } = useWarehouses();
 
-  const handleAdd = () => {
-    setShowForm(true);
-    setEditIndex(null);
-  };
+  const validationSchema = Yup.object().shape({
+    warehouseId: Yup.number().required(t("validation.required")),
+    addressId: Yup.number().required(t("validation.required")),
+  });
 
-  const handleEdit = (index: number) => {
-    setShowForm(true);
-    setEditIndex(index);
-  };
+  const formik = useFormik({
+    initialValues: location || {
+      warehouseId: 0,
+      addressId: 0,
+    },
+    validationSchema,
+    onSubmit: (values) => {
+      console.log(values);
+    },
+  });
 
-  const handleRemove = (index: number) => {
-    const newLocations = locations.filter((_, i) => i !== index);
-    onChange(newLocations);
-  };
+  const { data: addresses = [] } = useWarehouseAddresses(
+    formik.values.warehouseId || null
+  );
 
-  const handleSave = (location: Location) => {
-    let newLocations: Location[];
-    if (editIndex !== null) {
-      newLocations = [...locations];
-      newLocations[editIndex] = location;
-    } else {
-      newLocations = [...locations, location];
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Touch all fields to show validation errors
+    Object.keys(formik.values).forEach((field) => {
+      formik.setFieldTouched(field, true);
+    });
+
+    // Validate all fields
+    const errors = await formik.validateForm();
+
+    // If no errors, proceed with save
+    if (Object.keys(errors).length === 0) {
+      onSave(formik.values);
     }
-    onChange(newLocations);
-    setShowForm(false);
-    setEditIndex(null);
   };
-
-  const handleCancel = () => {
-    setShowForm(false);
-    setEditIndex(null);
-  };
-
-  const columns = [
-    {
-      key: "warehouse",
-      header: t("product.form.locations.warehouse"),
-      width: 3,
-      render: (location: Location) => (
-        <span className="fw-medium">{location.warehouseId}</span>
-      ),
-    },
-    {
-      key: "address",
-      header: t("product.form.locations.address"),
-      width: 7,
-      render: (location: Location) => <span>{location.addressId}</span>,
-    },
-  ];
-
-  const actions = [
-    {
-      icon: "bx bx-edit-alt",
-      color: "primary",
-      onClick: (_: any, index: number) => handleEdit(index),
-    },
-    {
-      icon: "bx bx-trash",
-      color: "danger",
-      onClick: (_: any, index: number) => handleRemove(index),
-    },
-  ];
 
   return (
-    <div>
-      <div className="d-flex justify-content-end mb-3">
-        <Button color="primary" size="sm" onClick={handleAdd}>
-          <i className="bx bx-plus me-1"></i>
-          {t("product.form.locations.add")}
+    <form>
+      <Row>
+        <Col md={6}>
+          <FormGroup>
+            <Label for="warehouseId">
+              {t("product.form.locations.warehouse")}
+            </Label>
+            <RaDropdown
+              options={warehouses.map((w) => ({
+                value: w.id.toString(),
+                label: w.name,
+              }))}
+              value={formik.values.warehouseId?.toString() || ""}
+              onChange={(value) => {
+                formik.setFieldValue("warehouseId", value ? Number(value) : 0);
+                formik.setFieldValue("addressId", 0); // Reset address when warehouse changes
+              }}
+              placeholder={t("product.form.locations.placeholders.warehouse")}
+            />
+            {formik.touched.warehouseId && formik.errors.warehouseId && (
+              <div className="invalid-feedback d-block">
+                {formik.errors.warehouseId}
+              </div>
+            )}
+          </FormGroup>
+        </Col>
+        <Col md={6}>
+          <FormGroup>
+            <Label for="addressId">{t("product.form.locations.address")}</Label>
+            <RaDropdown
+              options={addresses.map((a) => ({
+                value: a.id.toString(),
+                label: a.address,
+              }))}
+              value={formik.values.addressId?.toString() || ""}
+              onChange={(value) =>
+                formik.setFieldValue("addressId", value ? Number(value) : 0)
+              }
+              placeholder={t("product.form.locations.placeholders.address")}
+              disabled={!formik.values.warehouseId}
+            />
+            {formik.touched.addressId && formik.errors.addressId && (
+              <div className="invalid-feedback d-block">
+                {formik.errors.addressId}
+              </div>
+            )}
+          </FormGroup>
+        </Col>
+      </Row>
+
+      <div className="d-flex justify-content-end gap-2 mt-3">
+        <Button type="button" color="light" onClick={onCancel}>
+          {t("common.cancel")}
+        </Button>
+        <Button type="submit" color="primary" onClick={handleSubmit}>
+          {t("common.save")}
         </Button>
       </div>
-
-      {/* Add/Edit Form */}
-      {showForm && (
-        <Card className="mb-3">
-          <CardBody>
-            <h6 className="mb-3">
-              {editIndex !== null
-                ? t("product.form.locations.edit")
-                : t("product.form.locations.add")}
-            </h6>
-            <LocationFormFields
-              location={editIndex !== null ? locations[editIndex] : undefined}
-              onSave={handleSave}
-              onCancel={handleCancel}
-            />
-          </CardBody>
-        </Card>
-      )}
-
-      {/* Locations List */}
-      <CardListContainer
-        items={locations}
-        columns={columns}
-        actions={actions}
-        keyField="warehouseId"
-      />
-    </div>
+    </form>
   );
 };
 
