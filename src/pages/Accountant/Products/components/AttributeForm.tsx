@@ -31,8 +31,12 @@ const AttributeForm: React.FC<AttributeFormProps> = ({
   }, []);
 
   const validationSchema = Yup.object().shape({
-    attributeId: Yup.number().required(t("validation.required")),
-    valueId: Yup.number().required(t("validation.required")),
+    attributeId: Yup.number()
+      .required(t("product.form.attributes.validation.attributeRequired"))
+      .min(1, t("product.form.attributes.validation.attributeRequired")),
+    valueId: Yup.number()
+      .required(t("product.form.attributes.validation.valueRequired"))
+      .min(1, t("product.form.attributes.validation.valueRequired")),
   });
 
   const formik = useFormik({
@@ -120,11 +124,11 @@ const AttributeForm: React.FC<AttributeFormProps> = ({
       </Row>
 
       <div className="d-flex justify-content-end gap-2 mt-3">
-        <Button type="button" color="secondary" onClick={onCancel}>
-          {t("product.form.buttons.cancel")}
+        <Button type="button" color="light" onClick={onCancel}>
+          {t("common.cancel")}
         </Button>
         <Button type="submit" color="primary" onClick={handleSubmit}>
-          {t("product.form.buttons.save")}
+          {t("common.save")}
         </Button>
       </div>
     </form>
