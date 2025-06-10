@@ -418,6 +418,7 @@
         "isPrimary": "Primary Unit",
         "primaryBadge": "Primary",
         "cantRemoveLastUnit": "Cannot remove the last unit",
+        "cantRemovePrimary": "Cannot remove the primary unit",
         "placeholders": {
           "unit": "Select unit",
           "conversionRate": "Enter conversion rate",

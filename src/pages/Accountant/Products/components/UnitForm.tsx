@@ -32,20 +32,22 @@ const UnitForm: React.FC<UnitFormProps> = ({
   }, []);
 
   const validationSchema = Yup.object().shape({
-    unitId: Yup.number().required(t("validation.required")),
+    unitId: Yup.number()
+      .required(t("product.form.units.validation.unitRequired"))
+      .min(1, t("product.form.units.validation.unitRequired")),
     isPrimary: Yup.boolean(),
     conversionRate: Yup.number()
-      .required(t("validation.required"))
+      .required(t("product.form.units.validation.conversionRateRequired"))
       .min(0.0001, t("product.form.units.validation.conversionRateMin")),
     weightPerUnit: Yup.number()
-      .required(t("validation.required"))
+      .required(t("product.form.units.validation.weightPerUnitMin"))
       .min(0, t("product.form.units.validation.weightPerUnitMin")),
   });
 
   const formik = useFormik({
     initialValues: unit || {
       unitId: 0,
-      isPrimary: false,
+      isPrimary: existingUnits.length === 0, // First unit is automatically primary
       conversionRate: 1,
       weightPerUnit: 0,
     },
@@ -74,14 +76,6 @@ const UnitForm: React.FC<UnitFormProps> = ({
       if (existingUnits.length === 0) {
         values.isPrimary = true;
       }
-      // If this is marked as primary, update other units
-      else if (values.isPrimary) {
-        existingUnits.forEach((u) => {
-          if (u.id !== unit?.id) {
-            u.isPrimary = false;
-          }
-        });
-      }
 
       onSave({
         ...values,
@@ -89,6 +83,11 @@ const UnitForm: React.FC<UnitFormProps> = ({
       });
     }
   };
+
+  // Check if there's already a primary unit (excluding the current unit being edited)
+  const hasPrimaryUnit = existingUnits.some(
+    (u) => u.isPrimary && u.id !== unit?.id
+  );
 
   return (
     <form>
@@ -102,7 +101,6 @@ const UnitForm: React.FC<UnitFormProps> = ({
                 label: u.name,
               }))}
               value={formik.values.unitId?.toString() || ""}
-              showClear={true}
               onChange={(value) =>
                 formik.setFieldValue("unitId", value ? Number(value) : 0)
               }
@@ -171,7 +169,17 @@ const UnitForm: React.FC<UnitFormProps> = ({
                 id="isPrimary"
                 {...formik.getFieldProps("isPrimary")}
                 checked={formik.values.isPrimary}
-                disabled={existingUnits.length === 0} // First unit must be primary
+                disabled={existingUnits.length === 0 || formik.values.isPrimary} // Disable if it's the first unit or already primary
+                onChange={(e) => {
+                  if (e.target.checked && !hasPrimaryUnit) {
+                    formik.setFieldValue("isPrimary", true);
+                  } else if (!e.target.checked && !hasPrimaryUnit) {
+                    // Don't allow unchecking if there's no other primary unit
+                    e.preventDefault();
+                  } else {
+                    formik.setFieldValue("isPrimary", e.target.checked);
+                  }
+                }}
               />
               <Label className="form-check-label" for="isPrimary">
                 {t("product.form.units.isPrimary")}

@@ -6,6 +6,7 @@ import UnitForm from "./UnitForm";
 import CardListContainer from "../../../../Components/Common/CardListContainer";
 import { FormikErrors, FormikTouched } from "formik";
 import { Product } from "../types";
+import { useUnits } from "../../../../hooks/useProducts";
 
 interface UnitListProps {
   units: ProductUnit[];
@@ -23,6 +24,7 @@ const UnitList: React.FC<UnitListProps> = ({
   const { t } = useTranslation();
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const { data: unitsList = [] } = useUnits();
 
   const handleSave = (unit: ProductUnit, index?: number) => {
     let newUnits: ProductUnit[];
@@ -31,27 +33,9 @@ const UnitList: React.FC<UnitListProps> = ({
       // Editing existing unit
       newUnits = [...units];
       newUnits[index] = unit;
-
-      // If this unit is set as primary, update others
-      if (unit.isPrimary) {
-        newUnits.forEach((u, i) => {
-          if (i !== index) {
-            u.isPrimary = false;
-          }
-        });
-      }
     } else {
       // Adding new unit
       newUnits = [...units, unit];
-
-      // If this is the first unit or marked as primary, update others
-      if (unit.isPrimary) {
-        newUnits.forEach((u, i) => {
-          if (i !== newUnits.length - 1) {
-            u.isPrimary = false;
-          }
-        });
-      }
     }
 
     onChange(newUnits);
@@ -60,14 +44,17 @@ const UnitList: React.FC<UnitListProps> = ({
   };
 
   const handleRemove = (index: number) => {
-    const newUnits = units.filter((_, i) => i !== index);
-
-    // If we removed the primary unit and there are other units,
-    // make the first remaining unit primary
-    if (units[index].isPrimary && newUnits.length > 0) {
-      newUnits[0].isPrimary = true;
+    // Don't allow removing if it's the last unit
+    if (units.length === 1) {
+      return;
     }
 
+    // Don't allow removing if it's the primary unit and there are other units
+    if (units[index].isPrimary && units.length > 1) {
+      return;
+    }
+
+    const newUnits = units.filter((_, i) => i !== index);
     onChange(newUnits);
   };
 
@@ -81,9 +68,10 @@ const UnitList: React.FC<UnitListProps> = ({
       key: "unit",
       header: t("product.form.units.unit"),
       width: 2,
-      render: (unit: ProductUnit) => (
-        <span className="fw-medium">{unit.unitId}</span>
-      ),
+      render: (unit: ProductUnit) => {
+        const unitName = unitsList.find((u) => u.id === unit.unitId)?.name;
+        return <span className="fw-medium">{unitName || "-"}</span>;
+      },
     },
     {
       key: "conversionRate",
@@ -121,18 +109,17 @@ const UnitList: React.FC<UnitListProps> = ({
       icon: "bx bx-trash",
       color: "danger",
       onClick: (_: any, index: number) => handleRemove(index),
-      disabled: () => units.length === 1,
+      disabled: (unit: ProductUnit) => units.length === 1 || unit.isPrimary,
       tooltip:
         units.length === 1
           ? t("product.form.units.cantRemoveLastUnit")
-          : undefined,
+          : t("product.form.units.cantRemovePrimary"),
     },
   ];
 
   return (
     <div className="mb-4">
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <h5 className="mb-0">{t("product.form.units.title")}</h5>
+      <div className="d-flex justify-content-end mb-3">
         <Button
           color="primary"
           size="sm"
