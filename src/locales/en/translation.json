@@ -179,7 +179,19 @@
     "no": "No",
     "actions": "Actions",
     "save": "Save",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "form": {
+      "buttons": {
+        "save": "Save",
+        "update": "Update",
+        "cancel": "Cancel",
+        "next": "Next",
+        "previous": "Back",
+        "add": "Add",
+        "remove": "Remove",
+        "edit": "Edit"
+      }
+    }
   },
   "customer": {
     "form": {

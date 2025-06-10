@@ -65,30 +65,6 @@ const ProductForm: React.FC = () => {
     isService: Yup.boolean(),
     hasSerial: Yup.boolean(),
     allowNegativeStock: Yup.boolean(),
-
-    // General Info Validation
-    attributes: Yup.array().of(
-      Yup.object().shape({
-        attributeId: Yup.number().required(),
-        value: Yup.string().required(),
-      })
-    ),
-    units: Yup.array().of(
-      Yup.object().shape({
-        unitId: Yup.number().required(),
-        conversionRate: Yup.number().min(0).required(),
-        weightPerUnit: Yup.number().min(0),
-        isPrimary: Yup.boolean(),
-      })
-    ),
-    locations: Yup.array().of(
-      Yup.object().shape({
-        locationId: Yup.number().required(),
-        quantity: Yup.number().min(0).required(),
-      })
-    ),
-
-    // Pricing Validation
     taxAmount: Yup.number()
       .min(0, t("validation.min", { min: 0 }))
       .max(100, t("validation.max", { max: 100 }))
@@ -103,14 +79,6 @@ const ProductForm: React.FC = () => {
       )
       .required(t("validation.required")),
     barcode: Yup.string(),
-    prices: Yup.array().of(
-      Yup.object().shape({
-        sellTypeId: Yup.number().required(),
-        price: Yup.number().min(0).required(),
-        currency: Yup.string().required(),
-        discountPercentage: Yup.number().min(0).max(100),
-      })
-    ),
   });
 
   const formik = useFormik({
@@ -179,10 +147,21 @@ const ProductForm: React.FC = () => {
         formik.setFieldTouched(field, true);
       });
 
-      // Submit the form
+      // Validate all fields
+      const errors = await formik.validateForm();
+      const hasErrors = Object.keys(errors).length > 0;
+
+      if (hasErrors) {
+        // Show validation errors
+        toast.error(t("validation.checkFields"));
+        return;
+      }
+
+      // Submit the form if validation passes
       await formik.submitForm();
     } catch (error) {
       console.error("Save error:", error);
+      toast.error(t("product.form.messages.saveError"));
     }
   };
 
@@ -200,9 +179,9 @@ const ProductForm: React.FC = () => {
           "allowNegativeStock",
         ];
       case 2:
-        return ["attributes", "units", "locations"];
+        return [];
       case 3:
-        return ["taxAmount", "minQuantity", "maxQuantity", "barcode", "prices"];
+        return ["taxAmount", "minQuantity", "maxQuantity", "barcode"];
       default:
         return [];
     }
@@ -296,32 +275,28 @@ const ProductForm: React.FC = () => {
                     />
                   )}
 
-                  <div className="d-flex justify-content-between mt-4">
+                  <div className="d-flex justify-content-end gap-2 mt-4">
+                    {currentStep > 1 && (
+                      <Button color="light" onClick={handlePrevious}>
+                        {t("common.form.buttons.previous")}
+                      </Button>
+                    )}
                     <Button
                       color="light"
-                      onClick={handlePrevious}
-                      disabled={currentStep === 1}
+                      onClick={() => navigate("/accountant/products")}
                     >
-                      {t("common.back")}
+                      {t("common.form.buttons.cancel")}
                     </Button>
-                    <div className="d-flex gap-2">
-                      <Button
-                        color="light"
-                        onClick={() => navigate("/accountant/products")}
-                      >
-                        {t("common.cancel")}
+                    <Button color="success" onClick={handleSave}>
+                      {id
+                        ? t("common.form.buttons.update")
+                        : t("common.form.buttons.save")}
+                    </Button>
+                    {currentStep < 3 && (
+                      <Button color="primary" onClick={handleNext}>
+                        {t("common.form.buttons.next")}
                       </Button>
-                      <Button
-                        color="primary"
-                        onClick={currentStep === 3 ? handleSave : handleNext}
-                      >
-                        {currentStep === 3
-                          ? id
-                            ? t("common.update")
-                            : t("common.save")
-                          : t("common.next")}
-                      </Button>
-                    </div>
+                    )}
                   </div>
                 </form>
               </CardBody>
