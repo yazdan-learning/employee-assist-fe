@@ -377,29 +377,42 @@
         "generalInfo": "General Info",
         "pricing": "Pricing"
       },
-      "name": "Name",
-      "barcode": "Barcode",
-      "isService": "Is Service",
-      "hasSerial": "Has Serial Number",
-      "allowNegativeStock": "Allow Negative Stock",
-      "category": "Category",
-      "unit": "Unit",
-      "location": "Location",
-      "settings": "Settings",
+      "fields": {
+        "name": "Product Name",
+        "code": "Product Code",
+        "barcode": "Barcode",
+        "description": "Description",
+        "isService": "Is Service",
+        "hasSerial": "Has Serial Number",
+        "allowNegativeStock": "Allow Negative Stock",
+        "category": "Category",
+        "status": "Status",
+        "unit": "Unit",
+        "location": "Location",
+        "settings": "Settings"
+      },
+      "placeholders": {
+        "name": "Enter product name",
+        "code": "Enter product code",
+        "description": "Enter product description",
+        "barcode": "Enter barcode",
+        "category": "Select Category",
+        "status": "Select Status",
+        "unit": "Select Unit",
+        "location": "Select Location",
+        "attribute": "Select Attribute",
+        "value": "Select Value"
+      },
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive",
+        "out_of_stock": "Out of Stock"
+      },
       "attributes": {
         "title": "Product Attributes",
         "add": "Add Attribute",
         "edit": "Edit Attribute",
         "remove": "Remove Attribute"
-      },
-      "placeholders": {
-        "name": "Enter product name",
-        "barcode": "Enter barcode",
-        "category": "Select Category",
-        "unit": "Select Unit",
-        "location": "Select Location",
-        "attribute": "Select Attribute",
-        "value": "Select Value"
       },
       "buttons": {
         "save": "Save Product",
@@ -415,6 +428,12 @@
         "updateError": "Failed to update product",
         "saveError": "Error saving product",
         "loadError": "Error loading form data"
+      },
+      "validation": {
+        "categoryRequired": "Please select a category",
+        "codeRequired": "Product code is required",
+        "nameRequired": "Product name is required",
+        "statusRequired": "Status is required"
       },
       "units": {
         "title": "Product Units",

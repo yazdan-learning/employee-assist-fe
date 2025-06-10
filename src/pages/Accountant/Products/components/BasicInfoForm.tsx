@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Row, Col, FormGroup, Label, Input } from "reactstrap";
 import { useTranslation } from "react-i18next";
 import RaDropdown from "../../../../Components/Common/RaDropdown";
@@ -31,43 +31,81 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({
     });
   };
 
+  // Handle category change
+  const handleCategoryChange = (categoryId: string | null) => {
+    const numericCategoryId = categoryId ? Number(categoryId) : null;
+    const selectedCategory = categories.find((c) => c.id === numericCategoryId);
+
+    // Get the current code without the prefix
+    const currentCode = data.code || "";
+    const existingCodeParts = currentCode.split("-");
+    const codeWithoutPrefix =
+      existingCodeParts.length > 1 ? existingCodeParts[1] : currentCode;
+
+    // Set the new code with the category prefix
+    const newCode = selectedCategory
+      ? `${selectedCategory.code}-${codeWithoutPrefix}`
+      : codeWithoutPrefix;
+
+    onChange({
+      ...data,
+      categoryId: numericCategoryId,
+      code: newCode,
+    });
+  };
+
+  // Handle code change while preserving the prefix
+  const handleCodeChange = (newCode: string) => {
+    const selectedCategory = categories.find((c) => c.id === data.categoryId);
+    if (selectedCategory) {
+      // If there's a category, ensure the prefix remains
+      const prefix = `${selectedCategory.code}-`;
+      if (!newCode.startsWith(prefix)) {
+        // If user deleted the prefix, add it back
+        newCode = prefix + newCode;
+      }
+    }
+    handleInputChange("code", newCode);
+  };
+
   return (
     <div>
       <Row>
         <Col md={6}>
           <FormGroup>
-            <Label for="categoryId">{t("product.form.category")}</Label>
+            <Label for="categoryId">{t("product.form.fields.category")}</Label>
             <RaDropdown
               options={categories.map((c) => ({
                 value: c.id.toString(),
                 label: c.name,
               }))}
               value={data.categoryId?.toString() || ""}
-              onChange={(value) =>
-                handleInputChange("categoryId", value ? Number(value) : null)
-              }
+              onChange={handleCategoryChange}
               placeholder={t("product.form.placeholders.category")}
             />
             {touched.categoryId && errors.categoryId && (
               <div className="invalid-feedback d-block">
-                {errors.categoryId}
+                {t("product.form.validation.categoryRequired")}
               </div>
             )}
           </FormGroup>
         </Col>
         <Col md={6}>
           <FormGroup>
-            <Label for="code">{t("product.form.code")}</Label>
+            <Label for="code">{t("product.form.fields.code")}</Label>
             <Input
               id="code"
               type="text"
               value={data.code || ""}
-              onChange={(e) => handleInputChange("code", e.target.value)}
+              onChange={(e) => handleCodeChange(e.target.value)}
               disabled={!data.categoryId}
               invalid={touched.code && Boolean(errors.code)}
+              placeholder={t("product.form.placeholders.code")}
             />
             {touched.code && errors.code && (
-              <div className="invalid-feedback">{errors.code}</div>
+              <div className="invalid-feedback">
+                {t("product.form.validation.codeRequired")}
+              </div>
             )}
           </FormGroup>
         </Col>
@@ -76,33 +114,38 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({
       <Row>
         <Col md={6}>
           <FormGroup>
-            <Label for="name">{t("product.form.name")}</Label>
+            <Label for="name">{t("product.form.fields.name")}</Label>
             <Input
               id="name"
               type="text"
               value={data.name || ""}
               onChange={(e) => handleInputChange("name", e.target.value)}
               invalid={touched.name && Boolean(errors.name)}
+              placeholder={t("product.form.placeholders.name")}
             />
             {touched.name && errors.name && (
-              <div className="invalid-feedback">{errors.name}</div>
+              <div className="invalid-feedback">
+                {t("product.form.validation.nameRequired")}
+              </div>
             )}
           </FormGroup>
         </Col>
         <Col md={6}>
           <FormGroup>
-            <Label for="status">{t("product.form.status")}</Label>
+            <Label for="status">{t("product.form.fields.status")}</Label>
             <RaDropdown
               options={Object.values(ProductStatus).map((status) => ({
                 value: status,
-                label: t(`product.status.${status.toLowerCase()}`),
+                label: t(`product.form.status.${status.toLowerCase()}`),
               }))}
               value={data.status}
               onChange={(value) => handleInputChange("status", value)}
               placeholder={t("product.form.placeholders.status")}
             />
             {touched.status && errors.status && (
-              <div className="invalid-feedback d-block">{errors.status}</div>
+              <div className="invalid-feedback d-block">
+                {t("product.form.validation.statusRequired")}
+              </div>
             )}
           </FormGroup>
         </Col>
@@ -111,13 +154,16 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({
       <Row>
         <Col md={12}>
           <FormGroup>
-            <Label for="description">{t("product.form.description")}</Label>
+            <Label for="description">
+              {t("product.form.fields.description")}
+            </Label>
             <Input
               id="description"
               type="textarea"
               value={data.description || ""}
               onChange={(e) => handleInputChange("description", e.target.value)}
               invalid={touched.description && Boolean(errors.description)}
+              placeholder={t("product.form.placeholders.description")}
             />
             {touched.description && errors.description && (
               <div className="invalid-feedback">{errors.description}</div>
@@ -126,46 +172,47 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({
         </Col>
       </Row>
 
-      <Row>
-        <Col md={4}>
-          <FormGroup check>
-            <Label check>
+      <Row className="mt-2">
+        <Col className="d-flex gap-4">
+          <FormGroup check className="mb-0">
+            <Label check className="d-flex align-items-center">
               <Input
                 type="checkbox"
                 checked={data.isService || false}
                 onChange={(e) =>
                   handleInputChange("isService", e.target.checked)
                 }
-              />{" "}
-              {t("product.form.isService")}
+                className="me-2"
+              />
+              {t("product.form.fields.isService")}
             </Label>
           </FormGroup>
-        </Col>
-        <Col md={4}>
-          <FormGroup check>
-            <Label check>
+
+          <FormGroup check className="mb-0">
+            <Label check className="d-flex align-items-center">
               <Input
                 type="checkbox"
                 checked={data.hasSerial || false}
                 onChange={(e) =>
                   handleInputChange("hasSerial", e.target.checked)
                 }
-              />{" "}
-              {t("product.form.hasSerial")}
+                className="me-2"
+              />
+              {t("product.form.fields.hasSerial")}
             </Label>
           </FormGroup>
-        </Col>
-        <Col md={4}>
-          <FormGroup check>
-            <Label check>
+
+          <FormGroup check className="mb-0">
+            <Label check className="d-flex align-items-center">
               <Input
                 type="checkbox"
                 checked={data.allowNegativeStock || false}
                 onChange={(e) =>
                   handleInputChange("allowNegativeStock", e.target.checked)
                 }
-              />{" "}
-              {t("product.form.allowNegativeStock")}
+                className="me-2"
+              />
+              {t("product.form.fields.allowNegativeStock")}
             </Label>
           </FormGroup>
         </Col>
