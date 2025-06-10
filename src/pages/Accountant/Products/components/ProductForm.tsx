@@ -214,6 +214,15 @@ const ProductForm: React.FC = () => {
                   </h4>
                   <div className="step-indicator d-flex align-items-center">
                     <span className="me-2">
+                      {t(
+                        "product.form.steps." +
+                          (currentStep === 1
+                            ? "basicInfo"
+                            : currentStep === 2
+                            ? "generalInfo"
+                            : "additionalInfo")
+                      )}{" "}
+                      -{" "}
                       {t("product.form.step", {
                         current: currentStep,
                         total: 3,

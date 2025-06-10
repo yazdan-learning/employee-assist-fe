@@ -395,6 +395,12 @@
         "new": "افزودن محصول جدید",
         "edit": "ویرایش محصول"
       },
+      "step": "مرحله {{current}} از {{total}}",
+      "steps": {
+        "basicInfo": "اطلاعات اولیه",
+        "generalInfo": "اطلاعات عمومی",
+        "additionalInfo": "اطلاعات تکمیلی"
+      },
       "name": "نام",
       "barcode": "بارکد",
       "isService": "خدمات",

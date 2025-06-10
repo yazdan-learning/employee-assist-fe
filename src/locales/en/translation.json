@@ -375,7 +375,7 @@
       "steps": {
         "basicInfo": "Basic Info",
         "generalInfo": "General Info",
-        "pricing": "Pricing"
+        "additionalInfo": "Additional Info"
       },
       "fields": {
         "name": "Product Name",
@@ -390,6 +390,64 @@
         "unit": "Unit",
         "location": "Location",
         "settings": "Settings"
+      },
+      "locations": {
+        "title": "Product Locations",
+        "add": "Add Location",
+        "edit": "Edit Location",
+        "remove": "Remove Location",
+        "warehouse": "Warehouse",
+        "address": "Address",
+        "placeholders": {
+          "warehouse": "Select Warehouse",
+          "address": "Select Address"
+        },
+        "validation": {
+          "warehouseRequired": "Please select a warehouse",
+          "addressRequired": "Please select an address"
+        }
+      },
+      "units": {
+        "title": "Product Units",
+        "add": "Add Unit",
+        "edit": "Edit Unit",
+        "remove": "Remove Unit",
+        "unit": "Unit",
+        "conversionRate": "Conversion Rate",
+        "weightPerUnit": "Weight per Unit",
+        "isPrimary": "Primary Unit",
+        "primaryBadge": "Primary",
+        "cantRemoveLastUnit": "Cannot remove the last unit",
+        "placeholders": {
+          "unit": "Select unit",
+          "conversionRate": "Enter conversion rate",
+          "weightPerUnit": "Enter weight per unit"
+        },
+        "validation": {
+          "unitRequired": "Please select a unit",
+          "conversionRateRequired": "Conversion rate is required",
+          "conversionRateMin": "Conversion rate must be greater than 0",
+          "weightPerUnitMin": "Weight per unit must be 0 or greater",
+          "minOneUnit": "At least one unit is required"
+        }
+      },
+      "attributes": {
+        "title": "Product Attributes",
+        "add": "Add Attribute",
+        "edit": "Edit Attribute",
+        "remove": "Remove Attribute",
+        "attribute": "Attribute",
+        "value": "Value",
+        "placeholders": {
+          "attribute": "Select attribute",
+          "value": "Select value"
+        },
+        "validation": {
+          "attributeRequired": "Please select an attribute",
+          "valueRequired": "Please select a value",
+          "duplicateAttribute": "This attribute is already added"
+        },
+        "noAttributes": "No attributes added yet"
       },
       "placeholders": {
         "name": "Enter product name",
@@ -408,12 +466,6 @@
         "inactive": "Inactive",
         "out_of_stock": "Out of Stock"
       },
-      "attributes": {
-        "title": "Product Attributes",
-        "add": "Add Attribute",
-        "edit": "Edit Attribute",
-        "remove": "Remove Attribute"
-      },
       "buttons": {
         "save": "Save Product",
         "update": "Update Product",
@@ -427,34 +479,15 @@
         "createError": "Failed to create product",
         "updateError": "Failed to update product",
         "saveError": "Error saving product",
-        "loadError": "Error loading form data"
+        "loadError": "Error loading form data",
+        "deleteSuccess": "Item deleted successfully",
+        "deleteError": "Failed to delete item"
       },
       "validation": {
         "categoryRequired": "Please select a category",
         "codeRequired": "Product code is required",
         "nameRequired": "Product name is required",
         "statusRequired": "Status is required"
-      },
-      "units": {
-        "title": "Product Units",
-        "add": "Add Unit",
-        "edit": "Edit Unit",
-        "unit": "Unit",
-        "conversionRate": "Conversion Rate",
-        "weightPerUnit": "Weight per Unit",
-        "isPrimary": "Primary Unit",
-        "primaryBadge": "Primary",
-        "placeholders": {
-          "unit": "Select unit",
-          "conversionRate": "Enter conversion rate",
-          "weightPerUnit": "Enter weight per unit"
-        },
-        "validation": {
-          "minOneUnit": "At least one unit is required",
-          "conversionRateMin": "Conversion rate must be greater than 0",
-          "weightPerUnitMin": "Weight per unit must be 0 or greater",
-          "error": "Please check unit information"
-        }
       }
     },
     "list": {

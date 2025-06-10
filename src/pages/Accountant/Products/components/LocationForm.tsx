@@ -71,6 +71,17 @@ const LocationForm: React.FC<LocationFormProps> = ({
     }
   };
 
+  const handleWarehouseChange = (value: string | null) => {
+    const numericValue = value ? Number(value) : null;
+    formik.setFieldValue("warehouseId", numericValue);
+    formik.setFieldValue("addressId", null); // Reset address when warehouse changes
+  };
+
+  const handleAddressChange = (value: string | null) => {
+    const numericValue = value ? Number(value) : null;
+    formik.setFieldValue("addressId", numericValue);
+  };
+
   return (
     <form>
       <Row>
@@ -85,11 +96,9 @@ const LocationForm: React.FC<LocationFormProps> = ({
                 label: w.name,
               }))}
               value={formik.values.warehouseId?.toString() || ""}
-              onChange={(value) => {
-                formik.setFieldValue("warehouseId", value ? Number(value) : 0);
-                formik.setFieldValue("addressId", 0); // Reset address when warehouse changes
-              }}
+              onChange={handleWarehouseChange}
               placeholder={t("product.form.locations.placeholders.warehouse")}
+              showClear={true}
             />
             {formik.touched.warehouseId && formik.errors.warehouseId && (
               <div className="invalid-feedback d-block">
@@ -107,11 +116,10 @@ const LocationForm: React.FC<LocationFormProps> = ({
                 label: a.address,
               }))}
               value={formik.values.addressId?.toString() || ""}
-              onChange={(value) =>
-                formik.setFieldValue("addressId", value ? Number(value) : 0)
-              }
+              onChange={handleAddressChange}
               placeholder={t("product.form.locations.placeholders.address")}
               disabled={!formik.values.warehouseId}
+              showClear={true}
             />
             {formik.touched.addressId && formik.errors.addressId && (
               <div className="invalid-feedback d-block">

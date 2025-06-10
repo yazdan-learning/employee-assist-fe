@@ -5,6 +5,12 @@
         "new": "Neues Produkt hinzufügen",
         "edit": "Produkt bearbeiten"
       },
+      "step": "Schritt {{current}} von {{total}}",
+      "steps": {
+        "basicInfo": "Grundinformationen",
+        "generalInfo": "Allgemeine Informationen",
+        "additionalInfo": "Zusätzliche Informationen"
+      },
       "name": "Name",
       "barcode": "Barcode",
       "isService": "Ist Dienstleistung",
