@@ -6,7 +6,8 @@ import { useTranslation } from "react-i18next";
 import RaDropdown from "../../../../Components/Common/RaDropdown";
 import { FormikErrors, FormikTouched } from "formik";
 import { Product } from "../types";
-import { useSellTypes } from "../../../../hooks/useProducts";
+import { useSellTypes, useCurrencies } from "../../../../hooks/useProducts";
+import { formatNumber, parseFormattedNumber } from "../../../../helpers/number_helper";
 
 interface Price {
   sellTypeId: number;
@@ -26,26 +27,29 @@ interface PriceFormProps {
 const PriceForm: React.FC<PriceFormProps> = ({
   price,
   onSave,
-  onCancel,
-  errors = {},
-  touched = {},
+  onCancel
 }) => {
   const { t } = useTranslation();
   const { data: sellTypes = [] } = useSellTypes();
+  const { data: currencies = [] } = useCurrencies();
 
   const validationSchema = Yup.object().shape({
-    sellTypeId: Yup.number().required(t("validation.required")),
+    sellTypeId: Yup.number()
+      .required(t("validation.required"))
+      .min(1, t("validation.required")),
     price: Yup.number()
       .required(t("validation.required"))
       .min(0, t("validation.min", { min: 0 })),
-    currency: Yup.string().required(t("validation.required")),
+    currency: Yup.string()
+      .required(t("validation.required"))
+      .min(1, t("validation.required")),
     discountPercentage: Yup.number()
       .min(0, t("validation.min", { min: 0 }))
       .max(100, t("validation.max", { max: 100 }))
       .nullable(),
   });
 
-  const formik = useFormik({
+  const formik = useFormik<Price>({
     initialValues: price || {
       sellTypeId: 0,
       price: 0,
@@ -53,23 +57,15 @@ const PriceForm: React.FC<PriceFormProps> = ({
       discountPercentage: 0,
     },
     validationSchema,
-    onSubmit: (values) => {
-      onSave(values);
-    },
+    onSubmit: onSave,
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Touch all fields to show validation errors
     Object.keys(formik.values).forEach((field) => {
       formik.setFieldTouched(field, true);
     });
-
-    // Validate all fields
     const errors = await formik.validateForm();
-
-    // If no errors, proceed with save
     if (Object.keys(errors).length === 0) {
       onSave(formik.values);
     }
@@ -77,8 +73,8 @@ const PriceForm: React.FC<PriceFormProps> = ({
 
   return (
     <form>
-      <Row>
-        <Col md={3}>
+      <Row className="mb-3">
+        <Col md={6}>
           <FormGroup>
             <Label for="sellTypeId">{t("product.form.prices.sellType")}</Label>
             <RaDropdown
@@ -87,9 +83,15 @@ const PriceForm: React.FC<PriceFormProps> = ({
                 label: st.name,
               }))}
               value={formik.values.sellTypeId?.toString() || ""}
-              onChange={(value) =>
-                formik.setFieldValue("sellTypeId", value ? Number(value) : 0)
-              }
+              onChange={(value) => {
+                const sellTypeId = value ? Number(value) : 0;
+                formik.setFieldValue("sellTypeId", sellTypeId);
+                // Set default discount from sell type
+                const selectedSellType = sellTypes.find(st => st.id === sellTypeId);
+                if (selectedSellType) {
+                  formik.setFieldValue("discountPercentage", selectedSellType.discountPercentage);
+                }
+              }}
               placeholder={t("product.form.prices.placeholders.sellType")}
             />
             {formik.touched.sellTypeId && formik.errors.sellTypeId && (
@@ -99,17 +101,17 @@ const PriceForm: React.FC<PriceFormProps> = ({
             )}
           </FormGroup>
         </Col>
-        <Col md={3}>
+        <Col md={6}>
           <FormGroup>
             <Label for="price">{t("product.form.prices.price")}</Label>
             <Input
               id="price"
-              type="number"
-              min={0}
-              value={formik.values.price}
-              onChange={(e) =>
-                formik.setFieldValue("price", Number(e.target.value))
-              }
+              type="text"
+              value={formatNumber(formik.values.price)}
+              onChange={(e) => {
+                const value = e.target.value.replace(/[^0-9]/g, '');
+                formik.setFieldValue("price", parseFormattedNumber(value));
+              }}
               placeholder={t("product.form.prices.placeholders.price")}
             />
             {formik.touched.price && formik.errors.price && (
@@ -119,14 +121,19 @@ const PriceForm: React.FC<PriceFormProps> = ({
             )}
           </FormGroup>
         </Col>
-        <Col md={3}>
+      </Row>
+
+      <Row>
+        <Col md={6}>
           <FormGroup>
             <Label for="currency">{t("product.form.prices.currency")}</Label>
-            <Input
-              id="currency"
-              type="text"
+            <RaDropdown
+              options={currencies.map((curr) => ({
+                value: curr.code,
+                label: `${curr.code} - ${curr.name}`,
+              }))}
               value={formik.values.currency}
-              onChange={(e) => formik.setFieldValue("currency", e.target.value)}
+              onChange={(value) => formik.setFieldValue("currency", value)}
               placeholder={t("product.form.prices.placeholders.currency")}
             />
             {formik.touched.currency && formik.errors.currency && (
@@ -136,7 +143,7 @@ const PriceForm: React.FC<PriceFormProps> = ({
             )}
           </FormGroup>
         </Col>
-        <Col md={3}>
+        <Col md={6}>
           <FormGroup>
             <Label for="discountPercentage">
               {t("product.form.prices.discount")} (%)

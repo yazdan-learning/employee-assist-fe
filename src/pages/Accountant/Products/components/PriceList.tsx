@@ -5,6 +5,7 @@ import PriceForm from "./PriceForm";
 import CardListContainer from "../../../../Components/Common/CardListContainer";
 import { FormikErrors, FormikTouched } from "formik";
 import { Product } from "../types";
+import { useSellTypes } from "../../../../hooks/useProducts";
 
 interface Price {
   sellTypeId: number;
@@ -29,6 +30,7 @@ const PriceList: React.FC<PriceListProps> = ({
   const { t } = useTranslation();
   const [showForm, setShowForm] = useState(false);
   const [editIndex, setEditIndex] = useState<number | null>(null);
+  const { data: sellTypes = [] } = useSellTypes();
 
   const handleAdd = () => {
     setShowForm(true);
@@ -68,9 +70,10 @@ const PriceList: React.FC<PriceListProps> = ({
       key: "sellType",
       header: t("product.form.prices.sellType"),
       width: 3,
-      render: (price: Price) => (
-        <span className="fw-medium">{price.sellTypeId}</span>
-      ),
+      render: (price: Price) => {
+        const sellType = sellTypes.find(st => st.id === price.sellTypeId);
+        return <span className="fw-medium">{sellType?.name || "-"}</span>;
+      },
     },
     {
       key: "price",

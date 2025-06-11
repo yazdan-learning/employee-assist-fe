@@ -42,4 +42,12 @@ export const mockWarehouseAddresses = [
   { id: 1, warehouseId: 1, address: "123 Main St" },
   { id: 2, warehouseId: 1, address: "456 Side St" },
   { id: 3, warehouseId: 2, address: "789 Back St" },
+];
+
+export const mockCurrencies = [
+  { id: 1, code: "USD", name: "US Dollar" },
+  { id: 2, code: "EUR", name: "Euro" },
+  { id: 3, code: "GBP", name: "British Pound" },
+  { id: 4, code: "JPY", name: "Japanese Yen" },
+  { id: 5, code: "IRR", name: "Iranian Rial" },
 ]; 

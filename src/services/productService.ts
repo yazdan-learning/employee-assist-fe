@@ -6,7 +6,8 @@ import { mockCategories, mockAttributes, mockAttributeValues, mockUnits, mockLoc
 import { 
   mockSellTypes,
   mockWarehouses,
-  mockWarehouseAddresses
+  mockWarehouseAddresses,
+  mockCurrencies
 } from "./mockData";
 import { 
   Category, 
@@ -275,9 +276,11 @@ class ProductService {
   }
 
   async getWarehouseAddresses(warehouseId: number): Promise<typeof mockWarehouseAddresses> {
-    return Promise.resolve(
-      mockWarehouseAddresses.filter((a) => a.warehouseId === warehouseId)
-    );
+    return Promise.resolve(mockWarehouseAddresses.filter(addr => addr.warehouseId === warehouseId));
+  }
+
+  async getCurrencies(): Promise<typeof mockCurrencies> {
+    return Promise.resolve(mockCurrencies);
   }
 
   generateProductCode(categoryCode: string): string {

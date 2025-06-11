@@ -2,13 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import type { Product } from '../pages/Accountant/Products/types';
 import type { ListRequest, BaseResponse, ListResponse } from '../types/common';
 import { productService } from '../services/ProductService';
-import { 
-  Category, 
-  Unit, 
-  Attribute, 
-  AttributeValue, 
-  ProductSellType 
-} from "../pages/Accountant/Products/types";
+
 
 // Query keys for cache management
 const productKeys = {
@@ -124,5 +118,12 @@ export const useWarehouseAddresses = (warehouseId: number | null) => {
     queryKey: ["warehouseAddresses", warehouseId],
     queryFn: () => warehouseId ? productService.getWarehouseAddresses(warehouseId) : Promise.resolve([]),
     enabled: !!warehouseId
+  });
+};
+
+export const useCurrencies = () => {
+  return useQuery({
+    queryKey: ["currencies"],
+    queryFn: () => productService.getCurrencies()
   });
 }; 
