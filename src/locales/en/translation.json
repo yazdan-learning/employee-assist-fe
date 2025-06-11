@@ -392,19 +392,23 @@
         "settings": "Settings"
       },
       "locations": {
-        "title": "Product Locations",
+        "title": "Locations",
         "add": "Add Location",
         "edit": "Edit Location",
-        "remove": "Remove Location",
         "warehouse": "Warehouse",
         "address": "Address",
+        "minQuantity": "Min Quantity",
+        "maxQuantity": "Max Quantity",
         "placeholders": {
-          "warehouse": "Select Warehouse",
-          "address": "Select Address"
+          "warehouse": "Select warehouse",
+          "address": "Select address",
+          "minQuantity": "Enter minimum quantity",
+          "maxQuantity": "Enter maximum quantity"
         },
         "validation": {
-          "warehouseRequired": "Please select a warehouse",
-          "addressRequired": "Please select an address"
+          "warehouseRequired": "Warehouse is required",
+          "minQuantityLessThanMax": "Minimum quantity must be less than maximum quantity",
+          "maxQuantityGreaterThanMin": "Maximum quantity must be greater than minimum quantity"
         }
       },
       "units": {

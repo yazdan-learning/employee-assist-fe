@@ -12,7 +12,9 @@ import {
 
 interface Location {
   warehouseId: number;
-  addressId: number;
+  addressId?: number;
+  minQuantity?: number;
+  maxQuantity?: number;
 }
 
 interface LocationListProps {
@@ -76,7 +78,7 @@ const LocationList: React.FC<LocationListProps> = ({
 
     return {
       warehouseName: warehouse?.name || location.warehouseId.toString(),
-      addressName: address?.address || location.addressId.toString(),
+      addressName: address?.address || location.addressId?.toString() || "",
     };
   };
 
@@ -84,19 +86,33 @@ const LocationList: React.FC<LocationListProps> = ({
     {
       key: "warehouse",
       header: t("product.form.locations.warehouse"),
-      width: 3,
+      width: 2,
       render: (location: Location) => (
-        <span className="fw-medium">
-          {getLocationDisplay(location).warehouseName}
-        </span>
+        <span>{getLocationDisplay(location).warehouseName}</span>
       ),
     },
     {
       key: "address",
       header: t("product.form.locations.address"),
-      width: 7,
+      width: 4,
       render: (location: Location) => (
         <span>{getLocationDisplay(location).addressName}</span>
+      ),
+    },
+    {
+      key: "minQuantity",
+      header: t("product.form.locations.minQuantity"),
+      width: 2,
+      render: (location: Location) => (
+        <span>{location.minQuantity || "-"}</span>
+      ),
+    },
+    {
+      key: "maxQuantity",
+      header: t("product.form.locations.maxQuantity"),
+      width: 2,
+      render: (location: Location) => (
+        <span>{location.maxQuantity || "-"}</span>
       ),
     },
   ];

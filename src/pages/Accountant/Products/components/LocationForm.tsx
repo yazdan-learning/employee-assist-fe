@@ -1,7 +1,7 @@
 import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { Button, FormGroup, Label, Row, Col } from "reactstrap";
+import { Button, FormGroup, Label, Row, Col, Input } from "reactstrap";
 import { useTranslation } from "react-i18next";
 import RaDropdown from "../../../../Components/Common/RaDropdown";
 import {
@@ -13,7 +13,9 @@ import { Product } from "../types";
 
 interface Location {
   warehouseId: number;
-  addressId: number;
+  addressId?: number;
+  minQuantity?: number;
+  maxQuantity?: number;
 }
 
 interface LocationFormProps {
@@ -35,19 +37,40 @@ const LocationForm: React.FC<LocationFormProps> = ({
   const { data: warehouses = [] } = useWarehouses();
 
   const validationSchema = Yup.object().shape({
-    warehouseId: Yup.number().required(t("validation.required")),
-    addressId: Yup.number().required(t("validation.required")),
+    warehouseId: Yup.number()
+      .required(t("product.form.locations.validation.warehouseRequired"))
+      .min(1, t("product.form.locations.validation.warehouseRequired")),
+    minQuantity: Yup.number()
+      .min(0, t("validation.min", { min: 0 }))
+      .nullable()
+      .test('min', t("product.form.locations.validation.minQuantityLessThanMax"), function(value) {
+        const maxQuantity = this.parent.maxQuantity;
+        if (value && maxQuantity) {
+          return value < maxQuantity;
+        }
+        return true;
+      }),
+    maxQuantity: Yup.number()
+      .min(0, t("validation.min", { min: 0 }))
+      .nullable()
+      .test('max', t("product.form.locations.validation.maxQuantityGreaterThanMin"), function(value) {
+        const minQuantity = this.parent.minQuantity;
+        if (minQuantity && value) {
+          return value > minQuantity;
+        }
+        return true;
+      }),
   });
 
-  const formik = useFormik({
+  const formik = useFormik<Location>({
     initialValues: location || {
       warehouseId: 0,
-      addressId: 0,
+      addressId: undefined,
+      minQuantity: undefined,
+      maxQuantity: undefined,
     },
     validationSchema,
-    onSubmit: (values) => {
-      console.log(values);
-    },
+    onSubmit: onSave,
   });
 
   const { data: addresses = [] } = useWarehouseAddresses(
@@ -56,16 +79,10 @@ const LocationForm: React.FC<LocationFormProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Touch all fields to show validation errors
     Object.keys(formik.values).forEach((field) => {
       formik.setFieldTouched(field, true);
     });
-
-    // Validate all fields
     const errors = await formik.validateForm();
-
-    // If no errors, proceed with save
     if (Object.keys(errors).length === 0) {
       onSave(formik.values);
     }
@@ -84,21 +101,20 @@ const LocationForm: React.FC<LocationFormProps> = ({
 
   return (
     <form>
-      <Row>
+      <Row className="mb-3">
         <Col md={6}>
           <FormGroup>
-            <Label for="warehouseId">
-              {t("product.form.locations.warehouse")}
-            </Label>
+            <Label for="warehouseId">{t("product.form.locations.warehouse")}</Label>
             <RaDropdown
               options={warehouses.map((w) => ({
                 value: w.id.toString(),
                 label: w.name,
               }))}
               value={formik.values.warehouseId?.toString() || ""}
-              onChange={handleWarehouseChange}
+              onChange={(value) =>
+                formik.setFieldValue("warehouseId", value ? Number(value) : 0)
+              }
               placeholder={t("product.form.locations.placeholders.warehouse")}
-              showClear={true}
             />
             {formik.touched.warehouseId && formik.errors.warehouseId && (
               <div className="invalid-feedback d-block">
@@ -116,15 +132,52 @@ const LocationForm: React.FC<LocationFormProps> = ({
                 label: a.address,
               }))}
               value={formik.values.addressId?.toString() || ""}
-              onChange={handleAddressChange}
+              onChange={(value) =>
+                formik.setFieldValue("addressId", value ? Number(value) : undefined)
+              }
               placeholder={t("product.form.locations.placeholders.address")}
-              disabled={!formik.values.warehouseId}
-              showClear={true}
             />
             {formik.touched.addressId && formik.errors.addressId && (
               <div className="invalid-feedback d-block">
                 {formik.errors.addressId}
               </div>
+            )}
+          </FormGroup>
+        </Col>
+      </Row>
+
+      <Row>
+        <Col md={6}>
+          <FormGroup>
+            <Label for="minQuantity">{t("product.form.locations.minQuantity")}</Label>
+            <Input
+              id="minQuantity"
+              type="number"
+              min={0}
+              value={formik.values.minQuantity || ""}
+              onChange={(e) => formik.setFieldValue("minQuantity", e.target.value ? Number(e.target.value) : undefined)}
+              placeholder={t("product.form.locations.placeholders.minQuantity")}
+              invalid={formik.touched.minQuantity && Boolean(formik.errors.minQuantity)}
+            />
+            {formik.touched.minQuantity && formik.errors.minQuantity && (
+              <div className="invalid-feedback">{formik.errors.minQuantity}</div>
+            )}
+          </FormGroup>
+        </Col>
+        <Col md={6}>
+          <FormGroup>
+            <Label for="maxQuantity">{t("product.form.locations.maxQuantity")}</Label>
+            <Input
+              id="maxQuantity"
+              type="number"
+              min={formik.values.minQuantity || 0}
+              value={formik.values.maxQuantity || ""}
+              onChange={(e) => formik.setFieldValue("maxQuantity", e.target.value ? Number(e.target.value) : undefined)}
+              placeholder={t("product.form.locations.placeholders.maxQuantity")}
+              invalid={formik.touched.maxQuantity && Boolean(formik.errors.maxQuantity)}
+            />
+            {formik.touched.maxQuantity && formik.errors.maxQuantity && (
+              <div className="invalid-feedback">{formik.errors.maxQuantity}</div>
             )}
           </FormGroup>
         </Col>

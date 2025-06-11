@@ -164,9 +164,7 @@ const generateSampleProducts = (): Product[] => {
       locations: [],
       images: [],
       prices: [],
-      taxAmount: Math.floor(Math.random() * 20),
-      minQuantity: Math.floor(Math.random() * 10),
-      maxQuantity: Math.floor(Math.random() * 100) + 10
+      taxAmount: Math.floor(Math.random() * 20)
     });
   }
   

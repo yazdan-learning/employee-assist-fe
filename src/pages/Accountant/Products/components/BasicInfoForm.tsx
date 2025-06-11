@@ -3,10 +3,20 @@ import { Row, Col, FormGroup, Label, Input } from "reactstrap";
 import { useTranslation } from "react-i18next";
 import RaDropdown from "../../../../Components/Common/RaDropdown";
 import { useCategories } from "../../../../hooks/useProducts";
-import { BasicInfoFormData } from "../types/forms";
 import { ProductStatus } from "../types";
 import { FormikErrors, FormikTouched } from "formik";
 import { Product } from "../types";
+
+export interface BasicInfoFormData {
+  categoryId: number | null;
+  code: string;
+  name: string;
+  description?: string;
+  status: ProductStatus;
+  isService: boolean;
+  hasSerial: boolean;
+  allowNegativeStock: boolean;
+}
 
 interface BasicInfoFormProps {
   data: BasicInfoFormData;

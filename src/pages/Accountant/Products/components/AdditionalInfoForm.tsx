@@ -1,14 +1,20 @@
 import React from "react";
 import { Card, CardBody, Row, Col, FormGroup, Label, Input } from "reactstrap";
 import { useTranslation } from "react-i18next";
-import { PricingFormData } from "../types/forms";
-import PriceList from "./PriceList";
 import { FormikErrors, FormikTouched } from "formik";
 import { Product } from "../types";
+import PriceList from "./PriceList";
+import { ProductPrice } from "../types";
+
+export interface AdditionalInfo {
+  prices: ProductPrice[];
+  taxAmount: number;
+  barcode?: string;
+}
 
 interface AdditionalInfoFormProps {
-  data: PricingFormData;
-  onChange: (data: PricingFormData) => void;
+  data: AdditionalInfo;
+  onChange: (data: AdditionalInfo) => void;
   errors?: FormikErrors<Product>;
   touched?: FormikTouched<Product>;
 }
@@ -21,7 +27,7 @@ const AdditionalInfoForm: React.FC<AdditionalInfoFormProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const handlePricesChange = (prices: PricingFormData["prices"]) => {
+  const handlePricesChange = (prices: ProductPrice[]) => {
     onChange({ ...data, prices });
   };
 
@@ -31,14 +37,6 @@ const AdditionalInfoForm: React.FC<AdditionalInfoFormProps> = ({
 
   const handleBarcodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange({ ...data, barcode: e.target.value });
-  };
-
-  const handleMinQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange({ ...data, minQuantity: Number(e.target.value) });
-  };
-
-  const handleMaxQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange({ ...data, maxQuantity: Number(e.target.value) });
   };
 
   return (
@@ -89,41 +87,6 @@ const AdditionalInfoForm: React.FC<AdditionalInfoFormProps> = ({
                 />
                 {touched.barcode && errors.barcode && (
                   <div className="invalid-feedback">{errors.barcode}</div>
-                )}
-              </FormGroup>
-            </Col>
-          </Row>
-
-          <Row>
-            <Col md={6}>
-              <FormGroup>
-                <Label for="minQuantity">{t("product.form.minQuantity")}</Label>
-                <Input
-                  id="minQuantity"
-                  type="number"
-                  min={0}
-                  value={data.minQuantity}
-                  onChange={handleMinQuantityChange}
-                  invalid={touched.minQuantity && Boolean(errors.minQuantity)}
-                />
-                {touched.minQuantity && errors.minQuantity && (
-                  <div className="invalid-feedback">{errors.minQuantity}</div>
-                )}
-              </FormGroup>
-            </Col>
-            <Col md={6}>
-              <FormGroup>
-                <Label for="maxQuantity">{t("product.form.maxQuantity")}</Label>
-                <Input
-                  id="maxQuantity"
-                  type="number"
-                  min={0}
-                  value={data.maxQuantity}
-                  onChange={handleMaxQuantityChange}
-                  invalid={touched.maxQuantity && Boolean(errors.maxQuantity)}
-                />
-                {touched.maxQuantity && errors.maxQuantity && (
-                  <div className="invalid-feedback">{errors.maxQuantity}</div>
                 )}
               </FormGroup>
             </Col>

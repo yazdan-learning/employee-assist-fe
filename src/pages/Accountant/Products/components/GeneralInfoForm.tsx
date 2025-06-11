@@ -1,12 +1,17 @@
 import React from "react";
 import { Card, CardBody } from "reactstrap";
 import { useTranslation } from "react-i18next";
-import { GeneralInfoFormData } from "../types/forms";
 import LocationList from "./LocationList";
 import UnitList from "./UnitList";
 import AttributeList from "./AttributeList";
 import { FormikErrors, FormikTouched } from "formik";
-import { Product } from "../types";
+import { Product, Location, ProductUnit, ProductAttribute } from "../types";
+
+export interface GeneralInfoFormData {
+  locations: Location[];
+  units: ProductUnit[];
+  attributes: ProductAttribute[];
+}
 
 interface GeneralInfoFormProps {
   data: GeneralInfoFormData;

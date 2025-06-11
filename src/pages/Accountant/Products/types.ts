@@ -11,10 +11,11 @@ export interface ProductAttribute {
   valueId: number;
 }
 
-export interface ProductLocation {
-  id?: number;
+export interface Location {
   warehouseId: number;
-  addressId: number;
+  addressId?: number;
+  minQuantity?: number;
+  maxQuantity?: number;
 }
 
 export interface ProductImage {
@@ -48,23 +49,21 @@ export interface ProductUnit {
 
 export interface Product {
   id?: number;
+  categoryId: number;
+  code: string;
   name: string;
   description?: string;
-  code: string;
-  barcode?: string;
+  status: ProductStatus;
   isService: boolean;
   hasSerial: boolean;
   allowNegativeStock: boolean;
-  status: ProductStatus;
-  categoryId: number | null;
-  attributes: ProductAttribute[];
+  locations: Location[];
   units: ProductUnit[];
-  images: ProductImage[];
+  attributes: ProductAttribute[];
   prices: ProductPrice[];
-  locations: ProductLocation[];
+  images: ProductImage[];
   taxAmount: number;
-  minQuantity: number;
-  maxQuantity: number;
+  barcode?: string;
 }
 
 export interface Category {

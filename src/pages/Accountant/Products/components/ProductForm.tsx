@@ -44,15 +44,13 @@ const ProductForm: React.FC = () => {
           hasSerial: false,
           allowNegativeStock: false,
           status: ProductStatus.INACTIVE,
-          categoryId: null,
+          categoryId: 0,
           attributes: [],
           units: [],
           locations: [],
           images: [],
           prices: [],
-          taxAmount: 0,
-          minQuantity: 0,
-          maxQuantity: 0,
+          taxAmount: 0
         };
 
   const validationSchema = Yup.object().shape({
