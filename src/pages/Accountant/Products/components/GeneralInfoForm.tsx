@@ -2,14 +2,12 @@ import React from "react";
 import { Card, CardBody } from "reactstrap";
 import { useTranslation } from "react-i18next";
 import LocationList from "./LocationList";
-import UnitList from "./UnitList";
 import AttributeList from "./AttributeList";
 import { FormikErrors, FormikTouched } from "formik";
-import { Product, Location, ProductUnit, ProductAttribute } from "../types";
+import { Product, Location, ProductAttribute } from "../types";
 
 export interface GeneralInfoFormData {
   locations: Location[];
-  units: ProductUnit[];
   attributes: ProductAttribute[];
 }
 
@@ -34,10 +32,6 @@ const GeneralInfoForm: React.FC<GeneralInfoFormProps> = ({
     onChange({ ...data, locations });
   };
 
-  const handleUnitsChange = (units: GeneralInfoFormData["units"]) => {
-    onChange({ ...data, units });
-  };
-
   const handleAttributesChange = (
     attributes: GeneralInfoFormData["attributes"]
   ) => {
@@ -53,19 +47,6 @@ const GeneralInfoForm: React.FC<GeneralInfoFormProps> = ({
           <LocationList
             locations={data.locations}
             onChange={handleLocationsChange}
-            errors={errors}
-            touched={touched}
-          />
-        </CardBody>
-      </Card>
-
-      {/* Units Section */}
-      <Card className="mb-4">
-        <CardBody>
-          <h5 className="mb-4">{t("product.form.units.title")}</h5>
-          <UnitList
-            units={data.units}
-            onChange={handleUnitsChange}
             errors={errors}
             touched={touched}
           />

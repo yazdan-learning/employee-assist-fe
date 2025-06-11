@@ -63,18 +63,26 @@ const ProductForm: React.FC = () => {
     isService: Yup.boolean(),
     hasSerial: Yup.boolean(),
     allowNegativeStock: Yup.boolean(),
+    units: Yup.array()
+      .of(
+        Yup.object().shape({
+          unitId: Yup.number().required(t("validation.required")),
+          isPrimary: Yup.boolean(),
+          conversionRate: Yup.number()
+            .min(0, t("validation.min", { min: 0 }))
+            .required(t("validation.required")),
+          weightPerUnit: Yup.number()
+            .min(0, t("validation.min", { min: 0 }))
+            .required(t("validation.required")),
+        })
+      )
+      .min(1, t("product.form.units.validation.minOneUnit"))
+      .test("hasPrimary", t("product.form.units.validation.primaryRequired"), function(value) {
+        return value?.some(unit => unit.isPrimary) || false;
+      }),
     taxAmount: Yup.number()
       .min(0, t("validation.min", { min: 0 }))
       .max(100, t("validation.max", { max: 100 }))
-      .required(t("validation.required")),
-    minQuantity: Yup.number()
-      .min(0, t("validation.min", { min: 0 }))
-      .required(t("validation.required")),
-    maxQuantity: Yup.number()
-      .min(
-        Yup.ref("minQuantity"),
-        t("validation.greaterThan", { field: t("product.form.minQuantity") })
-      )
       .required(t("validation.required")),
     barcode: Yup.string(),
   });

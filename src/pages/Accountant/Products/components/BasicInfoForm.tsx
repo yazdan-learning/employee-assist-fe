@@ -1,11 +1,12 @@
 import React, { useEffect } from "react";
-import { Row, Col, FormGroup, Label, Input } from "reactstrap";
+import { Row, Col, FormGroup, Label, Input, Card, CardBody } from "reactstrap";
 import { useTranslation } from "react-i18next";
 import RaDropdown from "../../../../Components/Common/RaDropdown";
 import { useCategories } from "../../../../hooks/useProducts";
-import { ProductStatus } from "../types";
+import { ProductStatus, ProductUnit } from "../types";
 import { FormikErrors, FormikTouched } from "formik";
 import { Product } from "../types";
+import UnitList from "./UnitList";
 
 export interface BasicInfoFormData {
   categoryId: number | null;
@@ -16,6 +17,7 @@ export interface BasicInfoFormData {
   isService: boolean;
   hasSerial: boolean;
   allowNegativeStock: boolean;
+  units: ProductUnit[];
 }
 
 interface BasicInfoFormProps {
@@ -38,6 +40,13 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({
     onChange({
       ...data,
       [field]: value,
+    });
+  };
+
+  const handleUnitsChange = (units: ProductUnit[]) => {
+    onChange({
+      ...data,
+      units,
     });
   };
 
@@ -227,6 +236,19 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({
           </FormGroup>
         </Col>
       </Row>
+
+      {/* Units Section */}
+      <Card className="mt-4">
+        <CardBody>
+          <h5 className="mb-4">{t("product.form.units.title")}</h5>
+          <UnitList
+            units={data.units}
+            onChange={handleUnitsChange}
+            errors={errors}
+            touched={touched}
+          />
+        </CardBody>
+      </Card>
     </div>
   );
 };
