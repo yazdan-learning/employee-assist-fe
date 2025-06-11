@@ -84,11 +84,6 @@ const UnitForm: React.FC<UnitFormProps> = ({
     }
   };
 
-  // Check if there's already a primary unit (excluding the current unit being edited)
-  const hasPrimaryUnit = existingUnits.some(
-    (u) => u.isPrimary && u.id !== unit?.id
-  );
-
   return (
     <form>
       <Row>
@@ -162,29 +157,24 @@ const UnitForm: React.FC<UnitFormProps> = ({
         </Col>
         <Col md={6}>
           <FormGroup className="mt-4">
-            <div className="form-check">
-              <Input
-                type="checkbox"
-                className="form-check-input"
-                id="isPrimary"
-                {...formik.getFieldProps("isPrimary")}
-                checked={formik.values.isPrimary}
-                disabled={existingUnits.length === 0 || formik.values.isPrimary} // Disable if it's the first unit or already primary
-                onChange={(e) => {
-                  if (e.target.checked && !hasPrimaryUnit) {
-                    formik.setFieldValue("isPrimary", true);
-                  } else if (!e.target.checked && !hasPrimaryUnit) {
-                    // Don't allow unchecking if there's no other primary unit
-                    e.preventDefault();
-                  } else {
+            {existingUnits.length === 0 && (
+              <div className="form-check">
+                <Input
+                  type="checkbox"
+                  className="form-check-input"
+                  id="isPrimary"
+                  {...formik.getFieldProps("isPrimary")}
+                  checked={formik.values.isPrimary}
+                  disabled={true} // Always disabled as it's automatically primary for first unit
+                  onChange={(e) => {
                     formik.setFieldValue("isPrimary", e.target.checked);
-                  }
-                }}
-              />
-              <Label className="form-check-label" for="isPrimary">
-                {t("product.form.units.isPrimary")}
-              </Label>
-            </div>
+                  }}
+                />
+                <Label className="form-check-label" for="isPrimary">
+                  {t("product.form.units.isPrimary")}
+                </Label>
+              </div>
+            )}
           </FormGroup>
         </Col>
       </Row>
