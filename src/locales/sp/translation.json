@@ -216,5 +216,23 @@
   "Search customers...": "Buscar clientes...",
   "Name": "Nombre",
   "Type": "Tipo",
-  "Actions": "Acciones"
+  "Actions": "Acciones",
+  "list": {
+    "title": "Productos",
+    "search": "Buscar productos...",
+    "buttons": {
+      "new": "Añadir Producto"
+    },
+    "columns": {
+      "name": "Nombre",
+      "code": "Código",
+      "category": "Categoría",
+      "status": "Estado"
+    },
+    "messages": {
+      "deleteSuccess": "Producto eliminado con éxito",
+      "deleteError": "Error al eliminar el producto",
+      "deleteConfirm": "¿Está seguro de que desea eliminar este producto?"
+    }
+  }
 }

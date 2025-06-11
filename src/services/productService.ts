@@ -1,4 +1,4 @@
-import { Product, AttributeValue, ProductStatus } from '../pages/Accountant/Products/types';
+import { Product, AttributeValue, ProductStatus, ProductInfo } from '../pages/Accountant/Products/types';
 import { ListRequest, ListResponse, BaseResponse } from '../types/common';
 import { APIClient } from '../helpers/api_helper';
 import { API_CONFIG } from '../config/api.config';
@@ -26,217 +26,53 @@ class ProductService {
     this.endpoint = API_CONFIG.SERVICES.ACCOUNTANT.BASE_URL + '/products';
   }
 
-  // Mock implementation until API is ready
-  async getAllProducts(request: ListRequest): Promise<ListResponse<Product>> {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 500));
-
-    let filteredProducts = [...this.mockProducts];
-
-    // Apply search
-    if (request.searchTerm) {
-      const searchLower = request.searchTerm.toLowerCase();
-      filteredProducts = filteredProducts.filter(product => 
-        product.name.toLowerCase().includes(searchLower) ||
-        product.barcode?.toLowerCase().includes(searchLower)
-      );
+  async getProducts(request: ListRequest): Promise<ListResponse<ProductInfo>> {
+    try {
+      const requestToServer = {
+        ...request,
+        sortDirection: request.sortDirection === 'asc' ? 0 : 1
+      };
+      const response = await this.api.create(`${this.endpoint}/paged`, requestToServer);
+      return response as unknown as ListResponse<ProductInfo>;
+    } catch (error) {
+      throw new Error(`Failed to fetch products: ${error}`);
     }
-
-    // Apply sorting
-    if (request.sortField && request.sortDirection) {
-      filteredProducts.sort((a, b) => {
-        const aValue = a[request.sortField as keyof Product];
-        const bValue = b[request.sortField as keyof Product];
-        
-        if (typeof aValue === 'string' && typeof bValue === 'string') {
-          return request.sortDirection === 'desc' 
-            ? bValue.localeCompare(aValue) 
-            : aValue.localeCompare(bValue);
-        }
-        if (typeof aValue === 'number' && typeof bValue === 'number') {
-          return request.sortDirection === 'desc' 
-            ? bValue - aValue 
-            : aValue - bValue;
-        }
-        return 0;
-      });
-    }
-
-    // Calculate pagination
-    const totalItems = filteredProducts.length;
-    const totalPages = Math.ceil(totalItems / request.pageSize);
-    const start = (request.page - 1) * request.pageSize;
-    const end = start + request.pageSize;
-    
-    return {
-      data: {
-        items: filteredProducts.slice(start, end),
-        totalCount: totalItems,
-        pageNumber: request.page,
-        pageSize: request.pageSize,
-        totalPages: totalPages,
-        hasPreviousPage: request.page > 1,
-        hasNextPage: request.page < totalPages
-      },
-      succeeded: true,
-      statusCode: 200,
-      errors: null,
-      message: null
-    };
   }
 
   async getProductById(id: number): Promise<BaseResponse<Product>> {
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    const product = this.mockProducts.find(p => p.id === id);
-    
-    if (!product) {
-      return {
-        data: {
-          id: 0,
-          name: "",
-          code: "",
-          description: "",
-          barcode: "",
-          isService: false,
-          hasSerial: false,
-          allowNegativeStock: false,
-          status: ProductStatus.INACTIVE,
-          categoryId: 0,
-          attributes: [],
-          units: [],
-          locations: [],
-          images: [],
-          prices: [],
-          taxAmount: 0
-        },
-        succeeded: false,
-        statusCode: 404,
-        errors: "Product not found",
-        message: "Product not found"
-      };
+    try {
+      const response = await this.api.get(`${this.endpoint}/${id}`, null);
+      return response as unknown as BaseResponse<Product>;
+    } catch (error) {
+      throw new Error(`Failed to fetch product with ID ${id}: ${error}`);
     }
-
-    return {
-      data: product,
-      succeeded: true,
-      statusCode: 200,
-      errors: null,
-      message: null
-    };
   }
 
   async createProduct(product: Product): Promise<BaseResponse<Product>> {
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    // Ensure at least one unit is marked as primary
-    if (product.units.length > 0 && !product.units.some(u => u.isPrimary)) {
-      product.units[0].isPrimary = true;
+    try {
+      const response = await this.api.create(this.endpoint, product);
+      return response as unknown as BaseResponse<Product>;
+    } catch (error) {
+      throw new Error(`Failed to create product: ${error}`);
     }
-
-    // Generate IDs for new units
-    product.units = product.units.map((unit, index) => ({
-      ...unit,
-      id: Math.max(0, ...this.mockProducts.flatMap(p => p.units.map(u => u.id || 0))) + index + 1
-    }));
-    
-    const newProduct = {
-      ...product,
-      id: Math.max(0, ...this.mockProducts.map(p => p.id || 0)) + 1
-    };
-    
-    this.mockProducts.push(newProduct);
-
-    return {
-      data: newProduct,
-      succeeded: true,
-      statusCode: 200,
-      errors: null,
-      message: null
-    };
   }
 
   async updateProduct(product: Product): Promise<BaseResponse<Product>> {
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    const index = this.mockProducts.findIndex(p => p.id === product.id);
-    if (index === -1) {
-      return {
-        data: {
-          id: 0,
-          name: "",
-          code: "",
-          description: "",
-          barcode: "",
-          isService: false,
-          hasSerial: false,
-          allowNegativeStock: false,
-          status: ProductStatus.ACTIVE,
-          categoryId: 0,
-          attributes: [],
-          units: [],
-          locations: [],
-          images: [],
-          prices: [],
-          taxAmount: 0
-        },
-        succeeded: false,
-        statusCode: 404,
-        errors: "Product not found",
-        message: "Product not found"
-      };
+    try {
+      const response = await this.api.put(`${this.endpoint}/${product.id}`, product);
+      return response as unknown as BaseResponse<Product>;
+    } catch (error) {
+      throw new Error(`Failed to update product: ${error}`);
     }
-
-    // Ensure at least one unit is marked as primary
-    if (product.units.length > 0 && !product.units.some(u => u.isPrimary)) {
-      product.units[0].isPrimary = true;
-    }
-
-    // Generate IDs for any new units
-    product.units = product.units.map(unit => {
-      if (!unit.id) {
-        return {
-          ...unit,
-          id: Math.max(0, ...this.mockProducts.flatMap(p => p.units.map(u => u.id || 0))) + 1
-        };
-      }
-      return unit;
-    });
-
-    this.mockProducts[index] = product;
-
-    return {
-      data: product,
-      succeeded: true,
-      statusCode: 200,
-      errors: null,
-      message: null
-    };
   }
 
   async deleteProduct(id: number): Promise<BaseResponse<void>> {
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    const index = this.mockProducts.findIndex(p => p.id === id);
-    if (index === -1) {
-      return {
-        data: undefined,
-        succeeded: false,
-        statusCode: 404,
-        errors: "Product not found",
-        message: "Product not found"
-      };
+    try {
+      const response = await this.api.delete(`${this.endpoint}/${id}`, null);
+      return response as unknown as BaseResponse<void>;
+    } catch (error) {
+      throw new Error(`Failed to delete product with ID ${id}: ${error}`);
     }
-
-    this.mockProducts.splice(index, 1);
-
-    return {
-      data: undefined,
-      succeeded: true,
-      statusCode: 200,
-      errors: null,
-      message: null
-    };
   }
 
   // Mock dropdown data methods

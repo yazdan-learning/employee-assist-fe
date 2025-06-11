@@ -76,20 +76,18 @@
       "title": "Produkte",
       "search": "Produkte suchen...",
       "buttons": {
-        "add": "Produkt hinzufügen"
+        "new": "Produkt hinzufügen"
       },
       "columns": {
         "name": "Name",
-        "barcode": "Barcode",
+        "code": "Code",
         "category": "Kategorie",
-        "unit": "Einheit",
-        "location": "Standort",
-        "isService": "Dienstleistung",
-        "hasSerial": "Seriennummer"
+        "status": "Status"
       },
       "messages": {
         "deleteSuccess": "Produkt erfolgreich gelöscht",
-        "deleteError": "Fehler beim Löschen des Produkts"
+        "deleteError": "Fehler beim Löschen des Produkts",
+        "deleteConfirm": "Möchten Sie dieses Produkt wirklich löschen?"
       }
     }
   },

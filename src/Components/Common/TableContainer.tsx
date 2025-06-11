@@ -247,7 +247,7 @@ const TableContainer = ({
           </Table>
         )}
 
-        {isPagination && (
+        {isPagination && totalItems > pageSize && (
           <Row>
             <Col sm={12} md={5}>
               <div className="dataTables_info">

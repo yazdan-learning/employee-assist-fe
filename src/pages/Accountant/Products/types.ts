@@ -100,15 +100,6 @@ export interface ProductState {
 export interface ProductInfo {
   id: string;
   name: string;
-  sku: string;
-  price: number;
-  description?: string;
   category: string;
-  stock: number;
-  cost?: number;
-  barcode?: string;
-  image?: string;
   status: ProductStatus;
-  createdAt?: string;
-  updatedAt?: string;
 } 

@@ -466,20 +466,18 @@
       "title": "محصولات",
       "search": "جستجوی محصولات...",
       "buttons": {
-        "add": "افزودن محصول"
+        "new": "افزودن محصول"
       },
       "columns": {
         "name": "نام",
-        "barcode": "بارکد",
+        "code": "کد",
         "category": "دسته‌بندی",
-        "unit": "واحد",
-        "location": "موقعیت",
-        "isService": "خدمات",
-        "hasSerial": "سریال"
+        "status": "وضعیت"
       },
       "messages": {
         "deleteSuccess": "محصول با موفقیت حذف شد",
-        "deleteError": "خطا در حذف محصول"
+        "deleteError": "خطا در حذف محصول",
+        "deleteConfirm": "آیا از حذف این محصول اطمینان دارید؟"
       }
     }
   },

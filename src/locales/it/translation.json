@@ -167,5 +167,23 @@
   "Extra Pages": "Pagine extra",
   "Horizontal layout": "Layout orizzontale",
   "Light Sidebar": "Barra laterale leggera",
-  "Compact Sidebar": "Barra laterale compatta"
+  "Compact Sidebar": "Barra laterale compatta",
+  "list": {
+    "title": "Prodotti",
+    "search": "Cerca prodotti...",
+    "buttons": {
+      "new": "Aggiungi Prodotto"
+    },
+    "columns": {
+      "name": "Nome",
+      "code": "Codice",
+      "category": "Categoria",
+      "status": "Stato"
+    },
+    "messages": {
+      "deleteSuccess": "Prodotto eliminato con successo",
+      "deleteError": "Errore durante l'eliminazione del prodotto",
+      "deleteConfirm": "Sei sicuro di voler eliminare questo prodotto?"
+    }
+  }
 }

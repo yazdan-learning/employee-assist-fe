@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import type { Product } from '../pages/Accountant/Products/types';
+import type { Product, ProductInfo, ProductStatus } from '../pages/Accountant/Products/types';
 import type { ListRequest, BaseResponse, ListResponse } from '../types/common';
-import { productService } from '../services/ProductService';
+import { fakeProductService } from '../services/FakeProductService';
 
 
 // Query keys for cache management
@@ -14,10 +14,10 @@ const productKeys = {
 };
 
 // Get products list
-export const useProductList = (request: ListRequest) => {
-  return useQuery<ListResponse<Product>>({
-    queryKey: productKeys.list(request),
-    queryFn: () => productService.getAllProducts(request),
+export const useProductList = (params: ListRequest) => {
+  return useQuery<ListResponse<ProductInfo>>({
+    queryKey: productKeys.list(params),
+    queryFn: () => fakeProductService.getProducts(params),
   });
 };
 
@@ -25,7 +25,7 @@ export const useProductList = (request: ListRequest) => {
 export const useProductById = (id: number) => {
   return useQuery<BaseResponse<Product>>({
     queryKey: productKeys.detail(id),
-    queryFn: () => productService.getProductById(id),
+    queryFn: () => fakeProductService.getProductById(id),
     enabled: !!id,
   });
 };
@@ -35,7 +35,7 @@ export const useCreateProduct = () => {
   const queryClient = useQueryClient();
   
   return useMutation<BaseResponse<Product>, Error, Product>({
-    mutationFn: (product: Product) => productService.createProduct(product),
+    mutationFn: (product: Product) => fakeProductService.createProduct(product),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: productKeys.lists() });
     },
@@ -47,12 +47,9 @@ export const useUpdateProduct = () => {
   const queryClient = useQueryClient();
   
   return useMutation<BaseResponse<Product>, Error, Product>({
-    mutationFn: (product: Product) => productService.updateProduct(product),
-    onSuccess: (_, variables) => {
+    mutationFn: (product: Product) => fakeProductService.updateProduct(product),
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: productKeys.lists() });
-      if (variables.id) {
-        queryClient.invalidateQueries({ queryKey: productKeys.detail(variables.id) });
-      }
     },
   });
 };
@@ -62,7 +59,7 @@ export const useDeleteProduct = () => {
   const queryClient = useQueryClient();
   
   return useMutation<BaseResponse<void>, Error, number>({
-    mutationFn: (id: number) => productService.deleteProduct(id),
+    mutationFn: (id: number) => fakeProductService.deleteProduct(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: productKeys.lists() });
     },
@@ -73,7 +70,7 @@ export const useDeleteProduct = () => {
 export const useAttributeValues = (attributeId: number | null) => {
   return useQuery({
     queryKey: ["attributeValues", attributeId],
-    queryFn: () => attributeId ? productService.getAttributeValues(attributeId) : Promise.resolve([]),
+    queryFn: () => attributeId ? fakeProductService.getAttributeValues(attributeId) : Promise.resolve([]),
     enabled: !!attributeId
   });
 };
@@ -81,42 +78,42 @@ export const useAttributeValues = (attributeId: number | null) => {
 export const useCategories = () => {
   return useQuery({
     queryKey: ["categories"],
-    queryFn: () => productService.getCategories()
+    queryFn: () => fakeProductService.getCategories()
   });
 };
 
 export const useUnits = () => {
   return useQuery({
     queryKey: ["units"],
-    queryFn: () => productService.getUnits()
+    queryFn: () => fakeProductService.getUnits()
   });
 };
 
 export const useAttributes = () => {
   return useQuery({
     queryKey: ["attributes"],
-    queryFn: () => productService.getAttributes()
+    queryFn: () => fakeProductService.getAttributes()
   });
 };
 
 export const useSellTypes = () => {
   return useQuery({
     queryKey: ["sellTypes"],
-    queryFn: () => productService.getSellTypes()
+    queryFn: () => fakeProductService.getSellTypes()
   });
 };
 
 export const useWarehouses = () => {
   return useQuery({
     queryKey: ["warehouses"],
-    queryFn: () => productService.getWarehouses()
+    queryFn: () => fakeProductService.getWarehouses()
   });
 };
 
 export const useWarehouseAddresses = (warehouseId: number | null) => {
   return useQuery({
     queryKey: ["warehouseAddresses", warehouseId],
-    queryFn: () => warehouseId ? productService.getWarehouseAddresses(warehouseId) : Promise.resolve([]),
+    queryFn: () => warehouseId ? fakeProductService.getWarehouseAddresses(warehouseId) : Promise.resolve([]),
     enabled: !!warehouseId
   });
 };
@@ -124,6 +121,6 @@ export const useWarehouseAddresses = (warehouseId: number | null) => {
 export const useCurrencies = () => {
   return useQuery({
     queryKey: ["currencies"],
-    queryFn: () => productService.getCurrencies()
+    queryFn: () => fakeProductService.getCurrencies()
   });
 }; 
