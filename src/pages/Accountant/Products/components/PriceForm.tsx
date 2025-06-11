@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import RaDropdown from "../../../../Components/Common/RaDropdown";
 import { FormikErrors, FormikTouched } from "formik";
 import { Product } from "../types";
-import { useSellTypes, useCurrencies } from "../../../../hooks/useProducts";
+import { useSellTypes } from "../../../../hooks/useProducts";
 import { formatNumber, parseFormattedNumber } from "../../../../helpers/number_helper";
 
 interface Price {
@@ -31,21 +31,17 @@ const PriceForm: React.FC<PriceFormProps> = ({
 }) => {
   const { t } = useTranslation();
   const { data: sellTypes = [] } = useSellTypes();
-  const { data: currencies = [] } = useCurrencies();
 
   const validationSchema = Yup.object().shape({
     sellTypeId: Yup.number()
-      .required(t("validation.required"))
-      .min(1, t("validation.required")),
+      .required(t("product.form.prices.validation.sellTypeRequired"))
+      .min(1, t("product.form.prices.validation.sellTypeRequired")),
     price: Yup.number()
-      .required(t("validation.required"))
-      .min(0, t("validation.min", { min: 0 })),
-    currency: Yup.string()
-      .required(t("validation.required"))
-      .min(1, t("validation.required")),
+      .required(t("product.form.prices.validation.priceRequired"))
+      .min(0, t("product.form.prices.validation.priceMin")),
     discountPercentage: Yup.number()
-      .min(0, t("validation.min", { min: 0 }))
-      .max(100, t("validation.max", { max: 100 }))
+      .min(0, t("product.form.prices.validation.discountMin"))
+      .max(100, t("product.form.prices.validation.discountMax"))
       .nullable(),
   });
 
@@ -71,6 +67,8 @@ const PriceForm: React.FC<PriceFormProps> = ({
     }
   };
 
+  const selectedSellType = sellTypes.find(st => st.id === formik.values.sellTypeId);
+
   return (
     <form>
       <Row className="mb-3">
@@ -85,10 +83,10 @@ const PriceForm: React.FC<PriceFormProps> = ({
               value={formik.values.sellTypeId?.toString() || ""}
               onChange={(value) => {
                 const sellTypeId = value ? Number(value) : 0;
-                formik.setFieldValue("sellTypeId", sellTypeId);
-                // Set default discount from sell type
                 const selectedSellType = sellTypes.find(st => st.id === sellTypeId);
+                formik.setFieldValue("sellTypeId", sellTypeId);
                 if (selectedSellType) {
+                  formik.setFieldValue("currency", selectedSellType.currency);
                   formik.setFieldValue("discountPercentage", selectedSellType.discountPercentage);
                 }
               }}
@@ -113,36 +111,23 @@ const PriceForm: React.FC<PriceFormProps> = ({
                 formik.setFieldValue("price", parseFormattedNumber(value));
               }}
               placeholder={t("product.form.prices.placeholders.price")}
+              disabled={!formik.values.sellTypeId}
             />
             {formik.touched.price && formik.errors.price && (
               <div className="invalid-feedback d-block">
                 {formik.errors.price}
               </div>
             )}
+            {selectedSellType && (
+              <small className="text-muted">
+                {selectedSellType.currencySymbol} {selectedSellType.currency}
+              </small>
+            )}
           </FormGroup>
         </Col>
       </Row>
 
       <Row>
-        <Col md={6}>
-          <FormGroup>
-            <Label for="currency">{t("product.form.prices.currency")}</Label>
-            <RaDropdown
-              options={currencies.map((curr) => ({
-                value: curr.code,
-                label: `${curr.code} - ${curr.name}`,
-              }))}
-              value={formik.values.currency}
-              onChange={(value) => formik.setFieldValue("currency", value)}
-              placeholder={t("product.form.prices.placeholders.currency")}
-            />
-            {formik.touched.currency && formik.errors.currency && (
-              <div className="invalid-feedback d-block">
-                {formik.errors.currency}
-              </div>
-            )}
-          </FormGroup>
-        </Col>
         <Col md={6}>
           <FormGroup>
             <Label for="discountPercentage">

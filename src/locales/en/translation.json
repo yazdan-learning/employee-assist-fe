@@ -489,6 +489,26 @@
         "codeRequired": "Product code is required",
         "nameRequired": "Product name is required",
         "statusRequired": "Status is required"
+      },
+      "prices": {
+        "title": "Product Prices",
+        "add": "Add Price",
+        "edit": "Edit Price",
+        "sellType": "Sell Type",
+        "price": "Price",
+        "discount": "Discount",
+        "placeholders": {
+          "sellType": "Select sell type",
+          "price": "Enter price",
+          "discount": "Enter discount percentage"
+        },
+        "validation": {
+          "sellTypeRequired": "Please select a sell type",
+          "priceRequired": "Price is required",
+          "priceMin": "Price must be greater than or equal to 0",
+          "discountMin": "Discount must be greater than or equal to 0",
+          "discountMax": "Discount must be less than or equal to 100"
+        }
       }
     },
     "list": {

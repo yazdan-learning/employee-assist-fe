@@ -6,6 +6,7 @@ import CardListContainer from "../../../../Components/Common/CardListContainer";
 import { FormikErrors, FormikTouched } from "formik";
 import { Product } from "../types";
 import { useSellTypes } from "../../../../hooks/useProducts";
+import { formatNumber } from "../../../../helpers/number_helper";
 
 interface Price {
   sellTypeId: number;
@@ -79,11 +80,14 @@ const PriceList: React.FC<PriceListProps> = ({
       key: "price",
       header: t("product.form.prices.price"),
       width: 3,
-      render: (price: Price) => (
-        <span>
-          {price.price} {price.currency}
-        </span>
-      ),
+      render: (price: Price) => {
+        const sellType = sellTypes.find(st => st.id === price.sellTypeId);
+        return (
+          <span>
+            {formatNumber(price.price)} {sellType?.currencySymbol || price.currency}
+          </span>
+        );
+      },
     },
     {
       key: "discount",
@@ -102,11 +106,13 @@ const PriceList: React.FC<PriceListProps> = ({
       icon: "bx bx-edit-alt",
       color: "primary",
       onClick: (_: any, index: number) => handleEdit(index),
+      tooltip: t("common.edit"),
     },
     {
       icon: "bx bx-trash",
       color: "danger",
       onClick: (_: any, index: number) => handleRemove(index),
+      tooltip: t("common.delete"),
     },
   ];
 

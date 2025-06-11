@@ -27,6 +27,8 @@ export interface ProductSellType {
   id: number;
   name: string;
   discountPercentage: number;
+  currency: string;
+  currencySymbol: string;
 }
 
 export interface ProductPrice {
