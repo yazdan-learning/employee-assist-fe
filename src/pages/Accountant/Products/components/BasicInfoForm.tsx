@@ -240,7 +240,16 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({
       {/* Units Section */}
       <Card className="mt-4">
         <CardBody>
-          <h5 className="mb-4">{t("product.form.units.title")}</h5>
+          <div className="d-flex align-items-center mb-4">
+            <h5 className={`mb-0 ${errors.units && touched.units && !data.units.some(unit => unit.isPrimary) ? 'text-danger' : ''}`}>
+              {t("product.form.units.title")}
+            </h5>
+            {errors.units && touched.units && !data.units.some(unit => unit.isPrimary) && (
+              <small className="text-danger ms-2">
+                {t("product.form.units.validation.primaryRequired")}
+              </small>
+            )}
+          </div>
           <UnitList
             units={data.units}
             onChange={handleUnitsChange}

@@ -412,28 +412,27 @@
         }
       },
       "units": {
-        "title": "Product Units",
+        "title": "Units",
         "add": "Add Unit",
         "edit": "Edit Unit",
-        "remove": "Remove Unit",
+        "delete": "Delete Unit",
         "unit": "Unit",
         "conversionRate": "Conversion Rate",
         "weightPerUnit": "Weight per Unit",
         "isPrimary": "Primary Unit",
         "primaryBadge": "Primary",
-        "cantRemoveLastUnit": "Cannot remove the last unit",
-        "cantRemovePrimary": "Cannot remove the primary unit",
         "placeholders": {
           "unit": "Select unit",
           "conversionRate": "Enter conversion rate",
           "weightPerUnit": "Enter weight per unit"
         },
         "validation": {
-          "unitRequired": "Please select a unit",
+          "unitRequired": "Unit is required",
           "conversionRateRequired": "Conversion rate is required",
           "conversionRateMin": "Conversion rate must be greater than 0",
-          "weightPerUnitMin": "Weight per unit must be 0 or greater",
-          "minOneUnit": "At least one unit is required"
+          "weightPerUnitRequired": "Weight per unit is required",
+          "weightPerUnitMin": "Weight per unit must be greater than or equal to 0",
+          "primaryRequired": "Please select a primary unit"
         }
       },
       "attributes": {

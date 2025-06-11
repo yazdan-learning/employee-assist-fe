@@ -69,14 +69,13 @@ const ProductForm: React.FC = () => {
           unitId: Yup.number().required(t("validation.required")),
           isPrimary: Yup.boolean(),
           conversionRate: Yup.number()
-            .min(0, t("validation.min", { min: 0 }))
+            .min(0.0001, t("validation.min", { min: 0.0001 }))
             .required(t("validation.required")),
           weightPerUnit: Yup.number()
             .min(0, t("validation.min", { min: 0 }))
             .required(t("validation.required")),
         })
       )
-      .min(1, t("product.form.units.validation.minOneUnit"))
       .test("hasPrimary", t("product.form.units.validation.primaryRequired"), function(value) {
         return value?.some(unit => unit.isPrimary) || false;
       }),
@@ -134,8 +133,21 @@ const ProductForm: React.FC = () => {
       formik.setFieldTouched(field, true);
     });
 
+    // For basic info step, also validate units
+    if (currentStep === 1) {
+      formik.setFieldTouched("units", true);
+    }
+
     // Check if there are any errors in the current step's fields
     const hasErrors = fields.some((field) => formik.errors[field]);
+
+    // For basic info step, also check units validation
+    if (currentStep === 1) {
+      const unitsError = formik.errors.units;
+      if (unitsError) {
+        return;
+      }
+    }
 
     if (!hasErrors) {
       setCurrentStep((prev) => prev + 1);
@@ -158,8 +170,6 @@ const ProductForm: React.FC = () => {
       const hasErrors = Object.keys(errors).length > 0;
 
       if (hasErrors) {
-        // Show validation errors
-        toast.error(t("validation.checkFields"));
         return;
       }
 
