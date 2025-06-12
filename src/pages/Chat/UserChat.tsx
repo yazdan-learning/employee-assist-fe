@@ -132,7 +132,7 @@ const UserChat: React.FC<Props> = ({
   return (
     <div
       className="w-100 user-chat d-flex flex-column"
-      style={{ height: "calc(100vh - 180px)" }}
+      style={{ height: "calc(100vh - 100px)" }}
     >
       <Card className="mb-0 h-100 d-flex flex-column">
         {/* Fixed Header */}
