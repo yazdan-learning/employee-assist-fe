@@ -46,7 +46,7 @@ const authProtectedRoutes = [
 
 const publicRoutes = [
   // eslint-disable-next-line react/react-in-jsx-scope
-  { path: "/", exact: true, component: <Navigate to="/dashboard" /> },
+  { path: "/", exact: true, component: <Navigate to="/chat" /> },
   // eslint-disable-next-line react/react-in-jsx-scope
   { path: "/dashboard", component: <Dashboard /> },
    //chat

@@ -106,11 +106,11 @@ const ChatList: React.FC<Props> = ({ userChatOpen, assistantType }) => {
   );
 
   return (
-    <div className="chat-leftsidebar me-lg-4">
+    <div className="chat-leftsidebar me-lg-4" style={{maxWidth: '220px', minWidth: '180px'}}>
       <div className="d-flex flex-column h-100">
         <div className="chat-leftsidebar-nav flex-grow-1">
           <div className="px-2 pt-4 pb-4">
-            <div className="d-flex align-items-center mb-4">
+            <div className="d-flex align-items-center mb-2">
               <h5 className="font-size-14 mb-0">{t("Chat Assistant")}</h5>
               <div className="d-flex align-items-center ms-auto">
                 <Button
@@ -121,24 +121,26 @@ const ChatList: React.FC<Props> = ({ userChatOpen, assistantType }) => {
                 >
                   <i className="bx bx-edit-alt fs-4"></i>
                 </Button>
-                <div className="position-relative search-box">
-                  <Input
-                    type="text"
-                    className="form-control bg-light border-0 rounded-pill"
-                    placeholder={t("Search sessions")}
-                    value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)}
-                    style={{ paddingLeft: "40px", height: "38px" }}
-                  />
-                  <i
-                    className="bx bx-search search-icon position-absolute"
-                    style={{
-                      left: "15px",
-                      top: "50%",
-                      transform: "translateY(-50%)",
-                    }}
-                  />
-                </div>
+              </div>
+            </div>
+            <div className="mb-4">
+              <div className="position-relative search-box">
+                <Input
+                  type="text"
+                  className="form-control bg-light border-0 rounded-pill"
+                  placeholder={t("Search sessions")}
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
+                  style={{ paddingLeft: "40px", height: "38px" }}
+                />
+                <i
+                  className="bx bx-search search-icon position-absolute"
+                  style={{
+                    left: "15px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                  }}
+                />
               </div>
             </div>
 
@@ -174,8 +176,8 @@ const ChatList: React.FC<Props> = ({ userChatOpen, assistantType }) => {
                               />
                             ) : (
                               <h5
-                                className="text-truncate font-size-14 mb-0"
-                                style={{ maxWidth: "200px" }}
+                                className="text-truncate font-size-12 mb-0"
+                                style={{ maxWidth: "110px", fontWeight: 400 }}
                               >
                                 {chat.session_name || t("New Chat")}
                               </h5>
