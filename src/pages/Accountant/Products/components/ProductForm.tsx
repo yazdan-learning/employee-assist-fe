@@ -14,12 +14,33 @@ import {
 import BasicInfoForm from "./BasicInfoForm";
 import GeneralInfoForm from "./GeneralInfoForm";
 import AdditionalInfoForm from "./AdditionalInfoForm";
+import StepIndicator, { Step } from "../../../../Components/StepIndicator/StepIndicator";
+import { Package, FileText, Settings } from 'react-feather';
 
 const ProductForm: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [currentStep, setCurrentStep] = useState(1);
+  const [invalidSteps, setInvalidSteps] = useState<number[]>([]);
+
+  const steps: Step[] = [
+    {
+      icon: <Package size={20} />,
+      title: t('product.form.steps.basicInfo'),
+      description: t('product.form.steps.basicInfoDesc')
+    },
+    {
+      icon: <FileText size={20} />,
+      title: t('product.form.steps.generalInfo'),
+      description: t('product.form.steps.generalInfoDesc')
+    },
+    {
+      icon: <Settings size={20} />,
+      title: t('product.form.steps.additionalInfo'),
+      description: t('product.form.steps.additionalInfoDesc')
+    }
+  ];
 
   const {
     data: productResponse,
@@ -125,41 +146,76 @@ const ProductForm: React.FC = () => {
     },
   });
 
-  const handleNext = () => {
-    const fields = getFieldsForCurrentStep();
-
-    // Touch all fields in current step to show validation errors
+  const validateStep = (stepNumber: number): boolean => {
+    const fields = getFieldsForStep(stepNumber);
+    
+    // Touch all fields in the step to show validation errors
     fields.forEach((field) => {
       formik.setFieldTouched(field, true);
     });
 
     // For basic info step, also validate units
-    if (currentStep === 1) {
+    if (stepNumber === 1) {
       formik.setFieldTouched("units", true);
     }
 
-    // Check if there are any errors in the current step's fields
+    // Check if there are any errors in the step's fields
     const hasErrors = fields.some((field) => formik.errors[field]);
 
     // For basic info step, also check units validation
-    if (currentStep === 1) {
+    if (stepNumber === 1) {
       const unitsError = formik.errors.units;
       if (unitsError) {
-        return;
+        return false;
       }
     }
 
-    if (!hasErrors) {
-      setCurrentStep((prev) => prev + 1);
+    return !hasErrors;
+  };
+
+  const validateCurrentStep = (): boolean => {
+    return validateStep(currentStep);
+  };
+
+  const validateAllSteps = (): boolean => {
+    const invalidStepsList: number[] = [];
+    
+    // Validate each step
+    for (let step = 1; step <= 3; step++) {
+      if (!validateStep(step)) {
+        invalidStepsList.push(step);
+      }
     }
+
+    setInvalidSteps(invalidStepsList);
+    return invalidStepsList.length === 0;
+  };
+
+  const handleStepChange = (targetStep: number) => {
+    // Always validate current step before any navigation
+    if (!validateCurrentStep()) {
+      return;
+    }
+    
+    setCurrentStep(targetStep);
+  };
+
+  const handleNext = () => {
+    handleStepChange(currentStep + 1);
   };
 
   const handlePrevious = () => {
-    setCurrentStep((prev) => prev - 1);
+    handleStepChange(currentStep - 1);
   };
 
   const handleSave = async () => {
     try {
+      // Validate all steps before saving
+      if (!validateAllSteps()) {
+        toast.error(t('product.form.messages.completeAllSteps'));
+        return;
+      }
+
       // Touch all fields to show all validation errors
       Object.keys(formik.values).forEach((field) => {
         formik.setFieldTouched(field, true);
@@ -181,8 +237,8 @@ const ProductForm: React.FC = () => {
     }
   };
 
-  const getFieldsForCurrentStep = () => {
-    switch (currentStep) {
+  const getFieldsForStep = (stepNumber: number) => {
+    switch (stepNumber) {
       case 1:
         return [
           "categoryId",
@@ -228,37 +284,15 @@ const ProductForm: React.FC = () => {
                       ? t("product.form.title.edit")
                       : t("product.form.title.new")}
                   </h4>
-                  <div className="step-indicator d-flex align-items-center">
-                    <span className="me-2">
-                      {t(
-                        "product.form.steps." +
-                          (currentStep === 1
-                            ? "basicInfo"
-                            : currentStep === 2
-                            ? "generalInfo"
-                            : "additionalInfo")
-                      )}{" "}
-                      -{" "}
-                      {t("product.form.step", {
-                        current: currentStep,
-                        total: 3,
-                      })}
-                    </span>
-                    <div
-                      className="progress"
-                      style={{ width: "100px", height: "6px" }}
-                    >
-                      <div
-                        className="progress-bar"
-                        role="progressbar"
-                        style={{ width: `${(currentStep / 3) * 100}%` }}
-                        aria-valuenow={currentStep}
-                        aria-valuemin={1}
-                        aria-valuemax={3}
-                      />
-                    </div>
-                  </div>
                 </div>
+
+                <StepIndicator 
+                  currentStep={currentStep}
+                  steps={steps}
+                  onStepClick={handleStepChange}
+                  allowStepClick={true}
+                  invalidSteps={invalidSteps}
+                />
 
                 <form onSubmit={formik.handleSubmit}>
                   {currentStep === 1 && (
@@ -301,27 +335,27 @@ const ProductForm: React.FC = () => {
                   )}
 
                   <div className="d-flex justify-content-end gap-2 mt-4">
-                    {currentStep > 1 && (
-                      <Button color="light" onClick={handlePrevious}>
-                        {t("common.form.buttons.previous")}
-                      </Button>
-                    )}
                     <Button
                       color="light"
                       onClick={() => navigate("/accountant/products")}
                     >
                       {t("common.form.buttons.cancel")}
                     </Button>
-                    <Button color="success" onClick={handleSave}>
-                      {id
-                        ? t("common.form.buttons.update")
-                        : t("common.form.buttons.save")}
-                    </Button>
+                    {currentStep > 1 && (
+                      <Button color="light" onClick={handlePrevious}>
+                        {t("common.form.buttons.previous")}
+                      </Button>
+                    )}
                     {currentStep < 3 && (
                       <Button color="primary" onClick={handleNext}>
                         {t("common.form.buttons.next")}
                       </Button>
                     )}
+                    <Button color="success" onClick={handleSave}>
+                      {id
+                        ? t("common.form.buttons.update")
+                        : t("common.form.buttons.save")}
+                    </Button>
                   </div>
                 </form>
               </CardBody>

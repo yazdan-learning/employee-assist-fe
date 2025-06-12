@@ -62,6 +62,7 @@
     "react-dom": "^19.0.0",
     "react-dropzone": "^14.2.3",
     "react-dual-listbox": "^6.0.3",
+    "react-feather": "^2.0.10",
     "react-flatpickr": "^3.10.13",
     "react-i18next": "^15.0.2",
     "react-input-mask": "^2.0.4",

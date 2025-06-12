@@ -38,7 +38,7 @@ const CardListContainer: React.FC<CardListContainerProps> = ({
       <div className="d-none d-md-flex mb-2 px-3">
         {columns.map((col) => (
           <div
-            key={col.key}
+            key={`header-${col.key}`}
             className={`col-${col.width} fw-bold ${
               col.align ? `text-${col.align}` : ""
             }`}
@@ -52,14 +52,14 @@ const CardListContainer: React.FC<CardListContainerProps> = ({
       {/* Items */}
       {items.map((item, index) => (
         <Card
-          key={keyField ? item[keyField] : index}
+          key={keyField ? item[keyField] : `item-${index}`}
           className="mb-2 border shadow-none"
         >
           <CardBody className="p-3">
             <div className="d-flex align-items-center">
               {columns.map((col) => (
                 <div
-                  key={col.key}
+                  key={`${item[keyField] || index}-${col.key}`}
                   className={`col-${col.width} ${
                     col.align ? `text-${col.align}` : ""
                   }`}
@@ -77,7 +77,7 @@ const CardListContainer: React.FC<CardListContainerProps> = ({
                   <div className="d-flex gap-2 justify-content-end">
                     {actions.map((action, actionIndex) => (
                       <Button
-                        key={actionIndex}
+                        key={`${item[keyField] || index}-action-${actionIndex}`}
                         color="link"
                         className={`p-0 text-${action.color || "primary"}`}
                         onClick={() => action.onClick(item, index)}
