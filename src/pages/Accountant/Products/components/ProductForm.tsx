@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Row, Col, Card, CardBody, Button } from "reactstrap";
@@ -16,13 +16,12 @@ import GeneralInfoForm from "./GeneralInfoForm";
 import AdditionalInfoForm from "./AdditionalInfoForm";
 import StepIndicator, { Step } from "../../../../Components/StepIndicator/StepIndicator";
 import { Package, FileText, Settings } from 'react-feather';
+import { useFormSteps } from "../../../../hooks/useFormSteps";
 
 const ProductForm: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const [currentStep, setCurrentStep] = useState(1);
-  const [invalidSteps, setInvalidSteps] = useState<number[]>([]);
 
   const steps: Step[] = [
     {
@@ -146,97 +145,6 @@ const ProductForm: React.FC = () => {
     },
   });
 
-  const validateStep = (stepNumber: number): boolean => {
-    const fields = getFieldsForStep(stepNumber);
-    
-    // Touch all fields in the step to show validation errors
-    fields.forEach((field) => {
-      formik.setFieldTouched(field, true);
-    });
-
-    // For basic info step, also validate units
-    if (stepNumber === 1) {
-      formik.setFieldTouched("units", true);
-    }
-
-    // Check if there are any errors in the step's fields
-    const hasErrors = fields.some((field) => formik.errors[field]);
-
-    // For basic info step, also check units validation
-    if (stepNumber === 1) {
-      const unitsError = formik.errors.units;
-      if (unitsError) {
-        return false;
-      }
-    }
-
-    return !hasErrors;
-  };
-
-  const validateCurrentStep = (): boolean => {
-    return validateStep(currentStep);
-  };
-
-  const validateAllSteps = (): boolean => {
-    const invalidStepsList: number[] = [];
-    
-    // Validate each step
-    for (let step = 1; step <= 3; step++) {
-      if (!validateStep(step)) {
-        invalidStepsList.push(step);
-      }
-    }
-
-    setInvalidSteps(invalidStepsList);
-    return invalidStepsList.length === 0;
-  };
-
-  const handleStepChange = (targetStep: number) => {
-    // Always validate current step before any navigation
-    if (!validateCurrentStep()) {
-      return;
-    }
-    
-    setCurrentStep(targetStep);
-  };
-
-  const handleNext = () => {
-    handleStepChange(currentStep + 1);
-  };
-
-  const handlePrevious = () => {
-    handleStepChange(currentStep - 1);
-  };
-
-  const handleSave = async () => {
-    try {
-      // Validate all steps before saving
-      if (!validateAllSteps()) {
-        toast.error(t('product.form.messages.completeAllSteps'));
-        return;
-      }
-
-      // Touch all fields to show all validation errors
-      Object.keys(formik.values).forEach((field) => {
-        formik.setFieldTouched(field, true);
-      });
-
-      // Validate all fields
-      const errors = await formik.validateForm();
-      const hasErrors = Object.keys(errors).length > 0;
-
-      if (hasErrors) {
-        return;
-      }
-
-      // Submit the form if validation passes
-      await formik.submitForm();
-    } catch (error) {
-      console.error("Save error:", error);
-      toast.error(t("product.form.messages.saveError"));
-    }
-  };
-
   const getFieldsForStep = (stepNumber: number) => {
     switch (stepNumber) {
       case 1:
@@ -258,6 +166,19 @@ const ProductForm: React.FC = () => {
         return [];
     }
   };
+
+  const {
+    currentStep,
+    invalidSteps,
+    handleStepChange,
+    handleNext,
+    handlePrevious,
+    handleSave,
+  } = useFormSteps({
+    formik,
+    totalSteps: 3,
+    getFieldsForStep,
+  });
 
   if (id && isLoading) {
     return <div>Loading...</div>;

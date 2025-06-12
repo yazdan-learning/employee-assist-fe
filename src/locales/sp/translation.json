@@ -234,5 +234,29 @@
       "deleteError": "Error al eliminar el producto",
       "deleteConfirm": "¿Está seguro de que desea eliminar este producto?"
     }
+  },
+  "customer": {
+    "form": {
+      "title": {
+        "new": "Nuevo Cliente",
+        "edit": "Editar Cliente"
+      },
+      "messages": {
+        "createSuccess": "Cliente creado exitosamente",
+        "createError": "Error al crear el cliente",
+        "updateSuccess": "Cliente actualizado exitosamente",
+        "updateError": "Error al actualizar el cliente",
+        "saveError": "Error al guardar el cliente",
+        "completeCurrentStep": "Por favor complete el paso actual"
+      },
+      "steps": {
+        "basicInfo": "Información Básica",
+        "basicInfoDesc": "Ingrese los datos básicos del cliente",
+        "contactInfo": "Información de Contacto",
+        "contactInfoDesc": "Agregue datos de contacto y direcciones",
+        "bankInfo": "Información Bancaria",
+        "bankInfoDesc": "Administre cuentas bancarias y detalles de pago"
+      }
+    }
   }
 }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Row, Col, Card, CardBody, Button } from "reactstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -14,12 +14,32 @@ import BasicInfoForm from "./BasicInfoForm";
 import ContactInfoForm from "./ContactInfoForm";
 import BankAccountForm from "./BankAccountForm";
 import { toast } from "react-toastify";
+import StepIndicator, { Step } from "../../../../Components/StepIndicator/StepIndicator";
+import { User, Phone, CreditCard } from 'react-feather';
+import { useFormSteps } from "../../../../hooks/useFormSteps";
 
 const CustomerForm: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const [currentStep, setCurrentStep] = useState(1);
+
+  const steps: Step[] = [
+    {
+      icon: <User size={20} />,
+      title: t('customer.form.steps.basicInfo'),
+      description: t('customer.form.steps.basicInfoDesc')
+    },
+    {
+      icon: <Phone size={20} />,
+      title: t('customer.form.steps.contactInfo'),
+      description: t('customer.form.steps.contactInfoDesc')
+    },
+    {
+      icon: <CreditCard size={20} />,
+      title: t('customer.form.steps.bankInfo'),
+      description: t('customer.form.steps.bankInfoDesc')
+    }
+  ];
 
   const {
     data: customerResponse,
@@ -189,42 +209,8 @@ const CustomerForm: React.FC = () => {
     },
   });
 
-  const handleNext = () => {
-    const fields = getFieldsForCurrentStep();
-
-    // Touch all fields in current step to show validation errors
-    fields.forEach((field) => {
-      formik.setFieldTouched(field, true);
-    });
-
-    // Check if there are any errors in the current step's fields
-    const hasErrors = fields.some((field) => formik.errors[field]);
-
-    if (!hasErrors) {
-      setCurrentStep((prev) => prev + 1);
-    }
-  };
-
-  const handlePrevious = () => {
-    setCurrentStep((prev) => prev - 1);
-  };
-
-  const handleSave = async () => {
-    try {
-      // Touch all fields to show all validation errors
-      Object.keys(formik.values).forEach((field) => {
-        formik.setFieldTouched(field, true);
-      });
-
-      // Submit the form
-      await formik.submitForm();
-    } catch (error) {
-      console.error("Save error:", error);
-    }
-  };
-
-  const getFieldsForCurrentStep = () => {
-    switch (currentStep) {
+  const getFieldsForStep = (stepNumber: number) => {
+    switch (stepNumber) {
       case 1:
         return [
           "isCompany",
@@ -249,6 +235,19 @@ const CustomerForm: React.FC = () => {
     }
   };
 
+  const {
+    currentStep,
+    invalidSteps,
+    handleStepChange,
+    handleNext,
+    handlePrevious,
+    handleSave,
+  } = useFormSteps({
+    formik,
+    totalSteps: 3,
+    getFieldsForStep,
+  });
+
   if (id && isLoading) {
     return <div>Loading...</div>;
   }
@@ -268,11 +267,21 @@ const CustomerForm: React.FC = () => {
           <Col lg={12}>
             <Card>
               <CardBody>
-                <h4 className="card-title mb-4">
-                  {id
-                    ? t("customer.form.title.edit")
-                    : t("customer.form.title.new")}
-                </h4>
+                <div className="d-flex justify-content-between align-items-center mb-4">
+                  <h4 className="card-title mb-0">
+                    {id
+                      ? t("customer.form.title.edit")
+                      : t("customer.form.title.new")}
+                  </h4>
+                </div>
+
+                <StepIndicator 
+                  currentStep={currentStep}
+                  steps={steps}
+                  onStepClick={handleStepChange}
+                  allowStepClick={true}
+                  invalidSteps={invalidSteps}
+                />
 
                 <form onSubmit={formik.handleSubmit}>
                   {currentStep === 1 && (
@@ -331,26 +340,28 @@ const CustomerForm: React.FC = () => {
                     />
                   )}
 
-                  <div className="d-flex justify-content-end mt-4">
-                    <div className="d-flex gap-2">
-                      {currentStep > 1 && (
-                        <Button color="secondary" onClick={handlePrevious}>
-                          {t("customer.form.buttons.previous")}
-                        </Button>
-                      )}
-
-                      {currentStep < 3 && (
-                        <Button color="primary" onClick={handleNext}>
-                          {t("customer.form.buttons.next")}
-                        </Button>
-                      )}
-
-                      <Button color="success" onClick={handleSave}>
-                        {id
-                          ? t("customer.form.buttons.update")
-                          : t("customer.form.buttons.save")}
+                  <div className="d-flex justify-content-end gap-2 mt-4">
+                    <Button
+                      color="light"
+                      onClick={() => navigate("/accountant/customers")}
+                    >
+                      {t("common.form.buttons.cancel")}
+                    </Button>
+                    {currentStep > 1 && (
+                      <Button color="light" onClick={handlePrevious}>
+                        {t("common.form.buttons.previous")}
                       </Button>
-                    </div>
+                    )}
+                    {currentStep < 3 && (
+                      <Button color="primary" onClick={handleNext}>
+                        {t("common.form.buttons.next")}
+                      </Button>
+                    )}
+                    <Button color="success" onClick={handleSave}>
+                      {id
+                        ? t("common.form.buttons.update")
+                        : t("common.form.buttons.save")}
+                    </Button>
                   </div>
                 </form>
               </CardBody>

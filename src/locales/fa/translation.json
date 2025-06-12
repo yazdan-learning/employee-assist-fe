@@ -224,12 +224,16 @@
         "createError": "خطا در ایجاد مشتری",
         "updateSuccess": "مشتری با موفقیت به‌روزرسانی شد",
         "updateError": "خطا در به‌روزرسانی مشتری",
-        "saveError": "خطا در ذخیره مشتری"
+        "saveError": "خطا در ذخیره مشتری",
+        "completeCurrentStep": "لطفاً مرحله فعلی را تکمیل کنید"
       },
       "steps": {
-        "basic": "اطلاعات اولیه",
-        "contact": "اطلاعات تماس",
-        "additional": "اطلاعات تکمیلی"
+        "basicInfo": "اطلاعات اولیه",
+        "basicInfoDesc": "اطلاعات پایه مشتری را وارد کنید",
+        "contactInfo": "اطلاعات تماس",
+        "contactInfoDesc": "اطلاعات تماس و آدرس‌ها را اضافه کنید",
+        "bankInfo": "اطلاعات بانکی",
+        "bankInfoDesc": "مدیریت حساب‌های بانکی و جزئیات پرداخت"
       },
       "buttons": {
         "previous": "مرحله قبل",

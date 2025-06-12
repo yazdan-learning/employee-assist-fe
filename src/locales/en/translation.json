@@ -204,12 +204,16 @@
         "createError": "Error creating customer",
         "updateSuccess": "Customer updated successfully",
         "updateError": "Error updating customer",
-        "saveError": "Error saving customer"
+        "saveError": "Error saving customer",
+        "completeCurrentStep": "Please complete the current step before proceeding"
       },
       "steps": {
-        "basic": "Basic Information",
-        "contact": "Contact Information",
-        "additional": "Additional Details"
+        "basicInfo": "Basic Information",
+        "basicInfoDesc": "Enter customer's basic details",
+        "contactInfo": "Contact Information",
+        "contactInfoDesc": "Add contact details and addresses",
+        "bankInfo": "Bank Information",
+        "bankInfoDesc": "Manage bank accounts and payment details"
       },
       "buttons": {
         "previous": "Previous",

@@ -110,10 +110,21 @@
         "new": "Neuer Kunde",
         "edit": "Kunde bearbeiten"
       },
+      "messages": {
+        "createSuccess": "Kunde erfolgreich erstellt",
+        "createError": "Fehler beim Erstellen des Kunden",
+        "updateSuccess": "Kunde erfolgreich aktualisiert",
+        "updateError": "Fehler beim Aktualisieren des Kunden",
+        "saveError": "Fehler beim Speichern des Kunden",
+        "completeCurrentStep": "Bitte vervollständigen Sie den aktuellen Schritt"
+      },
       "steps": {
-        "basic": "Grundinformationen",
-        "contact": "Kontaktinformationen",
-        "additional": "Zusätzliche Details"
+        "basicInfo": "Grundinformationen",
+        "basicInfoDesc": "Geben Sie die grundlegenden Kundendaten ein",
+        "contactInfo": "Kontaktinformationen",
+        "contactInfoDesc": "Fügen Sie Kontaktdaten und Adressen hinzu",
+        "bankInfo": "Bankinformationen",
+        "bankInfoDesc": "Verwalten Sie Bankkonten und Zahlungsdetails"
       },
       "buttons": {
         "previous": "Zurück",
