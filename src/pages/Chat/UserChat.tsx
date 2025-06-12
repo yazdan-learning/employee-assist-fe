@@ -71,7 +71,6 @@ const UserChat: React.FC<Props> = ({
   }, [currentSession, propChatTitle, t]);
 
   const [curMessage, setCurMessage] = useState<string>("");
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [emoji, setEmoji] = useState<boolean>(false);
 
   useEffect(() => {
@@ -85,26 +84,16 @@ const UserChat: React.FC<Props> = ({
     setCurMessage(curMessage + event.emoji);
   };
 
-  const handleImageChange = (event: any) => {
-    event.preventDefault();
-    const reader = new FileReader();
-    const file = event.target.files[0];
-    reader.onloadend = () => {
-      setSelectedImage(reader.result as string);
-    };
-    reader.readAsDataURL(file);
-  };
-
   const sendMessage = (e?: React.FormEvent) => {
     if (e) {
       e.preventDefault();
     }
 
-    if (curMessage.trim() !== "" || selectedImage !== null) {
+    if (curMessage.trim() !== "") {
       const newMessage: ChatMessage = {
         id: Date.now(),
         isUser: true,
-        content: selectedImage ? `[image]` : curMessage.trim(),
+        content: curMessage.trim(),
         timestamp: new Date().toISOString(),
       };
 
@@ -125,7 +114,6 @@ const UserChat: React.FC<Props> = ({
 
       setCurMessage("");
       setEmoji(false);
-      setSelectedImage(null);
     }
   };
 
@@ -247,27 +235,6 @@ const UserChat: React.FC<Props> = ({
                             </div>
                           )}
                         </li>
-                        <li className="list-inline-item">
-                          <Link to="#">
-                            <i
-                              className="mdi mdi-file-image-outline"
-                              id="Imagetooltip"
-                              onClick={() => {
-                                const input = document.createElement("input");
-                                input.type = "file";
-                                input.accept = "image/*";
-                                input.onchange = handleImageChange;
-                                input.click();
-                              }}
-                            />
-                            <UncontrolledTooltip
-                              placement="top"
-                              target="Imagetooltip"
-                            >
-                              {t("Images")}
-                            </UncontrolledTooltip>
-                          </Link>
-                        </li>
                       </ul>
                     </div>
                   </div>
@@ -276,9 +243,7 @@ const UserChat: React.FC<Props> = ({
                   <Button
                     type="submit"
                     color="primary"
-                    disabled={
-                      assistantLoading || (!curMessage.trim() && !selectedImage)
-                    }
+                    disabled={assistantLoading || !curMessage.trim()}
                     className="btn-rounded chat-send w-md waves-effect waves-light"
                   >
                     <span className="d-none d-sm-inline-block me-2">
