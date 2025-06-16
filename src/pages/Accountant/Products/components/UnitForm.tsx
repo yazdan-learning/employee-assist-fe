@@ -5,7 +5,7 @@ import { Button, FormGroup, Label, Row, Col, Input } from "reactstrap";
 import { useTranslation } from "react-i18next";
 import RaDropdown from "../../../../Components/Common/RaDropdown";
 import { ProductUnit, Unit } from "../types";
-import { productService } from "../../../../services/ProductService";
+import { useUnits } from "../../../../hooks/useProducts";
 
 interface UnitFormProps {
   unit?: ProductUnit;
@@ -21,15 +21,7 @@ const UnitForm: React.FC<UnitFormProps> = ({
   existingUnits,
 }) => {
   const { t } = useTranslation();
-  const [units, setUnits] = React.useState<Unit[]>([]);
-
-  React.useEffect(() => {
-    const loadUnits = async () => {
-      const unitList = await productService.getUnits();
-      setUnits(unitList);
-    };
-    loadUnits();
-  }, []);
+  const { data: units = [] } = useUnits();
 
   const validationSchema = Yup.object().shape({
     unitId: Yup.number()

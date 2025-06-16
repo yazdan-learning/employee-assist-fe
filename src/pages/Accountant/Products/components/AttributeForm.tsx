@@ -5,8 +5,7 @@ import { Button, FormGroup, Label, Row, Col } from "reactstrap";
 import { useTranslation } from "react-i18next";
 import RaDropdown from "../../../../Components/Common/RaDropdown";
 import { ProductAttribute, Attribute } from "../types";
-import { useAttributeValues } from "../../../../hooks/useProducts";
-import { productService } from "../../../../services/ProductService";
+import { useAttributeValues, useAttributes } from "../../../../hooks/useProducts";
 
 interface AttributeFormProps {
   attribute?: ProductAttribute;
@@ -20,15 +19,7 @@ const AttributeForm: React.FC<AttributeFormProps> = ({
   onCancel,
 }) => {
   const { t } = useTranslation();
-  const [attributes, setAttributes] = React.useState<Attribute[]>([]);
-
-  React.useEffect(() => {
-    const loadAttributes = async () => {
-      const attrs = await productService.getAttributes();
-      setAttributes(attrs);
-    };
-    loadAttributes();
-  }, []);
+  const { data: attributes = [] } = useAttributes();
 
   const validationSchema = Yup.object().shape({
     attributeId: Yup.number()

@@ -157,11 +157,12 @@ const ProductForm: React.FC = () => {
           "isService",
           "hasSerial",
           "allowNegativeStock",
+          "units"
         ];
       case 2:
         return [];
       case 3:
-        return ["taxAmount", "minQuantity", "maxQuantity", "barcode"];
+        return ["taxAmount", "barcode"];
       default:
         return [];
     }

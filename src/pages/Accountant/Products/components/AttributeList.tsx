@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Card, CardBody, Row, Col } from "reactstrap";
 import { useTranslation } from "react-i18next";
 import { ProductAttribute, Attribute, AttributeValue, Product } from "../types";
 import AttributeForm from "./AttributeForm";
-import { productService } from "../../../../services/ProductService";
+import { useAttributes, useAttributeValues } from "../../../../hooks/useProducts";
 import { FormikErrors, FormikTouched } from "formik";
 
 interface AttributeListProps {
@@ -22,20 +22,13 @@ const AttributeList: React.FC<AttributeListProps> = ({
   const { t } = useTranslation();
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
-  const [attributeList, setAttributeList] = useState<Attribute[]>([]);
-  const [attributeValues, setAttributeValues] = useState<AttributeValue[]>([]);
-
-  React.useEffect(() => {
-    const loadData = async () => {
-      const attrs = await productService.getAttributes();
-      const values = await Promise.all(
-        attrs.map((a) => productService.getAttributeValues(a.id))
-      );
-      setAttributeList(attrs);
-      setAttributeValues(values.flat());
-    };
-    loadData();
-  }, []);
+  
+  // Use the hooks properly
+  const { data: attributeList = [] } = useAttributes();
+  
+  // If we're editing an attribute, we need its values
+  const editingAttributeId = editingIndex !== null ? attributes[editingIndex]?.attributeId : null;
+  const { data: currentAttributeValues = [] } = useAttributeValues(editingAttributeId);
 
   const handleSave = (attribute: ProductAttribute, index?: number) => {
     let newAttributes: ProductAttribute[];
@@ -80,7 +73,16 @@ const AttributeList: React.FC<AttributeListProps> = ({
   };
 
   const getValueName = (valueId: number) => {
-    return attributeValues.find((v) => v.id === valueId)?.value || "";
+    const attribute = attributes.find(a => a.valueId === valueId);
+    if (!attribute) return "";
+    
+    // If this is the attribute we're currently editing, use the current values
+    if (attribute.attributeId === editingAttributeId) {
+      return currentAttributeValues.find(v => v.id === valueId)?.value || "";
+    }
+    
+    // Otherwise, just show the ID until it's edited
+    return `Value ${valueId}`;
   };
 
   return (
