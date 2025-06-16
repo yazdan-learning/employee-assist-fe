@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import type { Product, ProductInfo, ProductStatus } from '../pages/Accountant/Products/types';
+import type { Product, ProductInfo } from '../pages/Accountant/Products/types';
 import type { ListRequest, BaseResponse, ListResponse } from '../types/common';
 import { fakeProductService } from '../services/FakeProductService';
 

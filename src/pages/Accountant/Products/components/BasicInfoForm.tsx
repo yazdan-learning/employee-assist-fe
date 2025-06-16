@@ -1,9 +1,9 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Row, Col, FormGroup, Label, Input, Card, CardBody } from "reactstrap";
 import { useTranslation } from "react-i18next";
 import RaDropdown from "../../../../Components/Common/RaDropdown";
 import { useCategories } from "../../../../hooks/useProducts";
-import { ProductStatus, ProductUnit } from "../types";
+import { ProductUnit } from "../types";
 import { FormikErrors, FormikTouched } from "formik";
 import { Product } from "../types";
 import UnitList from "./UnitList";
@@ -13,7 +13,7 @@ export interface BasicInfoFormData {
   code: string;
   name: string;
   description?: string;
-  status: ProductStatus;
+  isActive: boolean;
   isService: boolean;
   hasSerial: boolean;
   allowNegativeStock: boolean;
@@ -25,6 +25,7 @@ interface BasicInfoFormProps {
   onChange: (data: BasicInfoFormData) => void;
   errors?: FormikErrors<Product>;
   touched?: FormikTouched<Product>;
+  isEdit?: boolean;
 }
 
 const BasicInfoForm: React.FC<BasicInfoFormProps> = ({
@@ -32,6 +33,7 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({
   onChange,
   errors = {},
   touched = {},
+  isEdit = false,
 }) => {
   const { t } = useTranslation();
   const { data: categories = [] } = useCategories();
@@ -149,25 +151,6 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({
             )}
           </FormGroup>
         </Col>
-        <Col md={6}>
-          <FormGroup>
-            <Label for="status">{t("product.form.fields.status")}</Label>
-            <RaDropdown
-              options={Object.values(ProductStatus).map((status) => ({
-                value: status,
-                label: t(`product.form.status.${status.toLowerCase()}`),
-              }))}
-              value={data.status}
-              onChange={(value) => handleInputChange("status", value)}
-              placeholder={t("product.form.placeholders.status")}
-            />
-            {touched.status && errors.status && (
-              <div className="invalid-feedback d-block">
-                {t("product.form.validation.statusRequired")}
-              </div>
-            )}
-          </FormGroup>
-        </Col>
       </Row>
 
       <Row>
@@ -234,6 +217,22 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({
               {t("product.form.fields.allowNegativeStock")}
             </Label>
           </FormGroup>
+
+          {isEdit && (
+            <FormGroup check className="mb-0">
+              <Label check className="d-flex align-items-center">
+                <Input
+                  type="checkbox"
+                  checked={data.isActive}
+                  onChange={(e) =>
+                    handleInputChange("isActive", e.target.checked)
+                  }
+                  className="me-2"
+                />
+                {t("product.form.fields.isActive")}
+              </Label>
+            </FormGroup>
+          )}
         </Col>
       </Row>
 

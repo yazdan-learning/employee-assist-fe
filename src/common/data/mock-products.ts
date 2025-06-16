@@ -1,4 +1,4 @@
-import { Product, Category, Attribute, AttributeValue, Unit, ProductAttribute, ProductStatus } from "../../pages/Accountant/Products/types";
+import { Product, Category, Attribute, AttributeValue, Unit, ProductAttribute } from "../../pages/Accountant/Products/types";
 
 // Mock data for dropdowns
 export const mockCategories: Category[] = [
@@ -157,7 +157,7 @@ const generateSampleProducts = (): Product[] => {
       isService: Math.random() < 0.1,
       hasSerial: Math.random() < 0.3,
       allowNegativeStock: Math.random() < 0.2,
-      status: ProductStatus.ACTIVE,
+      isActive: true,
       categoryId,
       attributes,
       units,

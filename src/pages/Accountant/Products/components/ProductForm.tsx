@@ -5,7 +5,7 @@ import { Row, Col, Card, CardBody, Button } from "reactstrap";
 import { toast } from "react-toastify";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { Product, ProductStatus } from "../types";
+import { Product } from "../types";
 import {
   useCreateProduct,
   useUpdateProduct,
@@ -63,7 +63,7 @@ const ProductForm: React.FC = () => {
           isService: false,
           hasSerial: false,
           allowNegativeStock: false,
-          status: ProductStatus.INACTIVE,
+          isActive: true,
           categoryId: 0,
           attributes: [],
           units: [],
@@ -79,7 +79,7 @@ const ProductForm: React.FC = () => {
     code: Yup.string().required(t("validation.required")),
     name: Yup.string().required(t("validation.required")),
     description: Yup.string(),
-    status: Yup.string().required(t("validation.required")),
+    isActive: Yup.boolean(),
     isService: Yup.boolean(),
     hasSerial: Yup.boolean(),
     allowNegativeStock: Yup.boolean(),
@@ -219,14 +219,25 @@ const ProductForm: React.FC = () => {
                 <form onSubmit={formik.handleSubmit}>
                   {currentStep === 1 && (
                     <BasicInfoForm
-                      data={formik.values}
-                      onChange={(values) => {
-                        Object.keys(values).forEach((key) => {
-                          formik.setFieldValue(key, values[key]);
+                      data={{
+                        categoryId: formik.values.categoryId,
+                        code: formik.values.code,
+                        name: formik.values.name,
+                        description: formik.values.description,
+                        isActive: formik.values.isActive,
+                        isService: formik.values.isService,
+                        hasSerial: formik.values.hasSerial,
+                        allowNegativeStock: formik.values.allowNegativeStock,
+                        units: formik.values.units,
+                      }}
+                      onChange={(data) => {
+                        Object.keys(data).forEach((key) => {
+                          formik.setFieldValue(key, data[key as keyof typeof data]);
                         });
                       }}
                       errors={formik.errors}
                       touched={formik.touched}
+                      isEdit={!!id}
                     />
                   )}
 

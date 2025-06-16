@@ -1,4 +1,4 @@
-import { Product, AttributeValue, ProductStatus, ProductInfo } from '../pages/Accountant/Products/types';
+import { Product, AttributeValue, ProductInfo } from '../pages/Accountant/Products/types';
 import { ListRequest, ListResponse, BaseResponse } from '../types/common';
 import { mockCategories, mockAttributes, mockAttributeValues, mockUnits, mockLocations } from '../common/data/mock-products';
 import { 
@@ -64,7 +64,7 @@ class FakeProductService {
       name: product.name,
       code: product.code,
       category: mockCategories.find(c => c.id === product.categoryId)?.name || '',
-      status: product.status
+      isActive: product.isActive
     }));
 
     return {
@@ -100,7 +100,7 @@ class FakeProductService {
           isService: false,
           hasSerial: false,
           allowNegativeStock: false,
-          status: ProductStatus.INACTIVE,
+          isActive: false,
           categoryId: 0,
           attributes: [],
           units: [],
@@ -170,7 +170,7 @@ class FakeProductService {
           isService: false,
           hasSerial: false,
           allowNegativeStock: false,
-          status: ProductStatus.ACTIVE,
+          isActive: true,
           categoryId: 0,
           attributes: [],
           units: [],

@@ -8,7 +8,6 @@ import TableContainer from "../../../Components/Common/TableContainer";
 import { debounce } from "lodash";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { ProductInfo, ProductStatus } from "./types";
 
 const ProductList: React.FC = () => {
   const { t } = useTranslation();
@@ -112,19 +111,19 @@ const ProductList: React.FC = () => {
       },
       {
         header: t("product.list.columns.status"),
-        accessorKey: "status",
+        accessorKey: "isActive",
         enableColumnFilter: false,
         enableSorting: true,
         cell: (row: any) => (
           <span
             className={`badge badge-soft-${
-              row.getValue() === ProductStatus.ACTIVE ? "success" : "danger"
+              row.getValue() ? "success" : "danger"
             } font-size-11`}
           >
-            {t(`product.form.status.${row.getValue().toLowerCase()}`)}
+            {t(row.getValue() ? "product.form.status.active" : "product.form.status.inactive")}
           </span>
         ),
-        sortingFn: "alphanumeric",
+        sortingFn: "boolean",
       },
       {
         header: t("Actions"),

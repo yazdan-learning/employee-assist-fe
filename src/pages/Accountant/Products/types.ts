@@ -1,10 +1,3 @@
-export enum ProductStatus {
-  ACTIVE = "ACTIVE",
-  INACTIVE = "INACTIVE",
-  OUT_OF_STOCK = "OUT_OF_STOCK"
-}
-
-
 export interface ProductAttribute {
   id?: number;
   attributeId: number;
@@ -53,7 +46,7 @@ export interface Product {
   code: string;
   name: string;
   description?: string;
-  status: ProductStatus;
+  isActive: boolean;
   isService: boolean;
   hasSerial: boolean;
   allowNegativeStock: boolean;
@@ -88,7 +81,6 @@ export interface Unit {
   name: string;
 }
 
-
 export interface ProductState {
   products: Product[];
   selectedProduct: Product | null;
@@ -96,10 +88,9 @@ export interface ProductState {
   error: string | null;
 }
 
-
 export interface ProductInfo {
   id: string;
   name: string;
   category: string;
-  status: ProductStatus;
+  isActive: boolean;
 } 

@@ -1,4 +1,4 @@
-import { Product, AttributeValue, ProductStatus, ProductInfo } from '../pages/Accountant/Products/types';
+import { Product, AttributeValue, ProductInfo } from '../pages/Accountant/Products/types';
 import { ListRequest, ListResponse, BaseResponse } from '../types/common';
 import { APIClient } from '../helpers/api_helper';
 import { API_CONFIG } from '../config/api.config';
