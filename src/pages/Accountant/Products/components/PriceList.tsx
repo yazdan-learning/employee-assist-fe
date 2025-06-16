@@ -12,7 +12,6 @@ interface Price {
   sellTypeId: number;
   price: number;
   currency: string;
-  discountPercentage?: number;
 }
 
 interface PriceListProps {
@@ -70,7 +69,7 @@ const PriceList: React.FC<PriceListProps> = ({
     {
       key: "sellType",
       header: t("product.form.prices.sellType"),
-      width: 3,
+      width: 4,
       render: (price: Price) => {
         const sellType = sellTypes.find(st => st.id === price.sellTypeId);
         return <span className="fw-medium">{sellType?.name || "-"}</span>;
@@ -79,7 +78,7 @@ const PriceList: React.FC<PriceListProps> = ({
     {
       key: "price",
       header: t("product.form.prices.price"),
-      width: 3,
+      width: 6,
       render: (price: Price) => {
         const sellType = sellTypes.find(st => st.id === price.sellTypeId);
         return (
@@ -88,16 +87,6 @@ const PriceList: React.FC<PriceListProps> = ({
           </span>
         );
       },
-    },
-    {
-      key: "discount",
-      header: t("product.form.prices.discount"),
-      width: 4,
-      render: (price: Price) => (
-        <span>
-          {price.discountPercentage ? `${price.discountPercentage}%` : "-"}
-        </span>
-      ),
     },
   ];
 

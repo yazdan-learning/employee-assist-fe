@@ -13,7 +13,6 @@ interface Price {
   sellTypeId: number;
   price: number;
   currency: string;
-  discountPercentage?: number;
 }
 
 interface PriceFormProps {
@@ -39,10 +38,6 @@ const PriceForm: React.FC<PriceFormProps> = ({
     price: Yup.number()
       .required(t("product.form.prices.validation.priceRequired"))
       .min(0, t("product.form.prices.validation.priceMin")),
-    discountPercentage: Yup.number()
-      .min(0, t("product.form.prices.validation.discountMin"))
-      .max(100, t("product.form.prices.validation.discountMax"))
-      .nullable(),
   });
 
   const formik = useFormik<Price>({
@@ -50,7 +45,6 @@ const PriceForm: React.FC<PriceFormProps> = ({
       sellTypeId: 0,
       price: 0,
       currency: "",
-      discountPercentage: 0,
     },
     validationSchema,
     onSubmit: onSave,
@@ -87,7 +81,6 @@ const PriceForm: React.FC<PriceFormProps> = ({
                 formik.setFieldValue("sellTypeId", sellTypeId);
                 if (selectedSellType) {
                   formik.setFieldValue("currency", selectedSellType.currency);
-                  formik.setFieldValue("discountPercentage", selectedSellType.discountPercentage);
                 }
               }}
               placeholder={t("product.form.prices.placeholders.sellType")}
@@ -123,36 +116,6 @@ const PriceForm: React.FC<PriceFormProps> = ({
                 {selectedSellType.currencySymbol} {selectedSellType.currency}
               </small>
             )}
-          </FormGroup>
-        </Col>
-      </Row>
-
-      <Row>
-        <Col md={6}>
-          <FormGroup>
-            <Label for="discountPercentage">
-              {t("product.form.prices.discount")} (%)
-            </Label>
-            <Input
-              id="discountPercentage"
-              type="number"
-              min={0}
-              max={100}
-              value={formik.values.discountPercentage || ""}
-              onChange={(e) =>
-                formik.setFieldValue(
-                  "discountPercentage",
-                  e.target.value ? Number(e.target.value) : null
-                )
-              }
-              placeholder={t("product.form.prices.placeholders.discount")}
-            />
-            {formik.touched.discountPercentage &&
-              formik.errors.discountPercentage && (
-                <div className="invalid-feedback d-block">
-                  {formik.errors.discountPercentage}
-                </div>
-              )}
           </FormGroup>
         </Col>
       </Row>

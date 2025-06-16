@@ -385,6 +385,7 @@
         "name": "Product Name",
         "code": "Product Code",
         "barcode": "Barcode",
+        "taxAmount": "VAT Amount",
         "description": "Description",
         "isService": "Is Service",
         "hasSerial": "Has Serial Number",

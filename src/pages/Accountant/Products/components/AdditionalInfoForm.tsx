@@ -60,7 +60,7 @@ const AdditionalInfoForm: React.FC<AdditionalInfoFormProps> = ({
           <Row>
             <Col md={6}>
               <FormGroup>
-                <Label for="taxAmount">{t("product.form.taxAmount")} (%)</Label>
+                <Label for="taxAmount">{t("product.form.fields.taxAmount")} (%)</Label>
                 <Input
                   id="taxAmount"
                   type="number"
@@ -69,7 +69,7 @@ const AdditionalInfoForm: React.FC<AdditionalInfoFormProps> = ({
                   value={data.taxAmount}
                   onChange={handleTaxAmountChange}
                   invalid={touched.taxAmount && Boolean(errors.taxAmount)}
-                />
+                />  
                 {touched.taxAmount && errors.taxAmount && (
                   <div className="invalid-feedback">{errors.taxAmount}</div>
                 )}
@@ -77,7 +77,7 @@ const AdditionalInfoForm: React.FC<AdditionalInfoFormProps> = ({
             </Col>
             <Col md={6}>
               <FormGroup>
-                <Label for="barcode">{t("product.form.barcode")}</Label>
+                <Label for="barcode">{t("product.form.fields.barcode")}</Label>
                 <Input
                   id="barcode"
                   type="text"
