@@ -138,7 +138,7 @@ const AttributeList: React.FC<AttributeListProps> = ({
       <Row className="justify-content-start">
         {attributes.map((attribute, index) => (
           <Col
-            key={index}
+            key={`${attribute.attributeId}-${attribute.valueId}`}
             lg={3}
             md={4}
             sm={6}

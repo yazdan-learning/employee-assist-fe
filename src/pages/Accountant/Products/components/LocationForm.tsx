@@ -100,7 +100,7 @@ const LocationForm: React.FC<LocationFormProps> = ({
   };
 
   return (
-    <form>
+    <div>
       <Row className="mb-3">
         <Col md={6}>
           <FormGroup>
@@ -187,11 +187,11 @@ const LocationForm: React.FC<LocationFormProps> = ({
         <Button type="button" color="light" onClick={onCancel}>
           {t("common.cancel")}
         </Button>
-        <Button type="submit" color="primary" onClick={handleSubmit}>
+        <Button type="button" color="primary" onClick={handleSubmit}>
           {t("common.save")}
         </Button>
       </div>
-    </form>
+    </div>
   );
 };
 

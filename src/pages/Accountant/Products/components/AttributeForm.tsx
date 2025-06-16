@@ -64,7 +64,7 @@ const AttributeForm: React.FC<AttributeFormProps> = ({
   };
 
   return (
-    <form>
+    <div>
       <Row>
         <Col md={6}>
           <FormGroup>
@@ -118,11 +118,11 @@ const AttributeForm: React.FC<AttributeFormProps> = ({
         <Button type="button" color="light" onClick={onCancel}>
           {t("common.cancel")}
         </Button>
-        <Button type="submit" color="primary" onClick={handleSubmit}>
+        <Button type="button" color="primary" onClick={handleSubmit}>
           {t("common.save")}
         </Button>
       </div>
-    </form>
+    </div>
   );
 };
 

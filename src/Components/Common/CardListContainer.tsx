@@ -50,52 +50,55 @@ const CardListContainer: React.FC<CardListContainerProps> = ({
       </div>
 
       {/* Items */}
-      {items.map((item, index) => (
-        <Card
-          key={keyField ? item[keyField] : `item-${index}`}
-          className="mb-2 border shadow-none"
-        >
-          <CardBody className="p-3">
-            <div className="d-flex align-items-center">
-              {columns.map((col) => (
-                <div
-                  key={`${item[keyField] || index}-${col.key}`}
-                  className={`col-${col.width} ${
-                    col.align ? `text-${col.align}` : ""
-                  }`}
-                >
-                  <div className="d-md-none text-muted small mb-1">
-                    {col.header}:
+      {items.map((item, index) => {
+        const itemKey = keyField && item[keyField] ? item[keyField] : `item-${index}`;
+        return (
+          <Card
+            key={itemKey}
+            className="mb-2 border shadow-none"
+          >
+            <CardBody className="p-3">
+              <div className="d-flex align-items-center">
+                {columns.map((col) => (
+                  <div
+                    key={`${itemKey}-${col.key}`}
+                    className={`col-${col.width} ${
+                      col.align ? `text-${col.align}` : ""
+                    }`}
+                  >
+                    <div className="d-md-none text-muted small mb-1">
+                      {col.header}:
+                    </div>
+                    {col.render(item)}
                   </div>
-                  {col.render(item)}
-                </div>
-              ))}
+                ))}
 
-              {/* Actions */}
-              {actions.length > 0 && (
-                <div className="col-2 text-end">
-                  <div className="d-flex gap-2 justify-content-end">
-                    {actions.map((action, actionIndex) => (
-                      <Button
-                        key={`${item[keyField] || index}-action-${actionIndex}`}
-                        color="link"
-                        className={`p-0 text-${action.color || "primary"}`}
-                        onClick={() => action.onClick(item, index)}
-                        disabled={
-                          action.disabled ? action.disabled(item) : false
-                        }
-                        title={action.tooltip}
-                      >
-                        <i className={`${action.icon} fs-4`}></i>
-                      </Button>
-                    ))}
+                {/* Actions */}
+                {actions.length > 0 && (
+                  <div className="col-2 text-end">
+                    <div className="d-flex gap-2 justify-content-end">
+                      {actions.map((action, actionIndex) => (
+                        <Button
+                          key={`${itemKey}-action-${actionIndex}`}
+                          color="link"
+                          className={`p-0 text-${action.color || "primary"}`}
+                          onClick={() => action.onClick(item, index)}
+                          disabled={
+                            action.disabled ? action.disabled(item) : false
+                          }
+                          title={action.tooltip}
+                        >
+                          <i className={`${action.icon} fs-4`}></i>
+                        </Button>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
-            </div>
-          </CardBody>
-        </Card>
-      ))}
+                )}
+              </div>
+            </CardBody>
+          </Card>
+        );
+      })}
     </div>
   );
 };

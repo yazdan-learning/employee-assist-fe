@@ -64,7 +64,7 @@ const PriceForm: React.FC<PriceFormProps> = ({
   const selectedSellType = sellTypes.find(st => st.id === formik.values.sellTypeId);
 
   return (
-    <form>
+    <div>
       <Row className="mb-3">
         <Col md={6}>
           <FormGroup>
@@ -124,11 +124,11 @@ const PriceForm: React.FC<PriceFormProps> = ({
         <Button type="button" color="light" onClick={onCancel}>
           {t("common.cancel")}
         </Button>
-        <Button type="submit" color="primary" onClick={handleSubmit}>
+        <Button type="button" color="primary" onClick={handleSubmit}>
           {t("common.save")}
         </Button>
       </div>
-    </form>
+    </div>
   );
 };
 
