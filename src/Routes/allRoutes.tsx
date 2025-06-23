@@ -2,17 +2,21 @@
 // import { Navigate } from "react-router-dom"
 // import Dashboard from "../pages/Dashboard";
 
+import React from "react";
 import { Navigate } from "react-router-dom";
 import Dashboard from "../pages/Dashboard/index";
 
 //Chat
 import Chat from "../pages/Chat/Chat";
 
-import React from "react";
+//Accountant
 import CustomerList from "../pages/Accountant/Customers/CustomerList";
 import ProductList from "../pages/Accountant/Products/ProductList";
 import ProductForm from "../pages/Accountant/Products/components/ProductForm";
 import CustomerForm from "../pages/Accountant/Customers/components/CustomerForm";
+import InvoiceList from "../pages/Accountant/Invoice/InvoiceList";
+import InvoiceForm from "../pages/Accountant/Invoice/components/InvoiceForm";
+import { InvoiceType } from "../pages/Accountant/Invoice/types";
 
 //Authentication pages
 // import Login1 from "../pages/AuthenticationInner/Login";
@@ -66,6 +70,13 @@ const publicRoutes = [
   { path: "/accountant/products", component: <ProductList /> },
   { path: "/accountant/products/add", component: <ProductForm /> },
   { path: "/accountant/products/edit/:id", component: <ProductForm /> },
+
+  // Invoice routes
+  { path: "/accountant/invoices/buy", component: <InvoiceList type={InvoiceType.BUY} /> },
+  { path: "/accountant/invoices/sell", component: <InvoiceList type={InvoiceType.SELL} /> },
+  { path: "/invoice/buy/new", component: <InvoiceForm type={InvoiceType.BUY} /> },
+  { path: "/invoice/sell/new", component: <InvoiceForm type={InvoiceType.SELL} /> },
+  { path: "/invoice/:type/edit/:id", component: <InvoiceForm /> },
 
   // { path: "/login", component: <Login /> },
   // { path: "/logout", component: <Logout /> },

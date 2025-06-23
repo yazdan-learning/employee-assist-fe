@@ -162,6 +162,32 @@ const SidebarContent = (props: any) => {
                     <span>{t("Products")}</span>
                   </Link>
                 </li>
+                <li>
+                  <Link to="/#" className="has-arrow">
+                    <i className="bx bx-receipt"></i>
+                    <span>{t("Invoices")}</span>
+                  </Link>
+                  <ul className="sub-menu">
+                    <li>
+                      <Link to="/accountant/invoices/buy">
+                        <i className="bx bx-import"></i>
+                        <span>{t("Purchase Invoices")}</span>
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/accountant/invoices/sell">
+                        <i className="bx bx-export"></i>
+                        <span>{t("Sales Invoices")}</span>
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/accountant/invoices">
+                        <i className="bx bx-list-ul"></i>
+                        <span>{t("All Invoices")}</span>
+                      </Link>
+                    </li>
+                  </ul>
+                </li>
                 {/* Add more accountant modules here */}
               </ul>
             </li>

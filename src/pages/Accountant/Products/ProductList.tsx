@@ -156,10 +156,6 @@ const ProductList: React.FC = () => {
   return (
     <div className="page-content">
       <Container fluid>
-        <Breadcrumbs
-          title={t("Products")}
-          breadcrumbItem={t("Product List")}
-        />
         <TableContainer
           columns={columns}
           data={response?.data?.items || []}
