@@ -14,8 +14,10 @@ import {
 import BasicInfoForm from "./BasicInfoForm";
 import GeneralInfoForm from "./GeneralInfoForm";
 import AdditionalInfoForm from "./AdditionalInfoForm";
-import StepIndicator, { Step } from "../../../../Components/StepIndicator/StepIndicator";
-import { Package, FileText, Settings } from 'react-feather';
+import StepIndicator, {
+  Step,
+} from "../../../../Components/StepIndicator/StepIndicator";
+import { Package, FileText, Settings } from "react-feather";
 import { useFormSteps } from "../../../../hooks/useFormSteps";
 
 const ProductForm: React.FC = () => {
@@ -26,19 +28,19 @@ const ProductForm: React.FC = () => {
   const steps: Step[] = [
     {
       icon: <Package size={20} />,
-      title: t('product.form.steps.basicInfo'),
-      description: t('product.form.steps.basicInfoDesc')
+      title: t("product.form.steps.basicInfo"),
+      description: t("product.form.steps.basicInfoDesc"),
     },
     {
       icon: <FileText size={20} />,
-      title: t('product.form.steps.generalInfo'),
-      description: t('product.form.steps.generalInfoDesc')
+      title: t("product.form.steps.generalInfo"),
+      description: t("product.form.steps.generalInfoDesc"),
     },
     {
       icon: <Settings size={20} />,
-      title: t('product.form.steps.additionalInfo'),
-      description: t('product.form.steps.additionalInfoDesc')
-    }
+      title: t("product.form.steps.additionalInfo"),
+      description: t("product.form.steps.additionalInfoDesc"),
+    },
   ];
 
   const {
@@ -53,7 +55,10 @@ const ProductForm: React.FC = () => {
 
   const initialValues: Product =
     id && productResponse?.data
-      ? productResponse.data
+      ? {
+          ...productResponse.data,
+          isPackaging: productResponse.data.isPackaging || false,
+        }
       : {
           id: 0,
           name: "",
@@ -63,6 +68,7 @@ const ProductForm: React.FC = () => {
           isService: false,
           hasSerial: false,
           allowNegativeStock: false,
+          isPackaging: false,
           isActive: true,
           categoryId: 0,
           attributes: [],
@@ -70,7 +76,7 @@ const ProductForm: React.FC = () => {
           locations: [],
           images: [],
           prices: [],
-          taxAmount: 0
+          taxPercentage: 0,
         };
 
   const validationSchema = Yup.object().shape({
@@ -83,6 +89,7 @@ const ProductForm: React.FC = () => {
     isService: Yup.boolean(),
     hasSerial: Yup.boolean(),
     allowNegativeStock: Yup.boolean(),
+    isPackaging: Yup.boolean(),
     units: Yup.array()
       .of(
         Yup.object().shape({
@@ -96,10 +103,14 @@ const ProductForm: React.FC = () => {
             .required(t("validation.required")),
         })
       )
-      .test("hasPrimary", t("product.form.units.validation.primaryRequired"), function(value) {
-        return value?.some(unit => unit.isPrimary) || false;
-      }),
-    taxAmount: Yup.number()
+      .test(
+        "hasPrimary",
+        t("product.form.units.validation.primaryRequired"),
+        function (value) {
+          return value?.some((unit) => unit.isPrimary) || false;
+        }
+      ),
+    taxPercentage: Yup.number()
       .min(0, t("validation.min", { min: 0 }))
       .max(100, t("validation.max", { max: 100 }))
       .required(t("validation.required")),
@@ -157,12 +168,13 @@ const ProductForm: React.FC = () => {
           "isService",
           "hasSerial",
           "allowNegativeStock",
-          "units"
+          "isPackaging",
+          "units",
         ];
       case 2:
         return [];
       case 3:
-        return ["taxAmount", "barcode"];
+        return ["taxPercentage", "barcode"];
       default:
         return [];
     }
@@ -208,7 +220,7 @@ const ProductForm: React.FC = () => {
                   </h4>
                 </div>
 
-                <StepIndicator 
+                <StepIndicator
                   currentStep={currentStep}
                   steps={steps}
                   onStepClick={handleStepChange}
@@ -228,11 +240,15 @@ const ProductForm: React.FC = () => {
                         isService: formik.values.isService,
                         hasSerial: formik.values.hasSerial,
                         allowNegativeStock: formik.values.allowNegativeStock,
+                        isPackaging: formik.values.isPackaging,
                         units: formik.values.units,
                       }}
                       onChange={(data) => {
                         Object.keys(data).forEach((key) => {
-                          formik.setFieldValue(key, data[key as keyof typeof data]);
+                          formik.setFieldValue(
+                            key,
+                            data[key as keyof typeof data]
+                          );
                         });
                       }}
                       errors={formik.errors}

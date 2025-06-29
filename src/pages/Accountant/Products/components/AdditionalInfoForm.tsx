@@ -8,7 +8,7 @@ import { ProductPrice } from "../types";
 
 export interface AdditionalInfo {
   prices: ProductPrice[];
-  taxAmount: number;
+  taxPercentage: number;
   barcode?: string;
 }
 
@@ -31,8 +31,10 @@ const AdditionalInfoForm: React.FC<AdditionalInfoFormProps> = ({
     onChange({ ...data, prices });
   };
 
-  const handleTaxAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange({ ...data, taxAmount: Number(e.target.value) });
+  const handleTaxPercentageChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    onChange({ ...data, taxPercentage: Number(e.target.value) });
   };
 
   const handleBarcodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,18 +62,22 @@ const AdditionalInfoForm: React.FC<AdditionalInfoFormProps> = ({
           <Row>
             <Col md={6}>
               <FormGroup>
-                <Label for="taxAmount">{t("product.form.fields.taxAmount")} (%)</Label>
+                <Label for="taxPercentage">
+                  {t("product.form.fields.taxPercentage")} (%)
+                </Label>
                 <Input
-                  id="taxAmount"
+                  id="taxPercentage"
                   type="number"
                   min={0}
                   max={100}
-                  value={data.taxAmount}
-                  onChange={handleTaxAmountChange}
-                  invalid={touched.taxAmount && Boolean(errors.taxAmount)}
-                />  
-                {touched.taxAmount && errors.taxAmount && (
-                  <div className="invalid-feedback">{errors.taxAmount}</div>
+                  value={data.taxPercentage}
+                  onChange={handleTaxPercentageChange}
+                  invalid={
+                    touched.taxPercentage && Boolean(errors.taxPercentage)
+                  }
+                />
+                {touched.taxPercentage && errors.taxPercentage && (
+                  <div className="invalid-feedback">{errors.taxPercentage}</div>
                 )}
               </FormGroup>
             </Col>

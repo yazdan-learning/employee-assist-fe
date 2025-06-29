@@ -107,7 +107,8 @@ class FakeProductService {
           locations: [],
           images: [],
           prices: [],
-          taxAmount: 0
+          taxPercentage: 0,
+          isPackaging: false
         },
         succeeded: false,
         statusCode: 404,
@@ -177,7 +178,8 @@ class FakeProductService {
           locations: [],
           images: [],
           prices: [],
-          taxAmount: 0
+          taxPercentage: 0,
+          isPackaging: false
         },
         succeeded: false,
         statusCode: 404,

@@ -164,7 +164,8 @@ const generateSampleProducts = (): Product[] => {
       locations: [],
       images: [],
       prices: [],
-      taxAmount: Math.floor(Math.random() * 20)
+      taxPercentage: Math.floor(Math.random() * 20),
+      isPackaging: Math.random() < 0.2
     });
   }
   

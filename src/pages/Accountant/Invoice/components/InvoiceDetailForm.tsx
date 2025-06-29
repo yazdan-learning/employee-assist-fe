@@ -5,7 +5,11 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import RaDropdown from "../../../../Components/Common/RaDropdown";
 import { InvoiceDetail } from "../types";
-import { useProductList, useProductById, useUnits } from "../../../../hooks/useProducts";
+import {
+  useProductList,
+  useProductById,
+  useUnits,
+} from "../../../../hooks/useProducts";
 import type { Product } from "../../Products/types";
 
 interface InvoiceDetailFormProps {
@@ -59,7 +63,10 @@ const InvoiceDetailForm: React.FC<InvoiceDetailFormProps> = ({
     validationSchema,
     onSubmit: (values) => {
       const finalPrice =
-        values.quantity * values.unitPrice * (1 - values.discount / 100) * (1 + values.vat / 100);
+        values.quantity *
+        values.unitPrice *
+        (1 - values.discount / 100) *
+        (1 + values.vat / 100);
       onSave({
         ...values,
         finalPrice,
@@ -76,7 +83,7 @@ const InvoiceDetailForm: React.FC<InvoiceDetailFormProps> = ({
   // Update VAT when product changes
   useEffect(() => {
     if (selectedProduct) {
-      formik.setFieldValue("vat", selectedProduct.taxAmount || 0);
+      formik.setFieldValue("vat", selectedProduct.taxPercentage || 0);
     }
   }, [selectedProduct]);
 
@@ -88,7 +95,12 @@ const InvoiceDetailForm: React.FC<InvoiceDetailFormProps> = ({
             <Label>{t("invoice.form.product")}</Label>
             <RaDropdown
               value={formik.values.productId.toString()}
-              onChange={(value) => formik.setFieldValue("productId", value ? parseInt(value, 10) : "")}
+              onChange={(value) =>
+                formik.setFieldValue(
+                  "productId",
+                  value ? parseInt(value, 10) : ""
+                )
+              }
               options={products.map((p) => ({
                 value: p.id?.toString() || "",
                 label: p.name,
@@ -112,9 +124,14 @@ const InvoiceDetailForm: React.FC<InvoiceDetailFormProps> = ({
                 const unitId = value ? parseInt(value, 10) : "";
                 formik.setFieldValue("unitId", unitId);
                 if (selectedProduct) {
-                  const unit = selectedProduct.units.find((u) => u.unitId === unitId);
+                  const unit = selectedProduct.units.find(
+                    (u) => u.unitId === unitId
+                  );
                   if (unit) {
-                    formik.setFieldValue("primaryUnitId", unit.isPrimary ? unit.unitId : null);
+                    formik.setFieldValue(
+                      "primaryUnitId",
+                      unit.isPrimary ? unit.unitId : null
+                    );
                     formik.setFieldValue("conversionRate", unit.conversionRate);
                   }
                 }
@@ -209,4 +226,4 @@ const InvoiceDetailForm: React.FC<InvoiceDetailFormProps> = ({
   );
 };
 
-export default InvoiceDetailForm; 
+export default InvoiceDetailForm;

@@ -17,6 +17,7 @@ export interface BasicInfoFormData {
   isService: boolean;
   hasSerial: boolean;
   allowNegativeStock: boolean;
+  isPackaging: boolean;
   units: ProductUnit[];
 }
 
@@ -218,6 +219,20 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({
             </Label>
           </FormGroup>
 
+          <FormGroup check className="mb-0">
+            <Label check className="d-flex align-items-center">
+              <Input
+                type="checkbox"
+                checked={data.isPackaging || false}
+                onChange={(e) =>
+                  handleInputChange("isPackaging", e.target.checked)
+                }
+                className="me-2"
+              />
+              {t("product.form.fields.isPackaging")}
+            </Label>
+          </FormGroup>
+
           {isEdit && (
             <FormGroup check className="mb-0">
               <Label check className="d-flex align-items-center">
@@ -240,14 +255,24 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({
       <Card className="mt-4">
         <CardBody>
           <div className="d-flex align-items-center mb-4">
-            <h5 className={`mb-0 ${errors.units && touched.units && !data.units.some(unit => unit.isPrimary) ? 'text-danger' : ''}`}>
+            <h5
+              className={`mb-0 ${
+                errors.units &&
+                touched.units &&
+                !data.units.some((unit) => unit.isPrimary)
+                  ? "text-danger"
+                  : ""
+              }`}
+            >
               {t("product.form.units.title")}
             </h5>
-            {errors.units && touched.units && !data.units.some(unit => unit.isPrimary) && (
-              <small className="text-danger ms-2">
-                {t("product.form.units.validation.primaryRequired")}
-              </small>
-            )}
+            {errors.units &&
+              touched.units &&
+              !data.units.some((unit) => unit.isPrimary) && (
+                <small className="text-danger ms-2">
+                  {t("product.form.units.validation.primaryRequired")}
+                </small>
+              )}
           </div>
           <UnitList
             units={data.units}

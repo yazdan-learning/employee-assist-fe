@@ -50,12 +50,13 @@ export interface Product {
   isService: boolean;
   hasSerial: boolean;
   allowNegativeStock: boolean;
+  isPackaging: boolean;
   locations: Location[];
   units: ProductUnit[];
   attributes: ProductAttribute[];
   prices: ProductPrice[];
   images: ProductImage[];
-  taxAmount: number;
+  taxPercentage: number;
   barcode?: string;
 }
 
