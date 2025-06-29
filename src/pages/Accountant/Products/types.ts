@@ -19,10 +19,10 @@ export interface ProductImage {
 
 export interface ProductSellType {
   id: number;
-  name: string;
+  title: string;
   discountPercentage: number;
-  currency: string;
-  currencySymbol: string;
+  currencyName: string;
+  currencyCode: string;
 }
 
 export interface ProductPrice {
@@ -91,6 +91,6 @@ export interface ProductState {
 export interface ProductInfo {
   id: string;
   name: string;
-  category: string;
+  categoryName: string;
   isActive: boolean;
 } 

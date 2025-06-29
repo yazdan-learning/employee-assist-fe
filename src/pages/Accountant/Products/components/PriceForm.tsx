@@ -7,7 +7,10 @@ import RaDropdown from "../../../../Components/Common/RaDropdown";
 import { FormikErrors, FormikTouched } from "formik";
 import { Product } from "../types";
 import { useSellTypes } from "../../../../hooks/useProducts";
-import { formatNumber, parseFormattedNumber } from "../../../../helpers/number_helper";
+import {
+  formatNumber,
+  parseFormattedNumber,
+} from "../../../../helpers/number_helper";
 
 interface Price {
   sellTypeId: number;
@@ -23,11 +26,7 @@ interface PriceFormProps {
   touched?: FormikTouched<Product>;
 }
 
-const PriceForm: React.FC<PriceFormProps> = ({
-  price,
-  onSave,
-  onCancel
-}) => {
+const PriceForm: React.FC<PriceFormProps> = ({ price, onSave, onCancel }) => {
   const { t } = useTranslation();
   const { data: sellTypes = [] } = useSellTypes();
 
@@ -61,7 +60,9 @@ const PriceForm: React.FC<PriceFormProps> = ({
     }
   };
 
-  const selectedSellType = sellTypes.find(st => st.id === formik.values.sellTypeId);
+  const selectedSellType = sellTypes.find(
+    (st) => st.id === formik.values.sellTypeId
+  );
 
   return (
     <div>
@@ -72,15 +73,20 @@ const PriceForm: React.FC<PriceFormProps> = ({
             <RaDropdown
               options={sellTypes.map((st) => ({
                 value: st.id.toString(),
-                label: st.name,
+                label: st.title,
               }))}
               value={formik.values.sellTypeId?.toString() || ""}
               onChange={(value) => {
                 const sellTypeId = value ? Number(value) : 0;
-                const selectedSellType = sellTypes.find(st => st.id === sellTypeId);
+                const selectedSellType = sellTypes.find(
+                  (st) => st.id === sellTypeId
+                );
                 formik.setFieldValue("sellTypeId", sellTypeId);
                 if (selectedSellType) {
-                  formik.setFieldValue("currency", selectedSellType.currency);
+                  formik.setFieldValue(
+                    "currency",
+                    selectedSellType.currencyName
+                  );
                 }
               }}
               placeholder={t("product.form.prices.placeholders.sellType")}
@@ -100,7 +106,7 @@ const PriceForm: React.FC<PriceFormProps> = ({
               type="text"
               value={formatNumber(formik.values.price)}
               onChange={(e) => {
-                const value = e.target.value.replace(/[^0-9]/g, '');
+                const value = e.target.value.replace(/[^0-9]/g, "");
                 formik.setFieldValue("price", parseFormattedNumber(value));
               }}
               placeholder={t("product.form.prices.placeholders.price")}
@@ -113,7 +119,7 @@ const PriceForm: React.FC<PriceFormProps> = ({
             )}
             {selectedSellType && (
               <small className="text-muted">
-                {selectedSellType.currencySymbol} {selectedSellType.currency}
+                {selectedSellType.currencyCode}
               </small>
             )}
           </FormGroup>

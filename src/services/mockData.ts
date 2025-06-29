@@ -28,10 +28,10 @@ export const mockAttributeValues: AttributeValue[] = [
 ];
 
 export const mockSellTypes: ProductSellType[] = [
-  { id: 1, name: "Retail", discountPercentage: 0, currency: "IRR", currencySymbol: "﷼" },
-  { id: 2, name: "Wholesale", discountPercentage: 10, currency: "EUR", currencySymbol: "€" },
-  { id: 3, name: "Distributor", discountPercentage: 20, currency: "TRY", currencySymbol: "₺" },
-  { id: 4, name: "International", discountPercentage: 15, currency: "USD", currencySymbol: "$" },
+  { id: 1, title: "Retail", discountPercentage: 0, currencyName: "IRR", currencyCode: "﷼" },
+  { id: 2, title: "Wholesale", discountPercentage: 10, currencyName: "EUR", currencyCode: "€" },
+  { id: 3, title: "Distributor", discountPercentage: 20, currencyName: "TRY", currencyCode: "₺" },
+  { id: 4, title: "International", discountPercentage: 15, currencyName: "USD", currencyCode: "$" },
 ];
 
 export const mockWarehouses = [

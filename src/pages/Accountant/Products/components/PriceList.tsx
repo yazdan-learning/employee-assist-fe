@@ -71,8 +71,8 @@ const PriceList: React.FC<PriceListProps> = ({
       header: t("product.form.prices.sellType"),
       width: 4,
       render: (price: Price) => {
-        const sellType = sellTypes.find(st => st.id === price.sellTypeId);
-        return <span className="fw-medium">{sellType?.name || "-"}</span>;
+        const sellType = sellTypes.find((st) => st.id === price.sellTypeId);
+        return <span className="fw-medium">{sellType?.title || "-"}</span>;
       },
     },
     {
@@ -80,10 +80,11 @@ const PriceList: React.FC<PriceListProps> = ({
       header: t("product.form.prices.price"),
       width: 6,
       render: (price: Price) => {
-        const sellType = sellTypes.find(st => st.id === price.sellTypeId);
+        const sellType = sellTypes.find((st) => st.id === price.sellTypeId);
         return (
           <span>
-            {formatNumber(price.price)} {sellType?.currencySymbol || price.currency}
+            {formatNumber(price.price)}{" "}
+            {sellType?.currencyCode || price.currency}
           </span>
         );
       },

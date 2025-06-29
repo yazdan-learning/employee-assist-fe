@@ -1,24 +1,75 @@
 {
-    "project": {
-      "name": "Employee Assist",
-      "description": "A React + TypeScript application using the Skote admin template. The app includes modules like Chat, Accountant, and other internal tools for employees.",
-      "template_url": "https://themesbrand.com/skote-symfony/docs/symfony/index.html"
+  "project": {
+    "name": "Employee Assist",
+    "description": "A React + TypeScript application using the Skote admin template. The app includes modules like Chat, Accountant, and other internal tools for employees.",
+    "template_url": "https://themesbrand.com/skote-symfony/docs/symfony/index.html"
+  },
+  "backend": {
+    "current": "FastAPI",
+    "planned": ["Additional backend services or APIs in the future"],
+    "communication": ["WebSockets for real-time communication", "HTTP APIs"]
+  },
+  "state_management": {
+    "preferred_library": "Redux",
+    "alternatives": ["Context API"]
+  },
+  "architecture": {
+    "component_structure": {
+      "common_components": [
+        "All reusable UI components (e.g., RaDropdown, TableContainer, CardListContainer) are located in `components/common`.",
+        "Before creating new UI components, check and reuse existing ones from this folder."
+      ],
+      "pages": [
+        "All route-level pages are located in the `pages` folder (e.g., `pages/accountant/customer`).",
+        "Only the List/Entry components that are directly routed should be placed at the root of each page folder.",
+        "Each page module (like `customer`) must include a `types.ts` file inside its folder to store local TypeScript interfaces/types."
+      ],
+      "types": [
+        "Global/common types (e.g., pagination, sorting) are stored in `types/common.ts`.",
+        "Avoid duplicating types across domains — import from `types/common` if applicable."
+      ]
     },
-    "backend": {
-      "current": "FastAPI",
-      "planned": ["Additional backend services or APIs in the future"],
-      "communication": ["WebSockets for real-time communication", "HTTP APIs"]
+    "form_handling": {
+      "library": "useFormik",
+      "rules": [
+        "Always use `useFormik` for form management, including validation and submission."
+      ]
     },
-    "state_management": {
-      "preferred_library": "Redux",
-      "alternatives": ["Context API"]
+    "api_communication": {
+      "library": "@tanstack/react-query",
+      "structure": [
+        "API hooks (e.g., `useCustomer`) are stored in the `hooks` folder.",
+        "These hooks internally use services defined in the `services` folder."
+      ],
+      "services": [
+        "Real API requests are implemented using `APIHelper` from `common/helpers/api_helper.ts`.",
+        "Fake/mock services are also available in `services` for testing and development."
+      ],
+      "fake_data": [
+        "Sample/mock data used in fake services is located in `common/data`.",
+        "Each domain (e.g., customer, product) has its own file (e.g., `customer.ts`) in this folder."
+      ]
     },
-    "guidelines": [
-      "Organize the project using a modular architecture.",
-      "Create reusable components leveraging Skote UI.",
-      "Integrate backend services via WebSocket and HTTP.",
-      "Design backend communication to be backend-agnostic (supporting FastAPI now, extendable later).",
-      "Maintain clean, scalable, and maintainable code structure."
-    ]
-  }
+    "i18n": {
+      "languages_supported": ["en", "de", "fa"],
+      "rules": [
+        "All new pages or features must include translations in all supported languages."
+      ]
+    }
+  },
+  "guidelines": [
+    "Organize the project using a modular architecture.",
+    "Create reusable components leveraging Skote UI.",
+    "Integrate backend services via WebSocket and HTTP.",
+    "Design backend communication to be backend-agnostic (supporting FastAPI now, extendable later).",
+    "Maintain clean, scalable, and maintainable code structure.",
+    "Always reuse components from `components/common` when possible.",
+    "Store all local types in a `types.ts` inside each domain folder.",
+    "Use `useFormik` for form handling.",
+    "Use `@tanstack/react-query` with domain-based hooks for data fetching.",
+    "Mock data is stored in `common/data`, and fake services mimic real API behavior for development.",
+    "Ensure i18n support by providing translations in `en`, `de`, and `fa` for all user-visible content."
+  ]
+}
+
   

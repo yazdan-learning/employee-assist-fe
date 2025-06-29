@@ -20,10 +20,26 @@ class ProductService {
   private api: APIClient;
   private endpoint: string;
   private mockProducts: Product[] = [];
-
+  private categoryEndpoint: string;
+  private attributeEndpoint: string;
+  private attributeValueEndpoint: string;
+  private locationEndpoint: string;
+  private priceEndpoint: string;
+  private saleTypeEndpoint: string;
+  private unitEndpoint: string;
+  private warehouseEndpoint: string;
+  
   constructor() {
     this.api = new APIClient();
-    this.endpoint = API_CONFIG.SERVICES.ACCOUNTANT.BASE_URL + '/products';
+    this.endpoint = API_CONFIG.SERVICES.ACCOUNTANT.BASE_URL + API_CONFIG.SERVICES.ACCOUNTANT.ENDPOINTS.PRODUCTS;
+    this.categoryEndpoint = API_CONFIG.SERVICES.ACCOUNTANT.BASE_URL + API_CONFIG.SERVICES.ACCOUNTANT.ENDPOINTS.PRODUCT_CATEGORIES;
+    this.attributeEndpoint = API_CONFIG.SERVICES.ACCOUNTANT.BASE_URL + API_CONFIG.SERVICES.ACCOUNTANT.ENDPOINTS.PRODUCT_ATTRIBUTES;
+    this.attributeValueEndpoint = API_CONFIG.SERVICES.ACCOUNTANT.BASE_URL + API_CONFIG.SERVICES.ACCOUNTANT.ENDPOINTS.PRODUCT_ATTRIBUTE_VALUES;
+    this.locationEndpoint = API_CONFIG.SERVICES.ACCOUNTANT.BASE_URL + API_CONFIG.SERVICES.ACCOUNTANT.ENDPOINTS.PRODUCT_LOCATIONS;
+    this.priceEndpoint = API_CONFIG.SERVICES.ACCOUNTANT.BASE_URL + API_CONFIG.SERVICES.ACCOUNTANT.ENDPOINTS.PRODUCT_PRICES;
+    this.saleTypeEndpoint = API_CONFIG.SERVICES.ACCOUNTANT.BASE_URL + API_CONFIG.SERVICES.ACCOUNTANT.ENDPOINTS.PRODUCT_SALE_TYPES;
+    this.unitEndpoint = API_CONFIG.SERVICES.ACCOUNTANT.BASE_URL + API_CONFIG.SERVICES.ACCOUNTANT.ENDPOINTS.PRODUCT_UNITS;
+    this.warehouseEndpoint = API_CONFIG.SERVICES.ACCOUNTANT.BASE_URL + API_CONFIG.SERVICES.ACCOUNTANT.ENDPOINTS.PRODUCT_WAREHOUSES;
   }
 
   async getProducts(request: ListRequest): Promise<ListResponse<ProductInfo>> {
@@ -77,48 +93,58 @@ class ProductService {
 
   // Mock dropdown data methods
   async getCategories(): Promise<Category[]> {
-    return Promise.resolve(mockCategories);
+    const response = await this.api.get(this.categoryEndpoint, null);
+    const baseResponse = response as unknown as BaseResponse<Category[]>;
+    return baseResponse.data;
   }
 
   async getAttributes(): Promise<Attribute[]> {
-    return Promise.resolve(mockAttributes);
+    const response = await this.api.get(this.attributeEndpoint, null);
+    const baseResponse = response as unknown as BaseResponse<Attribute[]>;
+    return baseResponse.data;
   }
 
   async getAttributeValues(attributeId: number): Promise<AttributeValue[]> {
-    return Promise.resolve(
-      mockAttributeValues.filter((v) => v.attributeId === attributeId)
-    );
+    const response = await this.api.get(`${this.attributeValueEndpoint}?attributeId=${attributeId}`, null);
+    const baseResponse = response as unknown as BaseResponse<AttributeValue[]>;
+    return baseResponse.data;
   }
 
   async getUnits(): Promise<Unit[]> {
-    return Promise.resolve(mockUnits);
+    const response = await this.api.get(this.unitEndpoint, null);
+    const baseResponse = response as unknown as BaseResponse<Unit[]>;
+    return baseResponse.data;
   }
 
   async getLocations() {
-    await new Promise(resolve => setTimeout(resolve, 500));
-    return mockLocations;
+    const response = await this.api.get(this.locationEndpoint, null);
+    const baseResponse = response as unknown as BaseResponse<typeof mockLocations>;
+    return baseResponse.data;
   }
 
   async getSellTypes(): Promise<ProductSellType[]> {
-    return Promise.resolve(mockSellTypes);
+    const response = await this.api.get(this.saleTypeEndpoint, null);
+    const baseResponse = response as unknown as BaseResponse<ProductSellType[]>;
+    return baseResponse.data;
   }
 
   async getWarehouses(): Promise<typeof mockWarehouses> {
-    return Promise.resolve(mockWarehouses);
+    const response = await this.api.get(this.warehouseEndpoint, null);
+    const baseResponse = response as unknown as BaseResponse<typeof mockWarehouses>;
+    return baseResponse.data;
   }
 
   async getWarehouseAddresses(warehouseId: number): Promise<typeof mockWarehouseAddresses> {
-    return Promise.resolve(mockWarehouseAddresses.filter(addr => addr.warehouseId === warehouseId));
+    const response = await this.api.get(`${this.warehouseEndpoint}/${warehouseId}/addresses`, null);
+    const baseResponse = response as unknown as BaseResponse<typeof mockWarehouseAddresses>;
+    return baseResponse.data;
   }
 
   async getCurrencies(): Promise<typeof mockCurrencies> {
+    // Note: No currency endpoint was provided in the list, keeping as mock data for now
     return Promise.resolve(mockCurrencies);
   }
 
-  generateProductCode(categoryCode: string): string {
-    const timestamp = Date.now().toString().slice(-6);
-    return `${categoryCode}-${timestamp}`;
-  }
 }
 
 export const productService = new ProductService(); 

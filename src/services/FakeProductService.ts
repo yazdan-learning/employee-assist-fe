@@ -63,7 +63,7 @@ class FakeProductService {
       id: (product.id || 0).toString(),
       name: product.name,
       code: product.code,
-      category: mockCategories.find(c => c.id === product.categoryId)?.name || '',
+      categoryName: mockCategories.find(c => c.id === product.categoryId)?.name || '',
       isActive: product.isActive
     }));
 

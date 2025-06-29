@@ -83,7 +83,9 @@ const ProductList: React.FC = () => {
         if (response.succeeded) {
           toast.success(t("product.list.messages.deleteSuccess"));
         } else {
-          toast.error(response.errors || t("product.list.messages.deleteError"));
+          toast.error(
+            response.errors || t("product.list.messages.deleteError")
+          );
         }
       } catch (error) {
         toast.error(t("product.list.messages.deleteError"));
@@ -103,7 +105,7 @@ const ProductList: React.FC = () => {
       },
       {
         header: t("product.list.columns.category"),
-        accessorKey: "category",
+        accessorKey: "categoryName",
         enableColumnFilter: false,
         enableSorting: true,
         cell: (row: any) => row.getValue() || "-",
@@ -120,7 +122,11 @@ const ProductList: React.FC = () => {
               row.getValue() ? "success" : "danger"
             } font-size-11`}
           >
-            {t(row.getValue() ? "product.form.status.active" : "product.form.status.inactive")}
+            {t(
+              row.getValue()
+                ? "product.form.status.active"
+                : "product.form.status.inactive"
+            )}
           </span>
         ),
         sortingFn: "boolean",
