@@ -43,23 +43,31 @@ const LocationForm: React.FC<LocationFormProps> = ({
     minQuantity: Yup.number()
       .min(0, t("validation.min", { min: 0 }))
       .nullable()
-      .test('min', t("product.form.locations.validation.minQuantityLessThanMax"), function(value) {
-        const maxQuantity = this.parent.maxQuantity;
-        if (value && maxQuantity) {
-          return value < maxQuantity;
+      .test(
+        "min",
+        t("product.form.locations.validation.minQuantityLessThanMax"),
+        function (value) {
+          const maxQuantity = this.parent.maxQuantity;
+          if (value && maxQuantity) {
+            return value < maxQuantity;
+          }
+          return true;
         }
-        return true;
-      }),
+      ),
     maxQuantity: Yup.number()
       .min(0, t("validation.min", { min: 0 }))
       .nullable()
-      .test('max', t("product.form.locations.validation.maxQuantityGreaterThanMin"), function(value) {
-        const minQuantity = this.parent.minQuantity;
-        if (minQuantity && value) {
-          return value > minQuantity;
+      .test(
+        "max",
+        t("product.form.locations.validation.maxQuantityGreaterThanMin"),
+        function (value) {
+          const minQuantity = this.parent.minQuantity;
+          if (minQuantity && value) {
+            return value > minQuantity;
+          }
+          return true;
         }
-        return true;
-      }),
+      ),
   });
 
   const formik = useFormik<Location>({
@@ -104,7 +112,9 @@ const LocationForm: React.FC<LocationFormProps> = ({
       <Row className="mb-3">
         <Col md={6}>
           <FormGroup>
-            <Label for="warehouseId">{t("product.form.locations.warehouse")}</Label>
+            <Label for="warehouseId">
+              {t("product.form.locations.warehouse")}
+            </Label>
             <RaDropdown
               options={warehouses.map((w) => ({
                 value: w.id.toString(),
@@ -129,11 +139,14 @@ const LocationForm: React.FC<LocationFormProps> = ({
             <RaDropdown
               options={addresses.map((a) => ({
                 value: a.id.toString(),
-                label: a.address,
+                label: a.name,
               }))}
               value={formik.values.addressId?.toString() || ""}
               onChange={(value) =>
-                formik.setFieldValue("addressId", value ? Number(value) : undefined)
+                formik.setFieldValue(
+                  "addressId",
+                  value ? Number(value) : undefined
+                )
               }
               placeholder={t("product.form.locations.placeholders.address")}
             />
@@ -149,35 +162,57 @@ const LocationForm: React.FC<LocationFormProps> = ({
       <Row>
         <Col md={6}>
           <FormGroup>
-            <Label for="minQuantity">{t("product.form.locations.minQuantity")}</Label>
+            <Label for="minQuantity">
+              {t("product.form.locations.minQuantity")}
+            </Label>
             <Input
               id="minQuantity"
               type="number"
               min={0}
               value={formik.values.minQuantity || ""}
-              onChange={(e) => formik.setFieldValue("minQuantity", e.target.value ? Number(e.target.value) : undefined)}
+              onChange={(e) =>
+                formik.setFieldValue(
+                  "minQuantity",
+                  e.target.value ? Number(e.target.value) : undefined
+                )
+              }
               placeholder={t("product.form.locations.placeholders.minQuantity")}
-              invalid={formik.touched.minQuantity && Boolean(formik.errors.minQuantity)}
+              invalid={
+                formik.touched.minQuantity && Boolean(formik.errors.minQuantity)
+              }
             />
             {formik.touched.minQuantity && formik.errors.minQuantity && (
-              <div className="invalid-feedback">{formik.errors.minQuantity}</div>
+              <div className="invalid-feedback">
+                {formik.errors.minQuantity}
+              </div>
             )}
           </FormGroup>
         </Col>
         <Col md={6}>
           <FormGroup>
-            <Label for="maxQuantity">{t("product.form.locations.maxQuantity")}</Label>
+            <Label for="maxQuantity">
+              {t("product.form.locations.maxQuantity")}
+            </Label>
             <Input
               id="maxQuantity"
               type="number"
               min={formik.values.minQuantity || 0}
               value={formik.values.maxQuantity || ""}
-              onChange={(e) => formik.setFieldValue("maxQuantity", e.target.value ? Number(e.target.value) : undefined)}
+              onChange={(e) =>
+                formik.setFieldValue(
+                  "maxQuantity",
+                  e.target.value ? Number(e.target.value) : undefined
+                )
+              }
               placeholder={t("product.form.locations.placeholders.maxQuantity")}
-              invalid={formik.touched.maxQuantity && Boolean(formik.errors.maxQuantity)}
+              invalid={
+                formik.touched.maxQuantity && Boolean(formik.errors.maxQuantity)
+              }
             />
             {formik.touched.maxQuantity && formik.errors.maxQuantity && (
-              <div className="invalid-feedback">{formik.errors.maxQuantity}</div>
+              <div className="invalid-feedback">
+                {formik.errors.maxQuantity}
+              </div>
             )}
           </FormGroup>
         </Col>

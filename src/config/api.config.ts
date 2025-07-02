@@ -8,7 +8,7 @@ export const API_CONFIG = {
         CUSTOMERS: '/contacts',
         PRODUCTS: '/products',
         PRODUCT_CATEGORIES: '/product-categories',
-        PRODUCT_ATTRIBUTES: '/product-warehouses',
+        PRODUCT_ATTRIBUTES: '/ProductAttribute',
         PRODUCT_ATTRIBUTE_VALUES: '/ProductAttributeValue',
         PRODUCT_LOCATIONS: '/ProductLocation',
         PRODUCT_PRICES: '/product-prices',

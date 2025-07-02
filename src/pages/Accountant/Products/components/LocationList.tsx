@@ -78,7 +78,7 @@ const LocationList: React.FC<LocationListProps> = ({
 
     return {
       warehouseName: warehouse?.name || location.warehouseId.toString(),
-      addressName: address?.address || location.addressId?.toString() || "",
+      addressName: address?.name || location.addressId?.toString() || "",
     };
   };
 

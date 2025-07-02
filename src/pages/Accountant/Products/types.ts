@@ -82,6 +82,16 @@ export interface Unit {
   name: string;
 }
 
+export interface Warehouse {
+  id: number;
+  name: string;
+}
+
+export interface WarehouseAddress {
+  id: number;
+  name: string;
+}
+
 export interface ProductState {
   products: Product[];
   selectedProduct: Product | null;
