@@ -109,10 +109,26 @@ export const handleError = (error: any, options: ErrorHandlerOptions = {}) => {
       toastr.error(t("errors.permission_denied"));
       break;
 
-    case 400:
+    case 400: {
       // Bad request - usually validation errors from the server
-      toastr.error(message || t("errors.invalid_request"));
+      // Try to translate the server error message if it's a known error code
+      let translatedMessage = message;
+      
+      // Check if the message is a known error code and translate it
+      if (message && typeof message === 'string') {
+        // Convert message to translation key format
+        const translationKey = `errors.${message}`;
+        const translated = t(translationKey);
+        
+        // If translation exists (different from the key), use it
+        if (translated !== translationKey) {
+          translatedMessage = translated;
+        }
+      }
+      
+      toastr.error(translatedMessage || t("errors.invalid_request"));
       break;
+    }
 
     case 422:
       // Unprocessable Entity - usually validation errors

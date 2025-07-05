@@ -119,6 +119,23 @@
       }
     }
   },
+  "errors": {
+    "internal_server_error": "Interner Serverfehler. Bitte versuchen Sie es später erneut.",
+    "not_found": "Die angeforderte Ressource wurde nicht gefunden.",
+    "session_expired": "Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.",
+    "permission_denied": "Sie haben keine Berechtigung für diese Aktion.",
+    "invalid_request": "Ungültige Anfrage. Bitte überprüfen Sie Ihre Eingabe.",
+    "invalid_data": "Ungültige Daten. Bitte überprüfen Sie Ihre Eingabe.",
+    "network_error": "Verbindung zum Server nicht möglich. Bitte überprüfen Sie Ihre Internetverbindung.",
+    "unexpected_error": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+    "ProductCodeAlreadyExists": "Produktcode existiert bereits. Bitte wählen Sie einen anderen Code.",
+    "ProductNotFound": "Produkt nicht gefunden.",
+    "CustomerCodeAlreadyExists": "Kundencode existiert bereits. Bitte wählen Sie einen anderen Code.",
+    "CustomerNotFound": "Kunde nicht gefunden.",
+    "InvoiceNotFound": "Rechnung nicht gefunden.",
+    "InvalidProductCode": "Ungültiges Produktcode-Format.",
+    "InvalidCustomerData": "Ungültige Kundendaten bereitgestellt."
+  },
   "validation": {
     "required": "Dieses Feld ist erforderlich",
     "postalCodeFormat": "Die Postleitzahl muss zwischen 5 und 10 Ziffern haben",

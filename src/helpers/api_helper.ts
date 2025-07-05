@@ -17,9 +17,19 @@ axios.interceptors.response.use(
   function (error: any) {
     // Get the error details from the response
     const errorResponse = error.response || {};
+    
+    // Extract server error messages from the errors array for 400 status codes
+    let serverMessage = errorResponse.data?.message || error.message;
+    
+    // For 400 status codes, check if there are specific error messages in the errors array
+    if (errorResponse.status === 400 && errorResponse.data?.errors && Array.isArray(errorResponse.data.errors)) {
+      // Join multiple error messages with a separator, or use the first one
+      serverMessage = errorResponse.data.errors.join(', ') || serverMessage;
+    }
+    
     const errorData = {
       status: errorResponse.status,
-      message: errorResponse.data?.message || error.message,
+      message: serverMessage,
       data: errorResponse.data
     };
 

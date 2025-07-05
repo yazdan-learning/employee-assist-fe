@@ -166,7 +166,14 @@
     "invalid_request": "Invalid request. Please check your input.",
     "invalid_data": "Invalid data. Please check your input.",
     "network_error": "Unable to connect to the server. Please check your internet connection.",
-    "unexpected_error": "An unexpected error occurred. Please try again."
+    "unexpected_error": "An unexpected error occurred. Please try again.",
+    "ProductCodeAlreadyExists": "Product code already exists. Please choose a different code.",
+    "ProductNotFound": "Product not found.",
+    "CustomerCodeAlreadyExists": "Customer code already exists. Please choose a different code.",
+    "CustomerNotFound": "Customer not found.",
+    "InvoiceNotFound": "Invoice not found.",
+    "InvalidProductCode": "Invalid product code format.",
+    "InvalidCustomerData": "Invalid customer data provided."
   },
   "validation": {
     "required": "This field is required",
