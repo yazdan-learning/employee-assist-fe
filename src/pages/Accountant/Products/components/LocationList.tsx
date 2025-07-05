@@ -5,14 +5,11 @@ import LocationForm from "./LocationForm";
 import CardListContainer from "../../../../Components/Common/CardListContainer";
 import { FormikErrors, FormikTouched } from "formik";
 import { Product } from "../types";
-import {
-  useWarehouses,
-  useWarehouseAddresses,
-} from "../../../../hooks/useProducts";
+import { useWarehouses } from "../../../../hooks/useProducts";
 
 interface Location {
   warehouseId: number;
-  addressId?: number;
+  addressId: number;
   minQuantity?: number;
   maxQuantity?: number;
 }
@@ -73,35 +70,24 @@ const LocationList: React.FC<LocationListProps> = ({
     setEditIndex(null);
   };
 
-  // Find warehouse and address names for display
-  const getLocationDisplay = (location: Location) => {
-    const warehouse = warehouses.find((w) => w.id === location.warehouseId);
-    const { data: addresses = [] } = useWarehouseAddresses(
-      location.warehouseId
-    );
-    const address = addresses.find((a) => a.id === location.addressId);
-
-    return {
-      warehouseName: warehouse?.name || location.warehouseId.toString(),
-      addressName: address?.name || location.addressId?.toString() || "",
-    };
-  };
-
   const columns = [
     {
       key: "warehouse",
       header: t("product.form.locations.warehouse"),
       width: 2,
-      render: (location: Location) => (
-        <span>{getLocationDisplay(location).warehouseName}</span>
-      ),
+      render: (location: Location) => {
+        const warehouse = warehouses.find((w) => w.id === location.warehouseId);
+        return (
+          <span>{warehouse?.name || `Warehouse ${location.warehouseId}`}</span>
+        );
+      },
     },
     {
       key: "address",
       header: t("product.form.locations.address"),
       width: 4,
       render: (location: Location) => (
-        <span>{getLocationDisplay(location).addressName}</span>
+        <span>{`Address ${location.addressId}`}</span>
       ),
     },
     {

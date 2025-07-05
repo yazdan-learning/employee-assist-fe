@@ -114,7 +114,7 @@ const ProductForm: React.FC = () => {
       .of(
         Yup.object().shape({
           warehouseId: Yup.number().required(t("validation.required")),
-          addressId: Yup.number(),
+          addressId: Yup.number().required(t("validation.required")),
           minQuantity: Yup.number()
             .min(0, t("validation.min", { min: 0 }))
             .nullable(),

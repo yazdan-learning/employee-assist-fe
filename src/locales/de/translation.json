@@ -42,6 +42,7 @@
         },
         "validation": {
           "warehouseRequired": "Lager ist erforderlich",
+          "addressRequired": "Adresse ist erforderlich",
           "minQuantityLessThanMax": "Mindestmenge muss kleiner als Höchstmenge sein",
           "maxQuantityGreaterThanMin": "Höchstmenge muss größer als Mindestmenge sein",
           "minRequired": "Mindestens ein Standort ist erforderlich"

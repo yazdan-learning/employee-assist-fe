@@ -13,7 +13,7 @@ import { Product } from "../types";
 
 interface Location {
   warehouseId: number;
-  addressId?: number;
+  addressId: number;
   minQuantity?: number;
   maxQuantity?: number;
 }
@@ -40,6 +40,9 @@ const LocationForm: React.FC<LocationFormProps> = ({
     warehouseId: Yup.number()
       .required(t("product.form.locations.validation.warehouseRequired"))
       .min(1, t("product.form.locations.validation.warehouseRequired")),
+    addressId: Yup.number()
+      .required(t("product.form.locations.validation.addressRequired"))
+      .min(1, t("product.form.locations.validation.addressRequired")),
     minQuantity: Yup.number()
       .min(0, t("validation.min", { min: 0 }))
       .nullable()
@@ -73,7 +76,7 @@ const LocationForm: React.FC<LocationFormProps> = ({
   const formik = useFormik<Location>({
     initialValues: location || {
       warehouseId: 0,
-      addressId: undefined,
+      addressId: 0,
       minQuantity: undefined,
       maxQuantity: undefined,
     },
@@ -99,11 +102,11 @@ const LocationForm: React.FC<LocationFormProps> = ({
   const handleWarehouseChange = (value: string | null) => {
     const numericValue = value ? Number(value) : null;
     formik.setFieldValue("warehouseId", numericValue);
-    formik.setFieldValue("addressId", null); // Reset address when warehouse changes
+    formik.setFieldValue("addressId", 0); // Reset address when warehouse changes
   };
 
   const handleAddressChange = (value: string | null) => {
-    const numericValue = value ? Number(value) : null;
+    const numericValue = value ? Number(value) : 0;
     formik.setFieldValue("addressId", numericValue);
   };
 
@@ -142,12 +145,7 @@ const LocationForm: React.FC<LocationFormProps> = ({
                 label: a.name,
               }))}
               value={formik.values.addressId?.toString() || ""}
-              onChange={(value) =>
-                formik.setFieldValue(
-                  "addressId",
-                  value ? Number(value) : undefined
-                )
-              }
+              onChange={handleAddressChange}
               placeholder={t("product.form.locations.placeholders.address")}
             />
             {formik.touched.addressId && formik.errors.addressId && (

@@ -453,6 +453,7 @@
         },
         "validation": {
           "warehouseRequired": "انبار الزامی است",
+          "addressRequired": "آدرس الزامی است",
           "minQuantityLessThanMax": "حداقل مقدار باید کمتر از حداکثر مقدار باشد",
           "maxQuantityGreaterThanMin": "حداکثر مقدار باید بیشتر از حداقل مقدار باشد",
           "minRequired": "حداقل یک موقعیت الزامی است"

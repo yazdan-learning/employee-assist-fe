@@ -6,7 +6,7 @@ export interface ProductAttribute {
 
 export interface Location {
   warehouseId: number;
-  addressId?: number;
+  addressId: number;
   minQuantity?: number;
   maxQuantity?: number;
 }
