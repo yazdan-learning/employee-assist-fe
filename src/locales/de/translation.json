@@ -26,6 +26,28 @@
         "location": "Standort",
         "settings": "Einstellungen"
       },
+      "locations": {
+        "title": "Standorte",
+        "add": "Standort hinzufügen",
+        "edit": "Standort bearbeiten",
+        "warehouse": "Lager",
+        "address": "Adresse",
+        "minQuantity": "Mindestmenge",
+        "maxQuantity": "Höchstmenge",
+        "placeholders": {
+          "warehouse": "Lager auswählen",
+          "address": "Adresse auswählen",
+          "minQuantity": "Mindestmenge eingeben",
+          "maxQuantity": "Höchstmenge eingeben"
+        },
+        "validation": {
+          "warehouseRequired": "Lager ist erforderlich",
+          "minQuantityLessThanMax": "Mindestmenge muss kleiner als Höchstmenge sein",
+          "maxQuantityGreaterThanMin": "Höchstmenge muss größer als Mindestmenge sein",
+          "minRequired": "Mindestens ein Standort ist erforderlich"
+        },
+        "cantRemoveLastLocation": "Der letzte Standort kann nicht entfernt werden"
+      },
       "attributes": {
         "title": "Produktattribute",
         "add": "Attribut hinzufügen",

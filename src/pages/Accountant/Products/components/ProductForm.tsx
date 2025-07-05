@@ -110,6 +110,20 @@ const ProductForm: React.FC = () => {
           return value?.some((unit) => unit.isPrimary) || false;
         }
       ),
+    locations: Yup.array()
+      .of(
+        Yup.object().shape({
+          warehouseId: Yup.number().required(t("validation.required")),
+          addressId: Yup.number(),
+          minQuantity: Yup.number()
+            .min(0, t("validation.min", { min: 0 }))
+            .nullable(),
+          maxQuantity: Yup.number()
+            .min(0, t("validation.min", { min: 0 }))
+            .nullable(),
+        })
+      )
+      .min(1, t("product.form.locations.validation.minRequired")),
     taxPercentage: Yup.number()
       .min(0, t("validation.min", { min: 0 }))
       .max(100, t("validation.max", { max: 100 }))
@@ -172,7 +186,7 @@ const ProductForm: React.FC = () => {
           "units",
         ];
       case 2:
-        return [];
+        return ["locations"];
       case 3:
         return ["taxPercentage", "barcode"];
       default:

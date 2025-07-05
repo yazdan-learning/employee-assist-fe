@@ -46,6 +46,11 @@ const LocationList: React.FC<LocationListProps> = ({
   };
 
   const handleRemove = (index: number) => {
+    // Don't allow removing if it's the last location
+    if (locations.length === 1) {
+      return;
+    }
+
     const newLocations = locations.filter((_, i) => i !== index);
     onChange(newLocations);
   };
@@ -127,6 +132,11 @@ const LocationList: React.FC<LocationListProps> = ({
       icon: "bx bx-trash",
       color: "danger",
       onClick: (_: any, index: number) => handleRemove(index),
+      disabled: () => locations.length === 1,
+      tooltip:
+        locations.length === 1
+          ? t("product.form.locations.cantRemoveLastLocation")
+          : undefined,
     },
   ];
 

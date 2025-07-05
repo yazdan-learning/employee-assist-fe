@@ -420,6 +420,28 @@
         "location": "موقعیت",
         "settings": "تنظیمات"
       },
+      "locations": {
+        "title": "موقعیت‌ها",
+        "add": "افزودن موقعیت",
+        "edit": "ویرایش موقعیت",
+        "warehouse": "انبار",
+        "address": "آدرس",
+        "minQuantity": "حداقل مقدار",
+        "maxQuantity": "حداکثر مقدار",
+        "placeholders": {
+          "warehouse": "انبار را انتخاب کنید",
+          "address": "آدرس را انتخاب کنید",
+          "minQuantity": "حداقل مقدار را وارد کنید",
+          "maxQuantity": "حداکثر مقدار را وارد کنید"
+        },
+        "validation": {
+          "warehouseRequired": "انبار الزامی است",
+          "minQuantityLessThanMax": "حداقل مقدار باید کمتر از حداکثر مقدار باشد",
+          "maxQuantityGreaterThanMin": "حداکثر مقدار باید بیشتر از حداقل مقدار باشد",
+          "minRequired": "حداقل یک موقعیت الزامی است"
+        },
+        "cantRemoveLastLocation": "نمی‌توان آخرین موقعیت را حذف کرد"
+      },
       "attributes": {
         "title": "ویژگی‌های محصول",
         "add": "افزودن ویژگی",

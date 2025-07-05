@@ -43,7 +43,26 @@ const GeneralInfoForm: React.FC<GeneralInfoFormProps> = ({
       {/* Locations Section */}
       <Card className="mb-4">
         <CardBody>
-          <h5 className="mb-4">{t("product.form.locations.title")}</h5>
+          <div className="d-flex align-items-center mb-4">
+            <h5
+              className={`mb-0 ${
+                errors.locations &&
+                touched.locations &&
+                data.locations.length === 0
+                  ? "text-danger"
+                  : ""
+              }`}
+            >
+              {t("product.form.locations.title")}
+            </h5>
+            {errors.locations &&
+              touched.locations &&
+              data.locations.length === 0 && (
+                <small className="text-danger ms-2">
+                  {t("product.form.locations.validation.minRequired")}
+                </small>
+              )}
+          </div>
           <LocationList
             locations={data.locations}
             onChange={handleLocationsChange}
