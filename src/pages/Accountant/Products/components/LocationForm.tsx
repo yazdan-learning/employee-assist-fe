@@ -99,12 +99,6 @@ const LocationForm: React.FC<LocationFormProps> = ({
     }
   };
 
-  const handleWarehouseChange = (value: string | null) => {
-    const numericValue = value ? Number(value) : null;
-    formik.setFieldValue("warehouseId", numericValue);
-    formik.setFieldValue("addressId", 0); // Reset address when warehouse changes
-  };
-
   const handleAddressChange = (value: string | null) => {
     const numericValue = value ? Number(value) : 0;
     formik.setFieldValue("addressId", numericValue);
@@ -147,6 +141,9 @@ const LocationForm: React.FC<LocationFormProps> = ({
               value={formik.values.addressId?.toString() || ""}
               onChange={handleAddressChange}
               placeholder={t("product.form.locations.placeholders.address")}
+              searchable={true}
+              defaultShowCount={3}
+              searchPlaceholder={t("product.form.locations.searchAddress")}
             />
             {formik.touched.addressId && formik.errors.addressId && (
               <div className="invalid-feedback d-block">

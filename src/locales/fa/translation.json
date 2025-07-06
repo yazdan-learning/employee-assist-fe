@@ -451,6 +451,7 @@
           "minQuantity": "حداقل مقدار را وارد کنید",
           "maxQuantity": "حداکثر مقدار را وارد کنید"
         },
+        "searchAddress": "جستجوی آدرس‌ها...",
         "validation": {
           "warehouseRequired": "انبار الزامی است",
           "addressRequired": "آدرس الزامی است",
@@ -536,6 +537,9 @@
     "no": "خیر",
     "actions": "عملیات",
     "save": "ذخیره",
-    "cancel": "انصراف"
+    "cancel": "انصراف",
+    "clear": "پاک کردن",
+    "noResultsFound": "نتیجه‌ای یافت نشد",
+    "noOptionsAvailable": "گزینه‌ای در دسترس نیست"
   }
 } 

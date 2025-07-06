@@ -40,6 +40,7 @@
           "minQuantity": "Mindestmenge eingeben",
           "maxQuantity": "Höchstmenge eingeben"
         },
+        "searchAddress": "Adressen suchen...",
         "validation": {
           "warehouseRequired": "Lager ist erforderlich",
           "addressRequired": "Adresse ist erforderlich",
@@ -148,7 +149,10 @@
     "no": "Nein",
     "actions": "Aktionen",
     "save": "Speichern",
-    "cancel": "Abbrechen"
+    "cancel": "Abbrechen",
+    "clear": "Löschen",
+    "noResultsFound": "Keine Ergebnisse gefunden",
+    "noOptionsAvailable": "Keine Optionen verfügbar"
   },
   "customer": {
     "form": {

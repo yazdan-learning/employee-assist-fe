@@ -187,6 +187,9 @@
     "actions": "Actions",
     "save": "Save",
     "cancel": "Cancel",
+    "clear": "Clear",
+    "noResultsFound": "No results found",
+    "noOptionsAvailable": "No options available",
     "form": {
       "buttons": {
         "save": "Save",
@@ -418,6 +421,7 @@
           "minQuantity": "Enter minimum quantity",
           "maxQuantity": "Enter maximum quantity"
         },
+        "searchAddress": "Search addresses...",
         "validation": {
           "warehouseRequired": "Warehouse is required",
           "addressRequired": "Address is required",
